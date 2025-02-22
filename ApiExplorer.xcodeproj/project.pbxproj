@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9F9C65702D6A0A7A00E7F025 /* CocoaAsyncSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C656F2D6A0A7A00E7F025 /* CocoaAsyncSocket */; };
+		9F9C65732D6A0A9200E7F025 /* JWTDecode in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C65722D6A0A9200E7F025 /* JWTDecode */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9F9C64A22D68F9D800E7F025 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F9C65732D6A0A9200E7F025 /* JWTDecode in Frameworks */,
+				9F9C65702D6A0A7A00E7F025 /* CocoaAsyncSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = ApiExplorer;
 			packageProductDependencies = (
+				9F9C656F2D6A0A7A00E7F025 /* CocoaAsyncSocket */,
+				9F9C65722D6A0A9200E7F025 /* JWTDecode */,
 			);
 			productName = ApiExplorer;
 			productReference = 9F9C64902D68F9D700E7F025 /* ApiExplorer.app */;
@@ -195,6 +204,10 @@
 			);
 			mainGroup = 9F9C64872D68F9D700E7F025;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9F9C656E2D6A0A7A00E7F025 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */,
+				9F9C65712D6A0A9200E7F025 /* XCRemoteSwiftPackageReference "JWTDecode" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9F9C64912D68F9D700E7F025 /* Products */;
 			projectDirPath = "";
@@ -549,6 +562,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9F9C656E2D6A0A7A00E7F025 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/robbiehanson/CocoaAsyncSocket.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.6.5;
+			};
+		};
+		9F9C65712D6A0A9200E7F025 /* XCRemoteSwiftPackageReference "JWTDecode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/JWTDecode.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9F9C656F2D6A0A7A00E7F025 /* CocoaAsyncSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F9C656E2D6A0A7A00E7F025 /* XCRemoteSwiftPackageReference "CocoaAsyncSocket" */;
+			productName = CocoaAsyncSocket;
+		};
+		9F9C65722D6A0A9200E7F025 /* JWTDecode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F9C65712D6A0A9200E7F025 /* XCRemoteSwiftPackageReference "JWTDecode" */;
+			productName = JWTDecode;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9F9C64882D68F9D700E7F025 /* Project object */;
 }

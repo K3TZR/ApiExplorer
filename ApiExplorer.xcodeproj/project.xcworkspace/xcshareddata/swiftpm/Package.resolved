@@ -1,0 +1,24 @@
+{
+  "originHash" : "7d438571a79c10aaf47ae8df3b513e8cb2fb248a0df1e5609e637c38371c612e",
+  "pins" : [
+    {
+      "identity" : "cocoaasyncsocket",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/robbiehanson/CocoaAsyncSocket",
+      "state" : {
+        "revision" : "dbdc00669c1ced63b27c3c5f052ee4d28f10150c",
+        "version" : "7.6.5"
+      }
+    },
+    {
+      "identity" : "jwtdecode.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/JWTDecode.swift",
+      "state" : {
+        "revision" : "3cd207fb9e943b6168a117baa3936c823204c2dc",
+        "version" : "2.6.3"
+      }
+    }
+  ],
+  "version" : 3
+}
