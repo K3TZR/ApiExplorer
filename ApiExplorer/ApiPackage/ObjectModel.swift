@@ -246,6 +246,7 @@ final public class ObjectModel: TcpProcessor {
     removeAllObjects()
     
     await _replyDictionary.removeAll()
+    await _sequencer.reset()
     log.debug("ApiModel: Disconnect, Objects removed")
   }
   
@@ -283,10 +284,9 @@ final public class ObjectModel: TcpProcessor {
     Task {
       // assign sequenceNumber
       let sequenceNumber = await _sequencer.next()
-      if let replyHandler {
-        // register to be notified when reply received
-        await _replyDictionary.add(sequenceNumber, ReplyEntry(command, replyHandler))
-      }
+        
+      // register to be notified when reply received
+      await _replyDictionary.add(sequenceNumber, ReplyEntry(command, replyHandler))
 
       // assemble the command
       let command = "C" + "\(diagnostic ? "D" : "")" + "\(sequenceNumber)|" + command
@@ -981,35 +981,27 @@ final public class ObjectModel: TcpProcessor {
   ///   - commandSuffix:      a Reply Suffix
   private func replyProcessor(_ replyMessage: String) {
     
+    // separate it into its components
     if let components = replyParser(replyMessage) {
-      
-      //    // separate it into its components
-      //    let components = replyMessage.dropFirst().components(separatedBy: "|")
-      //    // ignore incorrectly formatted replies
-      //    if components.count < 2 {
-      //      log.warning("ApiModel: incomplete reply, r\(replyMessage)")
-      //      return
-      //    }
-      //    // get the sequence number, reply and any additional data
-      //    let sequenceNumber = components[0].sequenceNumber
-      //    let replyValue = components[1]
-      //    let suffix = components.count < 3 ? "" : components[2]
-      
-      
+      // are we waiting for this reply?
       if _tcpReply != nil {
+        // YES, resume
         log.debug( "ApiModel: resuming tcpReply" )
         _tcpReply!.resume(returning: components)
         
       } else {
         
         Task {
+          var keyValues: KeyValuesArray
+          
           let sequenceNumber = components.0
           let replyValue = components.1
           let suffix = components.2
           
+          // is there a ReplyEntry for the sequence number (in the ReplyDictionary)?
           if let replyEntry = await _replyDictionary[ sequenceNumber ] {
             
-            // Remove the object from the notification list
+            // YES, remove that entry in the ReplyDictionary
             await _replyDictionary.remove(sequenceNumber)
             
             // Anything other than kNoError is an error, log it
@@ -1017,8 +1009,27 @@ final public class ObjectModel: TcpProcessor {
             if replyValue != kNoError && !replyEntry.command.hasPrefix("client program ") {
               log.error("ApiModel: replyValue >\(replyValue)<, to c\(sequenceNumber), \(replyEntry.command), \(flexErrorString(errorCode: replyValue)), \(suffix)")
             }
-            // call the sender's Handler
-            replyEntry.replyHandler(replyEntry.command, replyValue)
+            
+            if replyEntry.replyHandler == nil {
+              
+              // process replies to the internal "sendCommands"?
+              switch replyEntry.command {
+              case "radio uptime":  keyValues = "uptime=\(suffix)".keyValuesArray()
+              case "version":       keyValues = suffix.keyValuesArray(delimiter: "#")
+              case "ant list":      keyValues = "ant_list=\(suffix)".keyValuesArray()
+              case "mic list":      keyValues = "mic_list=\(suffix)".keyValuesArray()
+              case "info":          keyValues = suffix.keyValuesArray(delimiter: ",")
+              default: return
+              }
+              activeSelection?.radio.parse(keyValues)
+              
+            } else {
+              // call the sender's Handler
+              replyEntry.replyHandler?(replyEntry.command, replyMessage)
+            }
+          } else {
+            // no reply entry for this sequence number
+            log.error("ApiModel: sequenceNumber \(sequenceNumber) not found in the ReplyDictionary")
           }
         }
       }
@@ -1035,7 +1046,7 @@ final public class ObjectModel: TcpProcessor {
     let components = replyMessage.dropFirst().components(separatedBy: "|")
     // ignore incorrectly formatted replies
     if components.count < 2 {
-      log.warning("ApiModel: incomplete reply, r\(replyMessage)")
+      log.warning("ApiModel: incomplete reply, R\(replyMessage)")
       return nil
     }
     // get the sequence number, reply and any additional data
@@ -1088,10 +1099,13 @@ final public class ObjectModel: TcpProcessor {
       case "info":          keyValues = additionalData.keyValuesArray(delimiter: ",")
       default: return
       }
-//      radio?.parse(keyValues)
       activeSelection?.radio.parse(keyValues)
     }
   }
+
+  
+  
+  
   
  private func ipReplyHandler(_ command: String, _ reply: String) {
     // YES, resume it

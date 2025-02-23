@@ -26,8 +26,8 @@ struct ListsView: View {
   
   var body: some View {
    
-    if let radio = viewModel.objectModel.radio {
-      Grid(alignment: .leading, horizontalSpacing: 30) {
+    if let radio = viewModel.objectModel.activeSelection?.radio {
+      Grid(alignment: .leading, horizontalSpacing: 20) {
         GridRow {
           Text("LISTS")
             .frame(width: 100, alignment: .leading)

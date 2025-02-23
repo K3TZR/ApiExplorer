@@ -23,11 +23,7 @@ extension ObjectModel {
   }
   
   public func requestAntennaList(replyHandler: ReplyHandler? = nil) {
-    if replyHandler == nil {
-      sendTcp("ant list", replyHandler: commandsReplyHandler )
-    } else {
-      sendTcp("ant list", replyHandler: replyHandler )
-    }
+    sendTcp("ant list", replyHandler: replyHandler )
   }
   
   public func setCwKeyImmediate(state: Bool, replyHandler: ReplyHandler? = nil) {
@@ -238,11 +234,7 @@ extension ObjectModel {
   // MARK: - Radio methods
   
   public func infoRequest(replyHandler: ReplyHandler? = nil) {
-    if replyHandler == nil {
-      sendTcp("info", replyHandler: commandsReplyHandler )
-    } else {
-      sendTcp("info", replyHandler: replyHandler )
-    }
+    sendTcp("info", replyHandler: replyHandler )
   }
   
   public func licenseRequest(replyHandler: ReplyHandler? = nil) {
@@ -254,11 +246,7 @@ extension ObjectModel {
   }
   
   public func micListRequest(replyHandler: ReplyHandler? = nil) {
-    if replyHandler == nil {
-      sendTcp("mic list", replyHandler: commandsReplyHandler )
-    } else {
-      sendTcp("mic list", replyHandler: replyHandler )
-    }
+    sendTcp("mic list", replyHandler: replyHandler )
   }
   
   public func staticNetParamsReset(replyHandler: ReplyHandler? = nil) {
@@ -277,19 +265,11 @@ extension ObjectModel {
   }
 
   public func uptimeRequest(replyHandler: ReplyHandler? = nil) {
-    if replyHandler == nil {
-      sendTcp("radio uptime", replyHandler: commandsReplyHandler )
-    } else {
-      sendTcp("radio uptime", replyHandler: replyHandler )
-    }
+    sendTcp("radio uptime", replyHandler: replyHandler )
   }
   
   public func versionRequest(replyHandler: ReplyHandler? = nil) {
-    if replyHandler == nil {
-      sendTcp("version", replyHandler: commandsReplyHandler )
-    } else {
-      sendTcp("version", replyHandler: replyHandler )
-    }
+    sendTcp("version", replyHandler: replyHandler )
   }
     
  // ----------------------------------------------------------------------------

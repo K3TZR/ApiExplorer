@@ -11,9 +11,9 @@ public typealias ReplyHandler = @MainActor @Sendable (String, String) -> Void
 
 public struct ReplyEntry: Sendable {
   public let command: String
-  public let replyHandler: ReplyHandler
+  public let replyHandler: ReplyHandler?
   
-  public init(_ command: String, _ replyHandler: @escaping ReplyHandler) {
+  public init(_ command: String, _ replyHandler: ReplyHandler? = nil) {
     self.command = command
     self.replyHandler = replyHandler
   }
@@ -37,8 +37,8 @@ final public actor ReplyDictionary {
   }
 
   subscript(sequenceNumber: Int) -> ReplyEntry? {
-      get { replyEntries[sequenceNumber] }
-      set { replyEntries[sequenceNumber] = newValue }
+    get { replyEntries[sequenceNumber] }
+    set { replyEntries[sequenceNumber] = newValue }
   }
 }
 
