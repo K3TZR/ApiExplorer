@@ -8,6 +8,8 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+import ApiPackage
+
 struct MessagesDocument: FileDocument {
   static var readableContentTypes: [UTType] { [.plainText] }
   

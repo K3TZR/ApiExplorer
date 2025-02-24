@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+import ApiPackage
+
 @MainActor
 @Observable
 public final class MessageModel: TcpProcessor {

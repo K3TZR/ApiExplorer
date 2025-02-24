@@ -7,6 +7,8 @@
 
 import Foundation
 
+import ApiPackage
+
 @Observable
 public class SettingModel {
   // ----------------------------------------------------------------------------

@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+import ApiPackage
+
 @MainActor
 @Observable
 public class ViewModel {
@@ -389,7 +391,8 @@ public class ViewModel {
   
   
   public func hexDump(_ data: Data) -> String {
-    let len = 552
+//    let len = 552
+    let len = data.count
     var bytes = [UInt8](repeating: 0x00, count: len)
 
     (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
@@ -438,41 +441,18 @@ public class ViewModel {
         string += address.toHex() + "   "
       }
     }
-    
-    
-//    string += "\n\n----- PAYLOAD (Properties) -----\n"
-//      
-//
-//    let payloadBytes = bytes[27...len-1]
-//    let text = String(decoding: payloadBytes, as: UTF8.self)
-//    let lines = text.components(separatedBy: " ")
-//    let adjLines = lines.map {$0.replacingOccurrences(of: "=", with: " = ")}
-//    let newText = adjLines.reduce("") {$0 + "\($1)\n"}
-//    string += newText
-//    
-//    
-//    string += "\n         -------------------------------------------------\n\n"
     return string
   }
   
-  public func propertiesDump(_ data: Data) -> KeyValuesArray {
-    let len = 552
-    var string = ""
+  public func payloadProperties(_ data: Data) -> KeyValuesArray {
+    //    let len = 552
+    let len = data.count
     var bytes = [UInt8](repeating: 0x00, count: len)
 
     (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
 
     let payloadBytes = bytes[27...len-1]
     let text = String(decoding: payloadBytes, as: UTF8.self)
-//    let lines = text.components(separatedBy: " ")
     return text.keyValuesArray()
-    
-//    let adjLines = lines.map {$0.replacingOccurrences(of: "=", with: " = ")}
-//    let newText = adjLines.reduce("") {$0 + "\($1)\n"}
-//    string += newText
-//    
-//    
-//    string += "\n         -------------------------------------------------\n\n"
-//    return string
   }
 }

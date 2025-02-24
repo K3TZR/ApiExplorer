@@ -8,6 +8,8 @@
 import SwiftUI
 import os
 
+import ApiPackage
+
 @main
 struct ApiViewerApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate

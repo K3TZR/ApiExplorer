@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+import ApiPackage
+
 // ----------------------------------------------------------------------------
 // MARK: - View(s)
 
@@ -17,6 +19,13 @@ public struct DiscoveryView: View {
   
   @State var radioSelection: String?
   
+  var data: Data? {
+    if let index = viewModel.objectModel.radios.firstIndex(where: {$0.id == radioSelection}) {
+      return viewModel.objectModel.radios[index].discoveryData
+    }
+    return nil
+  }
+  
   public var body: some View {
     @Bindable var viewModel = viewModel
     
@@ -25,6 +34,7 @@ public struct DiscoveryView: View {
       
       HStack {
         Picker("Choose a Radio", selection: $radioSelection) {
+          Text("Select a Radio").tag(nil as String?)
           ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
@@ -38,10 +48,19 @@ public struct DiscoveryView: View {
       
       Divider().frame(height: 2).overlay(.blue)
       
-      switch viewModel.settingModel.discoveryDisplayType  {
-      case .fields:     FieldsView(id: radioSelection)
-      case .keyValues:  KeyValuesView(id: radioSelection)
-      case .hex:        RawView(id: radioSelection)
+      if let data {
+        switch viewModel.settingModel.discoveryDisplayType  {
+        case .fields:     VitaFieldsView(data: data)
+        case .keyValues:  PayloadFieldsView(data: data)
+        case .hex:        RawView(data: data)
+        }
+        
+      } else {
+        VStack {
+          Spacer()
+          Text("Did you choose a Radio?")
+          Spacer()
+        }
       }
       Spacer()
       Divider()
@@ -54,156 +73,114 @@ public struct DiscoveryView: View {
   }
 }
 
-private struct FieldsView: View {
-  let id: String?
+private struct VitaFieldsView: View {
+  let data: Data
   
   @Environment(ViewModel.self) private var viewModel
   
-  
-  var vita: Vita? {
-    guard let index = viewModel.objectModel.radios.firstIndex(where: {$0.id == id}) else { return nil }
-    guard let data = viewModel.objectModel.radios[index].discoveryData else { return nil }
-    return Vita.decode(from: data)
+  var vita: Vita {
+    Vita.decode(from: data)!
   }
   
   var body: some View {
-    if let vita {
-      ScrollView {
-        Grid (alignment: .leading, verticalSpacing: 10) {
-          GridRow {
-            Text("Packet Type")
-            Text(vita.packetType.description()).gridColumnAlignment(.trailing)
-          }
-          GridRow {
-            Text("Class Code")
-            Text(vita.classCode.description())
-          }
-          GridRow {
-            Text("Packet Size")
-            Text("\(vita.packetSize)")
-          }
-          GridRow {
-            Text("Header Size")
-            Text("\(vita.headerSize)")
-          }
-          GridRow {
-            Text("Payload Size")
-            Text("\(vita.payloadSize)")
-          }
-          GridRow {
-            Text("Stream ID")
-            Text("\(vita.streamId)")
-          }
-          GridRow {
-            Text("Tsi Type")
-            Text("\(vita.tsiType)")
-          }
-          GridRow {
-            Text("Tsf Type")
-            Text("\(vita.tsfType)")
-          }
-          GridRow {
-            Text("Sequence")
-            Text("\(vita.sequence)")
-          }
-          GridRow {
-            Text("Integer Time Stamp")
-            Text("\(vita.integerTimestamp)")
-          }
-          GridRow {
-            Text("Frac Time Stamp Lsb")
-            Text("\(vita.fracTimeStampLsb)")
-          }
-          GridRow {
-            Text("Frac Time Stamp Msb")
-            Text("\(vita.fracTimeStampMsb)")
-          }
-          GridRow {
-            Text("OUI")
-            Text("\(vita.oui)")
-          }
-          GridRow {
-            Text("Information Class Code")
-            Text("\(vita.informationClassCode)")
-          }
-          GridRow {
-            Text("Trailer")
-            Text("\(vita.trailer)")
-          }
-          GridRow {
-            Text("Trailer Present")
-            Text("\(vita.trailerPresent)")
-          }
+    ScrollView {
+      Grid (alignment: .leading, verticalSpacing: 10) {
+        GridRow {
+          Text("Packet Type")
+          Text(vita.packetType.description()).gridColumnAlignment(.trailing)
         }
-      }
-    } else {
-      VStack {
-        Spacer()
-        Text("No Vita Data")
-        Text("Did you choose a Radio?")
-        Spacer()
+        GridRow {
+          Text("Class Code")
+          Text(vita.classCode.description())
+        }
+        GridRow {
+          Text("Packet Size")
+          Text("\(vita.packetSize)")
+        }
+        GridRow {
+          Text("Header Size")
+          Text("\(vita.headerSize)")
+        }
+        GridRow {
+          Text("Payload Size")
+          Text("\(vita.payloadSize)")
+        }
+        GridRow {
+          Text("Stream ID")
+          Text("\(vita.streamId)")
+        }
+        GridRow {
+          Text("Tsi Type")
+          Text("\(vita.tsiType)")
+        }
+        GridRow {
+          Text("Tsf Type")
+          Text("\(vita.tsfType)")
+        }
+        GridRow {
+          Text("Sequence")
+          Text("\(vita.sequence)")
+        }
+        GridRow {
+          Text("Integer Time Stamp")
+          Text("\(vita.integerTimestamp)")
+        }
+        GridRow {
+          Text("Frac Time Stamp Lsb")
+          Text("\(vita.fracTimeStampLsb)")
+        }
+        GridRow {
+          Text("Frac Time Stamp Msb")
+          Text("\(vita.fracTimeStampMsb)")
+        }
+        GridRow {
+          Text("OUI")
+          Text("\(vita.oui)")
+        }
+        GridRow {
+          Text("Information Class Code")
+          Text("\(vita.informationClassCode)")
+        }
+        GridRow {
+          Text("Trailer")
+          Text("\(vita.trailer)")
+        }
+        GridRow {
+          Text("Trailer Present")
+          Text("\(vita.trailerPresent)")
+        }
       }
     }
   }
 }
 
-private struct KeyValuesView: View {
-  let id: String?
+private struct PayloadFieldsView: View {
+  let data: Data
   
   @Environment(ViewModel.self) private var viewModel
   
-  var properties: KeyValuesArray? {
-    guard let index = viewModel.objectModel.radios.firstIndex(where: {$0.id == id}) else { return nil }
-    guard let data = viewModel.objectModel.radios[index].discoveryData else { return nil }
-    return viewModel.propertiesDump(data)
-  }
-
   var body: some View {
-    if let properties {
-      ScrollView {
-        Grid (alignment: .leading, verticalSpacing: 10) {
-          ForEach(properties, id: \.key) { property in
-            GridRow {
-              Text(property.key)
-              Text(property.value).gridColumnAlignment(.trailing)
-            }
+    ScrollView {
+      Grid (alignment: .leading, verticalSpacing: 10) {
+        ForEach(viewModel.payloadProperties(data) , id: \.key) { property in
+          GridRow {
+            Text(property.key)
+            Text(property.value).gridColumnAlignment(.trailing)
           }
         }
-      }
-    } else {
-      VStack {
-        Spacer()
-        Text("No Vita Data")
-        Text("Did you choose a Radio?")
-        Spacer()
       }
     }
   }
 }
-  
+
 private struct RawView: View {
-  let id: String?
-  
+  let data: Data
+
   @Environment(ViewModel.self) private var viewModel
   
-  var raw: String? {
-    guard let index = viewModel.objectModel.radios.firstIndex(where: {$0.id == id}) else { return nil }
-    guard let data = viewModel.objectModel.radios[index].discoveryData else { return nil }
-    return viewModel.hexDump(data)
-  }
-  
   var body: some View {
-    if let raw {
-      ScrollView {
-        Text(raw)
-      }
-    } else {
-      VStack {
-        Spacer()
-        Text("No Vita Data")
-        Text("Did you choose a Radio?")
-        Spacer()
-      }
+    ScrollView {
+      Text(viewModel.hexDump(data))
     }
   }
 }
