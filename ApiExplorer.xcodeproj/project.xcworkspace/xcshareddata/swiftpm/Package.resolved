@@ -1,15 +1,5 @@
 {
-  "originHash" : "8a6f7ea497995029b05dc8577113416ce26edb9105a19e6b6a548f25255da1f3",
   "pins" : [
-    {
-      "identity" : "apipackage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/K3TZR/ApiPackage.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "2c9c5fef3a3b32c70b14ad5e8d2d7abcdcb48eba"
-      }
-    },
     {
       "identity" : "cocoaasyncsocket",
       "kind" : "remoteSourceControl",
@@ -29,5 +19,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }

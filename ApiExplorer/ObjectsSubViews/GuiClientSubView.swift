@@ -28,49 +28,38 @@ struct GuiClientSubView: View {
     ForEach(viewModel.objectModel.radios, id: \.id) { radio in
       
       if radio.id == viewModel.objectModel.activeSelection?.radio.id {
-        let guiClients = radio.guiClients
-        ForEach(guiClients, id: \.id) { guiClient in
-          ScrollView([.vertical, .horizontal]) {
+        ForEach(radio.guiClients, id: \.id) { guiClient in
+          ScrollView([.vertical]) {
             VStack(alignment: .leading) {
-              HStack(spacing: 20) {
-                
-                HStack(spacing: 0) {
+
+              Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 0) {
+                GridRow {
                   Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
                     .foregroundColor(.yellow)
                     .font(.title)
                     .frame(width: 120, alignment: .leading)
                     .onTapGesture{ showSubView.toggle() }
                     .help("          Tap to toggle details")
+                    .gridColumnAlignment(.leading)
                   
                   Text("\(guiClient.station)").foregroundColor(.yellow)
                     .frame(width: 120, alignment: .leading)
-                }
-                
-                Group {
-                  HStack(spacing: 5) {
-                    Text("Handle")
-                    Text(guiClient.handle).foregroundColor(.secondary)
-                  }
                   
-                  HStack(spacing: 5) {
-                    Text("Program")
-                    Text("\(guiClient.program)").foregroundColor(.secondary)
-                  }
-                  
-                  HStack(spacing: 5) {
-                    Text("LocalPtt")
-                    Text(guiClient.isLocalPtt ? "Y" : "N").foregroundColor(guiClient.isLocalPtt ? .green : .red)
-                  }
-                }.frame(width: 150, alignment: .leading)
-                
-                HStack(spacing: 5) {
+                  Text("Handle")
+                    .gridColumnAlignment(.leading)
+                  Text(guiClient.handle).foregroundColor(.secondary)
+                  Text("Program")
+                    .gridColumnAlignment(.leading)
+                  Text("\(guiClient.program)").foregroundColor(.secondary)
+                  Text("LocalPtt")
+                    .gridColumnAlignment(.leading)
+                  Text(guiClient.isLocalPtt ? "Y" : "N").foregroundColor(guiClient.isLocalPtt ? .green : .red)
                   Text("ClientId")
-                  Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)").foregroundColor(.secondary)
+                    .gridColumnAlignment(.leading)
+                 Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)").foregroundColor(.secondary)
                 }
-                
-                Spacer()
               }
-              .frame(minWidth: 1250, maxWidth: .infinity)
+//              .frame(minWidth: 1250, maxWidth: .infinity)
               
               if showSubView {
                 GuiClientDetailView(handle: guiClient.handle.handle!)
@@ -93,8 +82,8 @@ private struct GuiClientDetailView: View {
     VStack(alignment: .leading) {
       switch viewModel.settingModel.stationObjectFilter {
         
-        //      case .all:
-        //        PanadapterSubView(handle: handle, showMeters: true)
+      case .all:
+        PanadapterSubView(handle: handle, showMeters: true)
         
       case .noMeters:
         PanadapterSubView(handle: handle, showMeters: false)

@@ -33,29 +33,27 @@ struct ApiView: View {
   var body: some View {
     @Bindable var viewModel = viewModel
 
-    VStack(alignment: .leading) {
+    VStack(alignment: .leading, spacing: 10) {
       TopButtonsView()
-        .padding(.bottom, 5)
 
       SendView()
-        .padding(.bottom, 5)
 
       Divider().background(Color(.gray))
 
       VSplitView {
         ObjectsView()
-          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 200, maxHeight: .infinity)
+          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
 
         Divider().background(Color(.cyan))
-          .padding(.bottom, 5)
+//          .padding(.bottom, 5)
 
         MessagesView()
-          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 200, maxHeight: .infinity)
+          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
       }
       Spacer()
       Divider().background(Color(.gray))
       BottomButtonsView()
-    }
+    }.padding(10)
     
     // initialize
     .onAppear {
@@ -108,7 +106,6 @@ struct ApiView: View {
 //    { store in LoginView(store: store) }
     
     .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
-    .padding(5)
   }
 }
 

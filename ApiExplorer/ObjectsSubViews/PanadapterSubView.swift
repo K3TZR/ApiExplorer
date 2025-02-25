@@ -15,9 +15,9 @@ import ApiPackage
 struct PanadapterSubView: View {
   let handle: UInt32
   let showMeters: Bool
-
+  
   @Environment(ViewModel.self) var viewModel
-
+  
   var body: some View {
     
     if viewModel.objectModel.panadapters.count == 0 {
@@ -31,7 +31,7 @@ struct PanadapterSubView: View {
         
         if panadapter.clientHandle == handle {
           
-          VStack(alignment: .leading) {
+          Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
             // Panadapter
             PanadapterDetailView(panadapter: panadapter)
             
@@ -40,13 +40,13 @@ struct PanadapterSubView: View {
               WaterfallDetailView(waterfall: waterfall)
             }
             
-            //          // corresponding Slice(s)
-            //          ForEach(viewModel.objects.slices.filter { $0.panadapterId == panadapter.id}) { slice in
-            //            SliceDetailView(slice: slice)
-            //
-            //            // slice meter(s)
-            //            if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
-            //          }
+            // corresponding Slice(s)
+            ForEach(viewModel.objectModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+              SliceDetailView(slice: slice)
+//              
+//              //            // slice meter(s)
+//              //            if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
+            }
           }
         }
       }
@@ -58,25 +58,22 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
-    HStack(spacing: 20) {
+    
+    GridRow {
+      Text("PANADAPTER")
+        .gridColumnAlignment(.leading)
       
-      Text("PANADAPTER").frame(width: 100, alignment: .leading)
+      Text("ID")
+        .gridColumnAlignment(.leading)
+      Text(panadapter.id.hex).foregroundColor(.secondary)
       
-      HStack(spacing: 5) {
-        Text("ID")
-        Text(panadapter.id.hex).padding(.leading, 5).foregroundColor(.secondary)
-      }
+      Text("Bandwidth")
+        .gridColumnAlignment(.leading)
+      Text(panadapter.bandwidth, format: .number).foregroundColor(.secondary)
       
-      HStack(spacing: 5) {
-        Text("Bandwidth")
-        Text(panadapter.bandwidth, format: .number).foregroundColor(.secondary)
-      }
-      
-      HStack(spacing: 5) {
-        Text("Center")
-        Text(panadapter.center, format: .number).foregroundColor(.secondary)
-      }
-      Spacer()
+      Text("Center")
+        .gridColumnAlignment(.leading)
+      Text(panadapter.center, format: .number).foregroundColor(.secondary)
     }
   }
 }
@@ -85,34 +82,23 @@ private struct WaterfallDetailView: View {
   var waterfall: Waterfall
   
   var body: some View {
-    HStack(spacing: 20) {
-      Text("WATERFALL").frame(width: 100, alignment: .leading)
+    GridRow {
+      Text("WATERFALL")
       
-      HStack(spacing: 5) {
-        Text("ID")
-        Text(waterfall.id.hex).padding(.leading, 5).foregroundColor(.secondary)
-      }
+      Text("ID")
+      Text(waterfall.id.hex).foregroundColor(.secondary)
       
-      HStack(spacing: 5) {
-        Text("Auto Black")
-        Text("\(waterfall.autoBlackEnabled ? "ON" : "OFF")").foregroundColor(.secondary)
-      }
-
-      HStack(spacing: 5) {
-        Text("Color Gain")
-        Text(waterfall.colorGain, format: .number).foregroundColor(.secondary)
-      }
+      Text("Auto Black")
+      Text("\(waterfall.autoBlackEnabled ? "Y" : "N")").foregroundColor(waterfall.autoBlackEnabled ? .green : .red)
       
-      HStack(spacing: 5) {
-        Text("Black Level")
-        Text(waterfall.blackLevel, format: .number).foregroundColor(.secondary)
-      }
+      Text("Color Gain")
+      Text(waterfall.colorGain, format: .number).foregroundColor(.secondary)
       
-      HStack(spacing: 5) {
-        Text("Duration")
-        Text(waterfall.lineDuration, format: .number).foregroundColor(.secondary)
-      }
-      Spacer()
+      Text("Black Level")
+      Text(waterfall.blackLevel, format: .number).foregroundColor(.secondary)
+      
+      Text("Duration")
+      Text(waterfall.lineDuration, format: .number).foregroundColor(.secondary)
     }
   }
 }
@@ -128,83 +114,51 @@ private struct SliceDetailView: View {
   }
   
   var body: some View {
-    VStack(alignment: .leading) {
-      HStack(spacing: 20) {
-        HStack(spacing: 5) {
-          Text("SLICE")
-        }.frame(width: 80, alignment: .leading)
-        
-        Text(String(format: "%02d", slice.id)).foregroundColor(.secondary)
-        
-        Text("\(slice.frequency)").foregroundColor(.secondary).frame(width: 105, alignment: .trailing)
-        
-        Group {
-          HStack(spacing: 5) {
-            Text("Mode")
-            Text("\(slice.mode)").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Rx Ant")
-            Text("\(slice.rxAnt)").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Tx Ant")
-            Text("\(slice.txAnt)").foregroundColor(.secondary)
-          }
-        }.frame(width: 100, alignment: .leading)
-        
-        Group {
-          HStack(spacing: 5) {
-            Text("Low")
-            Text("\(slice.filterLow)").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("High")
-            Text("\(slice.filterHigh)").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Active")
-            Text("\(slice.active ? "Yes" : "No")").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Locked")
-            Text("\(slice.locked ? "Yes" : "No")").foregroundColor(.secondary)
-          }
-
-        }.frame(width: 100, alignment: .leading)
-      }
-      HStack(spacing: 20) {
-        Text("").frame(width: 80, alignment: .leading)
-        
-        Group {
-          HStack(spacing: 5) {
-            Text("DAX_channel")
-            Text("\(slice.daxChannel)").foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("DAX_clients")
-            Text("\(slice.daxClients)").foregroundColor(.secondary)
-          }
-        }.frame(width: 100, alignment: .leading)
-        
-        Group {
-          HStack(spacing: 5) {
-            Text("Rx Ant List")
-            Text(stringArrayToString(slice.rxAntList)).foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Tx Ant List")
-            Text(stringArrayToString(slice.txAntList)).foregroundColor(.secondary)
-          }
-        }.frame(width: 340, alignment: .leading)
-      }
+    
+    GridRow {
+      Text("SLICE")
+      
+      Text("ID")
+      Text(String(format: "%02d", slice.id)).foregroundColor(.secondary)
+      
+      Text("Freq")
+      Text("\(slice.frequency)").foregroundColor(.secondary)
+      
+      Text("Mode")
+      Text("\(slice.mode)").foregroundColor(.secondary)
+      
+      Text("Rx Ant")
+        .gridColumnAlignment(.leading)
+      Text("\(slice.rxAnt)").foregroundColor(.secondary)
+      
+      Text("Tx Ant")
+        .gridColumnAlignment(.leading)
+      Text("\(slice.txAnt)").foregroundColor(.secondary)
+      
+      
+    }
+    
+    GridRow {
+      Text("SLICE").hidden()
+      
+      Text("DAX_channel")
+      Text("\(slice.daxChannel)").foregroundColor(.secondary)
+      
+      Text("DAX_clients")
+      Text("\(slice.daxClients)").foregroundColor(.secondary)
+      
+      Text("Low")
+      Text("\(slice.filterLow)").foregroundColor(.secondary)
+      
+      Text("High")
+      Text("\(slice.filterHigh)").foregroundColor(.secondary)
+      
+      Text("Active")
+      Text("\(slice.active ? "Y" : "N")").foregroundColor(slice.active ? .green : .red)
+      
+      Text("Locked")
+        .gridColumnAlignment(.leading)
+      Text("\(slice.locked ? "Y" : "N")").foregroundColor(slice.locked ? .green : .red)
     }
   }
 }

@@ -101,7 +101,8 @@ public struct TopButtonsView: View {
         .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
           viewModel.remoteTxAudioEnabledChanged()
         }
-    }.toggleStyle(.button)
+    }
+    .toggleStyle(.button)
   }
 }
 
