@@ -26,9 +26,8 @@ struct RadioSubView: View {
     
     if viewModel.objectModel.activeSelection != nil {
       let radio = viewModel.objectModel.activeSelection!.radio
-      ScrollView([.vertical, .horizontal]) {
-        
-        VStack(alignment: .leading) {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 0) {
           Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
             GridRow {
               Label("Radio", systemImage: showDetails ? "chevron.down" : "chevron.right")
@@ -36,61 +35,61 @@ struct RadioSubView: View {
                 .font(.title)
                 .foregroundColor(.green)
                 .onTapGesture{ showDetails.toggle() }
-                .help("          Tap to toggle details")
                 .gridColumnAlignment(.leading)
               
-              Line1View(radio: radio)
+              Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
+              
+              Text("ip")
+              Text(radio.packet.publicIp).foregroundColor(.green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("FW")
+              Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")").foregroundColor(radio.alpha ? .red : .green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("Model")
+              Text(radio.packet.model).foregroundColor(.green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("Serial")
+              Text(radio.packet.serial).foregroundColor(.green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("HW")
+              Text(viewModel.objectModel.hardwareVersion ?? "").foregroundColor(.green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("Uptime")
+              Text("\(radio.uptime) (seconds)").foregroundColor(.green)
+                .gridColumnAlignment(.trailing)
+              
+              Text("TNF's Enabled")
+              Text("\(radio.tnfsEnabled ? "Y" : "N")").foregroundColor(radio.tnfsEnabled ? .green : .red)
+                .gridColumnAlignment(.trailing)
+              
+              Text("MF Enabled")
+              Text("\(radio.multiflexEnabled ? "Y" : "N")").foregroundColor(radio.multiflexEnabled ? .green : .red)
+                .gridColumnAlignment(.trailing)
             }
           }
           
-          if showDetails { DetailView() }
+          if showDetails { DetailView(filter: viewModel.settingModel.radioObjectFilter) }
         }
+        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
       }
     }
   }
 }
 
-private struct Line1View: View {
-  let radio: Radio
-  
-  @Environment(ViewModel.self) var viewModel
-  
-  var body: some View {
-    
-    Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
-    
-    Text("ip")
-    Text(radio.packet.publicIp).foregroundColor(.green)
-    
-    Text("FW")
-    Text(radio.packet.version).foregroundColor(.green)
-    Text("\(radio.alpha ? "(alpha)" : "")").foregroundColor(radio.alpha ? .red : nil)
-    
-    Text("Model")
-    Text(radio.packet.model).foregroundColor(.green)
-    
-    Text("Serial")
-    Text(radio.packet.serial).foregroundColor(.green)
-    Text("HW")
-    Text(viewModel.objectModel.hardwareVersion ?? "").foregroundColor(.green)
-    Text("Uptime")
-    Text("\(radio.uptime)").foregroundColor(.green)
-    Text("(seconds)")
-    Text("TNF's Enabled")
-    Text("\(radio.tnfsEnabled ? "Y" : "N")").foregroundColor(radio.tnfsEnabled ? .green : .red)
-    Text("MF Enabled")
-    Text("\(radio.multiflexEnabled ? "Y" : "N")").foregroundColor(radio.multiflexEnabled ? .green : .red)
-  }
-}
-
 private struct DetailView: View {
-
+  let filter: RadioObjectFilter
+  
   @Environment(ViewModel.self) var viewModel
-
+  
   var body: some View {
     
     VStack(alignment: .leading) {
-      switch viewModel.settingModel.radioObjectFilter {
+      switch filter {
       case .all:
         AtuSubView()
         BandSettingSubView()

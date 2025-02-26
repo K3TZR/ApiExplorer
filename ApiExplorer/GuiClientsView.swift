@@ -13,21 +13,21 @@ import ApiPackage
 // MARK: - View(s)
 
 public struct GuiClientsView: View {
-
-  @Environment(ViewModel.self) private var viewModel
-
-  private var stationCount: Int {
-    var count = 0
-    
-    for radio in viewModel.objectModel.radios {
-      for _ in radio.guiClients {
-        count += 1
-      }
-    }
-    return count
-  }
   
- private var guiClients: [GuiClient] {
+  @Environment(ViewModel.self) private var viewModel
+  
+//  private var stationCount: Int {
+//    var count = 0
+//    
+//    for radio in viewModel.objectModel.radios {
+//      for _ in radio.guiClients {
+//        count += 1
+//      }
+//    }
+//    return count
+//  }
+  
+  private var guiClients: [GuiClient] {
     return viewModel.objectModel.radios
       .flatMap(\.guiClients)
   }
@@ -38,7 +38,7 @@ public struct GuiClientsView: View {
       
       Divider()
       
-      if stationCount == 0 {
+      if guiClients.count == 0 {
         VStack {
           HStack {
             Spacer()
@@ -52,24 +52,22 @@ public struct GuiClientsView: View {
       } else {
         // ----- List of Gui Clients -----
         List() {
-//          ForEach(viewModel.objectModel.radios, id: \.id) { radio in
-            ForEach(guiClients, id: \.id) { guiClient in
-              VStack(alignment: .leading) {
-                HStack(spacing: 0) {
-                  Group {
-                    Text(guiClient.station)
-                    Text(guiClient.handle)
-                    Text(guiClient.program)
-                    Text(guiClient.ip)
-                    Text(guiClient.host)
-                  }
-                  .font(.title3)
-                  .frame(minWidth: 140, alignment: .leading)
+          ForEach(guiClients, id: \.id) { guiClient in
+            VStack(alignment: .leading) {
+              HStack(spacing: 0) {
+                Group {
+                  Text(guiClient.station)
+                  Text(guiClient.handle)
+                  Text(guiClient.program)
+                  Text(guiClient.ip)
+                  Text(guiClient.host)
                 }
-                Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+                .font(.title3)
+                .frame(minWidth: 140, alignment: .leading)
               }
+              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
             }
-//          }
+          }
         }.frame(minHeight: 100)
       }
       Divider()
@@ -103,9 +101,9 @@ private struct HeaderView: View {
 }
 
 private struct FooterView: View {
-
+  
   @Environment(\.dismiss) var dismiss
-
+  
   var body: some View {
     HStack {
       Spacer()

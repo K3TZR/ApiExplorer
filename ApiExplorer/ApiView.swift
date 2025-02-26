@@ -41,14 +41,13 @@ struct ApiView: View {
       Divider().background(Color(.gray))
 
       VSplitView {
-        ObjectsView()
-          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
+        VStack(alignment: .leading) {
+          ObjectsView()
 
-        Divider().background(Color(.cyan))
-//          .padding(.bottom, 5)
-
-        MessagesView()
-          .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
+          Divider().background(Color(.cyan))
+          
+          MessagesView()
+        }
       }
       Spacer()
       Divider().background(Color(.gray))
@@ -105,7 +104,7 @@ struct ApiView: View {
 //    .sheet(item: $store.scope(state: \.destination?.loginItem, action: \.destination.loginItem))
 //    { store in LoginView(store: store) }
     
-    .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+    .frame(minWidth: 1300, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   }
 }
 

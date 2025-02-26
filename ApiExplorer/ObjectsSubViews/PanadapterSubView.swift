@@ -31,8 +31,9 @@ struct PanadapterSubView: View {
         
         if panadapter.clientHandle == handle {
           
-          Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
-            // Panadapter
+          VStack(alignment: .leading, spacing: 10) {
+            
+          // Panadapter
             PanadapterDetailView(panadapter: panadapter)
             
             // corresponding Waterfall
@@ -41,13 +42,14 @@ struct PanadapterSubView: View {
             }
             
             // corresponding Slice(s)
-            ForEach(viewModel.objectModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
-              SliceDetailView(slice: slice)
+//            ForEach(viewModel.objectModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+//              SliceDetailView(slice: slice)
 //              
 //              //            // slice meter(s)
 //              //            if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
-            }
+//            }
           }
+          .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
         }
       }
     }
@@ -58,23 +60,27 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
-    
-    GridRow {
-      Text("PANADAPTER")
-        .gridColumnAlignment(.leading)
-      
-      Text("ID")
-        .gridColumnAlignment(.leading)
-      Text(panadapter.id.hex).foregroundColor(.secondary)
-      
-      Text("Bandwidth")
-        .gridColumnAlignment(.leading)
-      Text(panadapter.bandwidth, format: .number).foregroundColor(.secondary)
-      
-      Text("Center")
-        .gridColumnAlignment(.leading)
-      Text(panadapter.center, format: .number).foregroundColor(.secondary)
+    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
+      GridRow {
+        Text("PANADAPTER")
+        
+        Text("ID")
+        Text(panadapter.id.hex)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+        
+        Text("Bandwidth")
+        Text(panadapter.bandwidth, format: .number)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+        
+        Text("Center")
+        Text(panadapter.center, format: .number)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+      }
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
 
@@ -82,24 +88,38 @@ private struct WaterfallDetailView: View {
   var waterfall: Waterfall
   
   var body: some View {
-    GridRow {
-      Text("WATERFALL")
-      
-      Text("ID")
-      Text(waterfall.id.hex).foregroundColor(.secondary)
-      
-      Text("Auto Black")
-      Text("\(waterfall.autoBlackEnabled ? "Y" : "N")").foregroundColor(waterfall.autoBlackEnabled ? .green : .red)
-      
-      Text("Color Gain")
-      Text(waterfall.colorGain, format: .number).foregroundColor(.secondary)
-      
-      Text("Black Level")
-      Text(waterfall.blackLevel, format: .number).foregroundColor(.secondary)
-      
-      Text("Duration")
-      Text(waterfall.lineDuration, format: .number).foregroundColor(.secondary)
+    
+    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
+      GridRow {
+        Text("WATERFALL")
+        
+        Text("ID")
+        Text(waterfall.id.hex)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+
+        Text("Auto Black")
+        Text("\(waterfall.autoBlackEnabled ? "Y" : "N")")
+          .foregroundColor(waterfall.autoBlackEnabled ? .green : .red)
+          .gridColumnAlignment(.trailing)
+
+        Text("Color Gain")
+        Text(waterfall.colorGain, format: .number)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+
+        Text("Black Level")
+        Text(waterfall.blackLevel, format: .number)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+
+        Text("Duration")
+        Text(waterfall.lineDuration, format: .number)
+          .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+      }
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
 

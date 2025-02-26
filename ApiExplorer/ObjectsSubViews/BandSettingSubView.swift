@@ -18,7 +18,7 @@ struct BandSettingSubView: View {
   
   var body: some View {
 
-    Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
       HeadingView()
       if viewModel.objectModel.bandSettings.count > 0 {
         ForEach(viewModel.objectModel.bandSettings.sorted(by: {$0.name > $1.name})) { setting in
@@ -56,6 +56,7 @@ private struct HeadingView: View {
       Text("RCA TX3")
       Text("HW ALC")
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
 
@@ -79,7 +80,7 @@ private struct DetailView: View {
       Text("\(bandSetting.tx3Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx3Enabled ? .green : .red)
       Text("\(bandSetting.hwAlcEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.hwAlcEnabled ? .green : .red)
     }
-//    .controlSize(.small)
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
     .foregroundColor(.secondary)
   }
 }

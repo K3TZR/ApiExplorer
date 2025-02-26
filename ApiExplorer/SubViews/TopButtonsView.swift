@@ -26,12 +26,11 @@ public struct TopButtonsView: View {
         viewModel.startButtonTapped()
       }
       .background(Color(.green).opacity(0.2))
-      .frame(width: 100)
+      .frame(width: 60, alignment: .leading)
       .disabled(startButtonDisabled)
-      .help("At least one connection type must be selected")
       
       Toggle("Gui", isOn: $viewModelBinding.settingModel.isGui)
- 
+
       // Connection types
       ControlGroup {
         Toggle("Direct", isOn: $viewModelBinding.settingModel.directEnabled)
@@ -49,15 +48,12 @@ public struct TopButtonsView: View {
        }
       .frame(width: 180)
       .disabled(viewModel.isConnected)
-      .help("At least one connection type must be selected")
       
       Toggle("Use Default", isOn: $viewModelBinding.settingModel.useDefaultEnabled)
         .disabled(viewModel.isConnected)
-        .help("Skip the Radio Picker")
       
       Toggle("Smartlink Login", isOn: $viewModelBinding.settingModel.smartlinkLoginRequired)
         .disabled(viewModel.isConnected)
-        .help("User must enter Login credentials")
       
       Spacer()
       
@@ -73,7 +69,6 @@ public struct TopButtonsView: View {
         
         Toggle("Low BW", isOn: $viewModelBinding.settingModel.lowBandwidthDax)
           .disabled(viewModel.isConnected)
-          .help("Enable Low Bandwidth Dax")
       }
       .frame(width: 180)
       .disabled(viewModel.settingModel.isGui == false)
@@ -82,13 +77,11 @@ public struct TopButtonsView: View {
       HStack(spacing: 0) {
         Toggle("Rx Audio", isOn: $viewModelBinding.settingModel.remoteRxAudioEnabled)
           .disabled(viewModel.settingModel.isGui == false)
-          .help("Enable audio from the Radio to this Mac")
           .onChange(of: viewModel.settingModel.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledChanged()
           }
 
         Toggle("Compress", isOn: $viewModelBinding.settingModel.remoteRxAudioCompressed)
-          .help("Enable Rx Audio compression")
           .onChange(of: viewModel.settingModel.remoteRxAudioCompressed) { _, _ in
             viewModel.remoteRxAudioCompressedChanged()
           }
@@ -97,7 +90,6 @@ public struct TopButtonsView: View {
       .frame(width: 180)
       
       Toggle("Tx Audio", isOn: $viewModelBinding.settingModel.remoteTxAudioEnabled)
-        .help("Enable audio from this Mac to the Radio")
         .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
           viewModel.remoteTxAudioEnabledChanged()
         }

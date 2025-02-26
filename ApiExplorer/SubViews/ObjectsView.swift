@@ -7,37 +7,6 @@
 
 import SwiftUI
 
-public enum RadioObjectFilter: String, CaseIterable, Sendable {
-  case all
-  case atu
-  case bandSettings = "band settings"
-  case equalizers
-  case gps
-  case lists
-  case memories
-  case meters
-  case tnf
-  case transmit
-}
-
-public enum StationObjectFilter: String, CaseIterable, Sendable {
-  case all
-  case noMeters = "w/o meters"
-  case amplifiers
-  case cwx
-  case interlock
-  case memories
-  case meters
-  case misc
-  case network
-  case profiles
-  case streams
-  case usbCable
-  case wan
-  case waveforms
-  case xvtrs
-}
-
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -70,19 +39,25 @@ public struct ObjectsView: View {
           if viewModel.settingModel.isGui == false {
             VStack(alignment: .center) {
               Spacer()
-              Text("SDRApi Objects will be displayed here").frame(maxWidth: .infinity)
+              Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
               Spacer()
-            }.frame(height: 50)
+            }
           }
         }
         
       } else {
         VSplitView {
           RadioSubView()
+            .frame(maxHeight: 150)
           
-          GuiClientSubView()
+          if let radio = viewModel.objectModel.activeSelection?.radio {
+            GuiClientSubView(radio: radio)
+              .frame(maxHeight: 150)
+          }
           
-          TesterSubView()
+//          if viewModel.settingModel.isGui == true {
+//            TesterSubView()
+//          }
         }
         .textSelection(.enabled)
         .font(.system(size: CGFloat(viewModel.settingModel.fontSize), weight: .regular, design: .monospaced))
@@ -133,4 +108,35 @@ private struct FilterStationObjectsView: View {
 
   .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   .padding()
+}
+
+public enum RadioObjectFilter: String, CaseIterable, Sendable {
+  case all
+  case atu
+  case bandSettings = "band settings"
+  case equalizers
+  case gps
+  case lists
+  case memories
+  case meters
+  case tnf
+  case transmit
+}
+
+public enum StationObjectFilter: String, CaseIterable, Sendable {
+  case all
+  case noMeters = "w/o meters"
+  case amplifiers
+  case cwx
+  case interlock
+  case memories
+  case meters
+  case misc
+  case network
+  case profiles
+  case streams
+  case usbCable
+  case wan
+  case waveforms
+  case xvtrs
 }

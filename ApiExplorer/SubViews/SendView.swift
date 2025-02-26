@@ -18,7 +18,7 @@ public struct SendView: View {
 
     HStack {
       Button("Send") { viewModel.sendButtonTapped() }
-      .frame(width: 100)
+        .frame(width: 60, alignment: .leading)
       .keyboardShortcut(.defaultAction)
       .disabled(viewModel.isConnected == false)
       

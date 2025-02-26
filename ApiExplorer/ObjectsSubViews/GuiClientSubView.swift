@@ -14,6 +14,7 @@ import ApiPackage
 // MARK: - View
 
 struct GuiClientSubView: View {
+  let radio: Radio
   
   @Environment(ViewModel.self) private var viewModel
   
@@ -25,48 +26,43 @@ struct GuiClientSubView: View {
   
   var body: some View {
     
-    ForEach(viewModel.objectModel.radios, id: \.id) { radio in
-      
-      if radio.id == viewModel.objectModel.activeSelection?.radio.id {
-        ForEach(radio.guiClients, id: \.id) { guiClient in
-          ScrollView([.vertical]) {
-            VStack(alignment: .leading) {
-
-              Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 0) {
-                GridRow {
-                  Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
-                    .foregroundColor(.yellow)
-                    .font(.title)
-                    .frame(width: 120, alignment: .leading)
-                    .onTapGesture{ showSubView.toggle() }
-                    .help("          Tap to toggle details")
-                    .gridColumnAlignment(.leading)
-                  
-                  Text("\(guiClient.station)").foregroundColor(.yellow)
-                    .frame(width: 120, alignment: .leading)
-                  
-                  Text("Handle")
-                    .gridColumnAlignment(.leading)
-                  Text(guiClient.handle).foregroundColor(.secondary)
-                  Text("Program")
-                    .gridColumnAlignment(.leading)
-                  Text("\(guiClient.program)").foregroundColor(.secondary)
-                  Text("LocalPtt")
-                    .gridColumnAlignment(.leading)
-                  Text(guiClient.isLocalPtt ? "Y" : "N").foregroundColor(guiClient.isLocalPtt ? .green : .red)
-                  Text("ClientId")
-                    .gridColumnAlignment(.leading)
-                 Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)").foregroundColor(.secondary)
-                }
-              }
-//              .frame(minWidth: 1250, maxWidth: .infinity)
+    ForEach(radio.guiClients, id: \.id) { guiClient in
+      ScrollView([.vertical]) {
+        VStack(alignment: .leading, spacing: 0) {
+          Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 0) {
+            GridRow {
+              Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
+                .foregroundColor(.yellow)
+                .font(.title)
+                .frame(width: 120, alignment: .leading)
+                .onTapGesture{ showSubView.toggle() }
               
-              if showSubView {
-                GuiClientDetailView(handle: guiClient.handle.handle!)
-              }
+              Text("\(guiClient.station)").foregroundColor(.yellow)
+                .frame(width: 120, alignment: .leading)
+              
+              Text("Handle")
+              Text(guiClient.handle).foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
+              
+              Text("Program")
+              Text("\(guiClient.program)").foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
+              
+              Text("LocalPtt")
+              Text(guiClient.isLocalPtt ? "Y" : "N").foregroundColor(guiClient.isLocalPtt ? .green : .red)
+                .gridColumnAlignment(.trailing)
+              
+              Text("ClientId")
+              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)").foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
             }
           }
+          
+          if showSubView {
+            GuiClientDetailView(handle: guiClient.handle.handle!)
+          }
         }
+        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
       }
     }
   }
@@ -111,7 +107,7 @@ private struct GuiClientDetailView: View {
 // MARK: - Preview
 
 #Preview {
-  GuiClientSubView()
+  GuiClientSubView(radio: Radio(Packet(.local, "".keyValuesArray()), [GuiClient](), nil))
     .environment(ViewModel())
   
     .frame(width: 1250)

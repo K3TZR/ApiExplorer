@@ -46,6 +46,7 @@ private struct HeadingView: View {
       Text("4000 Hz")
       Text("8000 Hz")
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
 
@@ -69,6 +70,7 @@ private struct DetailView: View {
       Text(eq.hz4000.formatted(.number))
       Text(eq.hz8000.formatted(.number))
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
     .foregroundColor(.secondary)
   }
 }
