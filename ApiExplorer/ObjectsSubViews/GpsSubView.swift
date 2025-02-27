@@ -18,8 +18,8 @@ struct GpsSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 5) {
-      if let radio = viewModel.objectModel.radio {
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
+      if let radio = viewModel.objectModel.activeSelection?.radio {
         if radio.gpsPresent {
           HeadingView()
           DetailView(gps: viewModel.objectModel.gps)

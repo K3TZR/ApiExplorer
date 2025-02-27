@@ -94,19 +94,19 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Picker actions
   
-  public func defaultButtonTapped(_ id: RadioId) {
+  public func defaultButtonTapped(_ radioId: String, _ station: String?) {
     // set / reset the default
     if settingModel.isGui {
-      if settingModel.defaultGui == id {
+      if settingModel.defaultGui == radioId {
         settingModel.defaultGui = ""
       } else {
-        settingModel.defaultGui = id
+        settingModel.defaultGui = radioId
       }
     } else {
-      if settingModel.defaultNonGui == id {
+      if settingModel.defaultNonGui == radioId {
         settingModel.defaultNonGui = ""
       } else {
-        settingModel.defaultNonGui = id
+        settingModel.defaultNonGui = radioId
       }
     }
   }
@@ -116,11 +116,11 @@ public class ViewModel {
     print("testButtonTapped: \(id)")
   }
   
-  public func pickerConnectButtonTapped(_ id: RadioId) {
-    print("pickerConnectButtonTapped: \(id)")
+  public func pickerConnectButtonTapped(_ radioId: String, _ station: String?) {
+    print("pickerConnectButtonTapped: radio \(radioId), station \(station ?? "none")")
     
     // try to connect to the selected radio / station
-    connectionStart(id)
+//    connectionStart(id)
   }
   
   // ----------------------------------------------------------------------------

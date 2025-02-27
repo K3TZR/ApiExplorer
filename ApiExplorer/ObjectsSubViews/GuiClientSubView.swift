@@ -29,31 +29,37 @@ struct GuiClientSubView: View {
     ForEach(radio.guiClients, id: \.id) { guiClient in
       ScrollView([.vertical]) {
         VStack(alignment: .leading, spacing: 0) {
-          Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 0) {
+          Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
               Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
                 .foregroundColor(.yellow)
                 .font(.title)
-                .frame(width: 120, alignment: .leading)
+                .frame(width: 100, alignment: .leading)
                 .onTapGesture{ showSubView.toggle() }
-              
-              Text("\(guiClient.station)").foregroundColor(.yellow)
-                .frame(width: 120, alignment: .leading)
+                .border(.red)
+
+              Text("\(guiClient.station)")
+                .foregroundColor(.yellow)
+                .border(.red)
               
               Text("Handle")
-              Text(guiClient.handle).foregroundColor(.secondary)
+              Text(guiClient.handle)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("Program")
-              Text("\(guiClient.program)").foregroundColor(.secondary)
+              Text("\(guiClient.program)")
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("LocalPtt")
-              Text(guiClient.isLocalPtt ? "Y" : "N").foregroundColor(guiClient.isLocalPtt ? .green : .red)
+              Text(guiClient.isLocalPtt ? "Y" : "N")
+                .foregroundColor(guiClient.isLocalPtt ? .green : .red)
                 .gridColumnAlignment(.trailing)
               
               Text("ClientId")
-              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)").foregroundColor(.secondary)
+              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
             }
           }

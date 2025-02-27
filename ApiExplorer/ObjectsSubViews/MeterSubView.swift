@@ -29,7 +29,7 @@ struct MeterSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       ForEach(viewModel.objectModel.meters ) { meter in
 //        if showMeter(sliceId, meter.source, meter.group) {

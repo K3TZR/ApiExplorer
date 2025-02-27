@@ -18,7 +18,7 @@ struct TransmitSubView: View {
 
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
       TransmitView(transmit: viewModel.objectModel.transmit)
       CwView(transmit: viewModel.objectModel.transmit)
     }

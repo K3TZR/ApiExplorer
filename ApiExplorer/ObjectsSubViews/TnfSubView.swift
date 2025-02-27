@@ -17,7 +17,7 @@ struct TnfSubView: View {
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
-    Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       if viewModel.objectModel.tnfs.count > 0 {
         HeaderView()
         ForEach(viewModel.objectModel.tnfs, id: \.id) { tnf in

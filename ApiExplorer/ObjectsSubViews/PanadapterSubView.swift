@@ -23,7 +23,7 @@ struct PanadapterSubView: View {
     if viewModel.objectModel.panadapters.count == 0 {
       HStack(spacing: 20) {
         Text("PANADAPTER").frame(width: 100, alignment: .leading)
-        Text("None present").foregroundColor(.red)
+        Text("----- NONE PRESENT -----").foregroundColor(.red)
       }
       
     } else {
@@ -31,7 +31,7 @@ struct PanadapterSubView: View {
         
         if panadapter.clientHandle == handle {
           
-          VStack(alignment: .leading, spacing: 10) {
+          VStack(alignment: .leading) {
             
           // Panadapter
             PanadapterDetailView(panadapter: panadapter)
@@ -60,10 +60,11 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
-    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
       GridRow {
         Text("PANADAPTER")
-        
+          .frame(width: 100, alignment: .leading)
+
         Text("ID")
         Text(panadapter.id.hex)
           .foregroundColor(.secondary)
@@ -89,10 +90,11 @@ private struct WaterfallDetailView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
       GridRow {
         Text("WATERFALL")
-        
+          .frame(width: 100, alignment: .leading)
+
         Text("ID")
         Text(waterfall.id.hex)
           .foregroundColor(.secondary)

@@ -28,47 +28,57 @@ struct RadioSubView: View {
       let radio = viewModel.objectModel.activeSelection!.radio
       ScrollView {
         VStack(alignment: .leading, spacing: 0) {
-          Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
+          Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
               Label("Radio", systemImage: showDetails ? "chevron.down" : "chevron.right")
-                .frame(width: 125, alignment: .leading)
+                .frame(width: 100, alignment: .leading)
                 .font(.title)
                 .foregroundColor(.green)
                 .onTapGesture{ showDetails.toggle() }
                 .gridColumnAlignment(.leading)
-              
+                .border(.red)
+
               Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
-              
+                .border(.red)
+
               Text("ip")
-              Text(radio.packet.publicIp).foregroundColor(.green)
+              Text(radio.packet.publicIp)
+                .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
               Text("FW")
-              Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")").foregroundColor(radio.alpha ? .red : .green)
+              Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")")
+                .foregroundColor(radio.alpha ? .red : .green)
                 .gridColumnAlignment(.trailing)
               
               Text("Model")
-              Text(radio.packet.model).foregroundColor(.green)
+              Text(radio.packet.model)
+                .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
               Text("Serial")
-              Text(radio.packet.serial).foregroundColor(.green)
+              Text(radio.packet.serial)
+                .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
               Text("HW")
-              Text(viewModel.objectModel.hardwareVersion ?? "").foregroundColor(.green)
+              Text(viewModel.objectModel.hardwareVersion ?? "")
+                .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
               Text("Uptime")
-              Text("\(radio.uptime) (seconds)").foregroundColor(.green)
+              Text("\(radio.uptime) (seconds)")
+                .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
               Text("TNF's Enabled")
-              Text("\(radio.tnfsEnabled ? "Y" : "N")").foregroundColor(radio.tnfsEnabled ? .green : .red)
+              Text("\(radio.tnfsEnabled ? "Y" : "N")")
+                .foregroundColor(radio.tnfsEnabled ? .green : .red)
                 .gridColumnAlignment(.trailing)
               
               Text("MF Enabled")
-              Text("\(radio.multiflexEnabled ? "Y" : "N")").foregroundColor(radio.multiflexEnabled ? .green : .red)
+              Text("\(radio.multiflexEnabled ? "Y" : "N")")
+                .foregroundColor(radio.multiflexEnabled ? .green : .red)
                 .gridColumnAlignment(.trailing)
             }
           }

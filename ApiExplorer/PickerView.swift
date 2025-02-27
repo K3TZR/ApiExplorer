@@ -7,32 +7,44 @@
 
 import SwiftUI
 
+import ApiPackage
+
 // ----------------------------------------------------------------------------
 // MARK: - View(s)
 
 public struct PickerView: View {
-
+  
   @Environment(ViewModel.self) private var viewModel
   
-  @State var selection: String? = nil
+  @State var selectedRadioId: String? = nil
+  @State var selectedStation: String? = nil
 
-  private var stationCount: Int {
-    var count = 0
-
-    for radio in viewModel.objectModel.radios {
-      for _ in radio.guiClients {
-        count += 1
-      }
-    }
-    return count
+  //  private var stationCount: Int {
+  //    var count = 0
+  //
+  //    for radio in viewModel.objectModel.radios {
+  //      for _ in radio.guiClients {
+  //        count += 1
+  //      }
+  //    }
+  //    return count
+  //  }
+  
+  private var guiClients: [GuiClient] {
+    return viewModel.objectModel.radios
+      .flatMap(\.guiClients)
   }
 
+  private var stations: [String] {
+    return guiClients.map(\.self.station)
+  }
+  
   public var body: some View {
     VStack(alignment: .leading) {
       HeaderView(isGui: viewModel.settingModel.isGui)
       
       Divider()
-      if (viewModel.settingModel.isGui && viewModel.objectModel.radios.count == 0) || (!viewModel.settingModel.isGui && stationCount == 0) {
+      if (viewModel.settingModel.isGui && viewModel.objectModel.radios.count == 0) || (!viewModel.settingModel.isGui && guiClients.count == 0) {
         //
         VStack {
           HStack {
@@ -48,49 +60,80 @@ public struct PickerView: View {
       } else {
         if viewModel.settingModel.isGui {
           // ----- List of Radios -----
-          List(selection: $selection) {
-            ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-              HStack(spacing: 0) {
-                Group {
+          List(selection: $selectedRadioId) {
+            ForEach(viewModel.objectModel.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
+              Button(action: {
+                selectedRadioId = radio.id // Manually select the row
+              }) {
+                HStack(spacing: 10) {
                   Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
+                    .frame(minWidth: 140, alignment: .leading)
+
                   Text(radio.packet.source.rawValue)
+                    .frame(minWidth: 60, alignment: .leading)
+                  
                   Text(radio.packet.status)
-                  Text(radio.packet.stations.joined(separator: ", "))
+                    .frame(minWidth: 60, alignment: .leading)
+                  
+                  Text(stations.joined(separator: ", "))
                 }
                 .font(.title3)
-                .foregroundColor(viewModel.settingModel.defaultGui == radio.id ?.red : nil )
-                .frame(minWidth: 140, alignment: .leading)
+                .foregroundColor(viewModel.settingModel.defaultGui == radio.id ? .red : nil)
+                .contentShape(Rectangle()) // Ensures full row is clickable
               }
+              .buttonStyle(PlainButtonStyle()) // Removes default button appearance
+              .simultaneousGesture(
+                TapGesture(count: 2).onEnded {
+                  viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
+                }
+              )
             }
-          }.frame(minHeight: 200)
+          }
+          .frame(minHeight: 200)
           
-        } else {
+        }
+        else {
           // ----- List of Stations -----
-          List(selection: $selection) {
+          List(selection: $selectedRadioId) {
             ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-              //              HStack(spacing: 0) {
-              ForEach(Array(radio.guiClients), id: \.id) { guiClient in
-                HStack(spacing: 0) {
-                  Group {
+              ForEach(radio.guiClients, id: \.self) { guiClient in
+                Button(action: {
+                  selectedRadioId = radio.id // Manually select the row
+                  selectedStation = guiClient.station
+                }) {
+                  HStack(spacing: 10) {
                     Text(guiClient.station)
+                      .frame(minWidth: 140, alignment: .leading)
+                    
                     Text(radio.packet.source.rawValue)
+                      .frame(minWidth: 60, alignment: .leading)
+                    
                     Text(radio.packet.status)
+                      .frame(minWidth: 60, alignment: .leading)
+                    
                     Text(radio.packet.nickname)
                   }
                   .font(.title3)
-                  .foregroundColor(viewModel.settingModel.defaultNonGui == radio.id ?.red : nil )
-                  .frame(minWidth: 140, alignment: .leading)
-                  //                  }
+                  .foregroundColor(viewModel.settingModel.defaultNonGui == radio.id ? .red : nil )
+                  .contentShape(Rectangle()) // Ensures full row is clickable
                 }
+                .buttonStyle(PlainButtonStyle()) // Removes default button appearance
+                .simultaneousGesture(
+                  TapGesture(count: 2).onEnded {
+                    viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
+                  }
+                )
               }
             }
-          }.frame(minHeight: 200)
+          }
+          .frame(minHeight: 200)
         }
       }
-      Divider()
-      //    FooterView(selection: selection, selectionIsSmartlink: isSmartlink)
-      FooterView(selection: selection)
     }
+    
+    Divider()
+    //    FooterView(selection: selection, selectionIsSmartlink: isSmartlink)
+    FooterView(selectedRadioId: selectedRadioId, selectedStation: selectedStation)
   }
 }
 
@@ -98,27 +141,35 @@ private struct HeaderView: View {
   let isGui: Bool
   
   var body: some View {
-    VStack {
-      Text("Select a \(isGui ? "RADIO" : "STATION")")
-        .font(.title)
+    VStack(alignment: .leading)  {
+      HStack {
+        Spacer()
+        Text("Select a \(isGui ? "RADIO" : "STATION")")
+          .font(.title)
+        Spacer()
+      }
       
-      HStack(spacing: 0) {
-        Group {
-          Text("\(isGui ? "Radio" : "Station")")
-          Text("Type")
-          Text("Status")
-          Text("\(isGui ? "Station(s)" : "Radio")")
-        }
-        .frame(width: 140, alignment: .leading)
+      HStack(spacing: 10) {
+        Text("\(isGui ? "Radio" : "Station")")
+          .frame(width: 140, alignment: .leading)
+        
+        Text("Type")
+          .frame(width: 60, alignment: .leading)
+        
+        Text("Status")
+          .frame(width: 60, alignment: .leading)
+        
+        Text("\(isGui ? "Station(s)" : "Radio")")
       }
     }
-    .font(.title2)
+    .font(.title3)
     .padding(.horizontal)
   }
 }
 
 private struct FooterView: View {
-  let selection: String?
+  let selectedRadioId: String?
+  let selectedStation: String?
   //  let selectionIsSmartlink: Bool
   
   @Environment(ViewModel.self) private var viewModel
@@ -135,9 +186,9 @@ private struct FooterView: View {
       
       Spacer()
       Button("Default") {
-        viewModel.defaultButtonTapped(selection!)
+        viewModel.defaultButtonTapped(selectedRadioId!, selectedStation)
       }
-      .disabled(selection == nil)
+      .disabled(selectedRadioId == nil)
       
       Spacer()
       Button("Cancel") { dismiss() }
@@ -145,11 +196,11 @@ private struct FooterView: View {
       
       Spacer()
       Button("Connect") {
-        viewModel.pickerConnectButtonTapped(selection!)
+        viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
         dismiss()
       }
       .keyboardShortcut(.defaultAction)
-      .disabled(selection == nil)
+      .disabled(selectedRadioId == nil)
     }
     .padding(.vertical, 10)
     .padding(.horizontal)

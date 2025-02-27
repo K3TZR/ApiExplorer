@@ -18,7 +18,7 @@ struct AtuSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 5) {
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
       if let radio = viewModel.objectModel.activeSelection?.radio {
         if radio.atuPresent {
           DetailView(atu: viewModel.objectModel.atu)

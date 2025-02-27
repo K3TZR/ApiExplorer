@@ -18,11 +18,11 @@ struct MemorySubView: View {
   
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       if viewModel.objectModel.memories.count == 0 {
         GridRow {
-          Text("None present").foregroundColor(.red)
+          Text("----- NONE PRESENT -----").foregroundColor(.red)
         }
       } else {
         ForEach(viewModel.objectModel.memories) { memory in
@@ -40,8 +40,6 @@ private struct HeadingView: View {
         .frame(width: 100, alignment: .leading)
       
       Text("ID")
-        .frame(width: 50, alignment: .leading)
-      
       Text("Name")
       Text("Group")
       Text("Owner")
@@ -52,15 +50,15 @@ private struct HeadingView: View {
       Text("Low")
       Text("High")
       Text("Squelch")
-      Text("Sq Level")
-      Text("Rpt Mode")
-      Text("Rpt Offset")
+      Text("Level")
+      Text("Mode")
+      Text("Offset")
       Text("Tone")
-      Text("Tone Value")
+      Text("Freq")
       Text("Mark")
       Text("Shift")
-      Text("DIGL Upper")
-      Text("DIGU Lower")
+      Text("DIGU")
+      Text("DIGL")
     }
   }
 }
@@ -72,7 +70,7 @@ private struct DetailView: View {
     
     GridRow {
       Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 100)
+//        .frame(width: 100)
 
       Text("\(memory.id)")
       
@@ -96,7 +94,8 @@ private struct DetailView: View {
       Text("\(memory.digitalLowerOffset)")
       Text("\(memory.digitalUpperOffset)")
     }
-    .truncationMode(.middle)
+    .gridColumnAlignment(.trailing)
+//    .truncationMode(.middle)
     .foregroundColor(.secondary)
   }
 }
