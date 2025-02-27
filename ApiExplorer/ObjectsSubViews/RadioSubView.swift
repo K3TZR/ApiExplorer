@@ -36,10 +36,8 @@ struct RadioSubView: View {
                 .foregroundColor(.green)
                 .onTapGesture{ showDetails.toggle() }
                 .gridColumnAlignment(.leading)
-                .border(.red)
 
               Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
-                .border(.red)
 
               Text("ip")
               Text(radio.packet.publicIp)

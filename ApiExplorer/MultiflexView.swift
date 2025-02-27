@@ -7,12 +7,15 @@
 
 import SwiftUI
 
+import ApiPackage
+
 // ----------------------------------------------------------------------------
 // MARK: - View(s)
 
 public struct MultiflexView: View {
+  let activeSelection: ActiveSelection
   
-  @Environment(ViewModel.self) var viewModel  
+  @Environment(ViewModel.self) var viewModel
   @Environment(\.dismiss) var dismiss
   
   public var body: some View {
@@ -20,18 +23,20 @@ public struct MultiflexView: View {
       Text("Multiflex").font(.title)
       Divider().background(Color.blue)
       
-      if viewModel.objectModel.activeSelection!.radio.guiClients.count == 1 {
+      if activeSelection.radio.guiClients.count == 1 {
         Button("MultiFlex connect") {
-          viewModel.multiflexConnect()
+          viewModel.multiflexConnect(activeSelection)
           dismiss()
         }
         .keyboardShortcut(.defaultAction)
         .frame(width: 150) }
       
-      ForEach(viewModel.objectModel.activeSelection!.radio.guiClients) { guiClient in
+      ForEach(activeSelection.radio.guiClients) { guiClient in
         Button("Close " + guiClient.station) {
-          viewModel.objectModel.activeSelection!.disconnectHandle = guiClient.handle
-          viewModel.multiflexConnect()
+          var adjustedActiveSelection = activeSelection
+          adjustedActiveSelection.disconnectHandle = guiClient.handle
+          
+          viewModel.multiflexConnect( adjustedActiveSelection)
           dismiss()
         }
         .frame(width: 150)
@@ -52,8 +57,11 @@ public struct MultiflexView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Preview(s)
 
-#Preview() {
-  MultiflexView()
-    .environment(ViewModel())
-}
+//#Preview() {
+//  @Previewable @Environment(ViewModel.self) var viewModel
+//  
+//  MultiflexView(activeSelection: viewModel.objectModel.activeSelection!)
+//    
+//    .environment(ViewModel())
+//}
 

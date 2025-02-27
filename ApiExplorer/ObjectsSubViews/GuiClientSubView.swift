@@ -36,11 +36,9 @@ struct GuiClientSubView: View {
                 .font(.title)
                 .frame(width: 100, alignment: .leading)
                 .onTapGesture{ showSubView.toggle() }
-                .border(.red)
 
               Text("\(guiClient.station)")
                 .foregroundColor(.yellow)
-                .border(.red)
               
               Text("Handle")
               Text(guiClient.handle)

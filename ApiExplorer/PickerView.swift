@@ -64,7 +64,8 @@ public struct PickerView: View {
             ForEach(viewModel.objectModel.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
               Button(action: {
                 selectedRadioId = radio.id // Manually select the row
-              }) {
+                selectedStation = "ApiExplorer"
+             }) {
                 HStack(spacing: 10) {
                   Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
                     .frame(minWidth: 140, alignment: .leading)
@@ -84,7 +85,7 @@ public struct PickerView: View {
               .buttonStyle(PlainButtonStyle()) // Removes default button appearance
               .simultaneousGesture(
                 TapGesture(count: 2).onEnded {
-                  viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
+                  viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
                 }
               )
             }
@@ -120,7 +121,7 @@ public struct PickerView: View {
                 .buttonStyle(PlainButtonStyle()) // Removes default button appearance
                 .simultaneousGesture(
                   TapGesture(count: 2).onEnded {
-                    viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
+                    viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
                   }
                 )
               }
@@ -186,9 +187,9 @@ private struct FooterView: View {
       
       Spacer()
       Button("Default") {
-        viewModel.defaultButtonTapped(selectedRadioId!, selectedStation)
+        viewModel.defaultButtonTapped(selectedRadioId!, selectedStation!)
       }
-      .disabled(selectedRadioId == nil)
+      .disabled(selectedRadioId == nil || selectedStation == nil)
       
       Spacer()
       Button("Cancel") { dismiss() }
@@ -196,11 +197,11 @@ private struct FooterView: View {
       
       Spacer()
       Button("Connect") {
-        viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation)
+        viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
         dismiss()
       }
       .keyboardShortcut(.defaultAction)
-      .disabled(selectedRadioId == nil)
+      .disabled(selectedRadioId == nil || selectedStation == nil)
     }
     .padding(.vertical, 10)
     .padding(.horizontal)

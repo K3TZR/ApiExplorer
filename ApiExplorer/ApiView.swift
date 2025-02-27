@@ -67,7 +67,7 @@ struct ApiView: View {
       GuiClientsView()
     }
     .sheet(isPresented: $viewModel.showMultiflex, onDismiss: {} ) {
-      MultiflexView()
+      MultiflexView(activeSelection: viewModel.objectModel.activeSelection!)
     }
     .sheet(isPresented: $viewModel.showPicker, onDismiss: {} ) {
       PickerView()

@@ -87,14 +87,14 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - MultiflexView actions
   
-  public func multiflexConnect() {
-    Task { await connect() }
+  public func multiflexConnect(_ activeSelection: ActiveSelection) {
+    Task { await connect(activeSelection) }
   }
   
   // ----------------------------------------------------------------------------
   // MARK: - Picker actions
   
-  public func defaultButtonTapped(_ radioId: String, _ station: String?) {
+  public func defaultButtonTapped(_ radioId: String, _ station: String) {
     // set / reset the default
     if settingModel.isGui {
       if settingModel.defaultGui == radioId {
@@ -116,11 +116,11 @@ public class ViewModel {
     print("testButtonTapped: \(id)")
   }
   
-  public func pickerConnectButtonTapped(_ radioId: String, _ station: String?) {
-    print("pickerConnectButtonTapped: radio \(radioId), station \(station ?? "none")")
+  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
+    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
     
     // try to connect to the selected radio / station
-//    connectionStart(id)
+    connectionStart(radioId, station)
   }
   
   // ----------------------------------------------------------------------------
@@ -230,33 +230,35 @@ public class ViewModel {
       Task { await connectionStop() }
       
     } else {
-      if settingModel.useDefaultEnabled {
-        if let selection = settingModel.isGui ? settingModel.defaultGui : settingModel.defaultNonGui {
-          connectionStart(selection)
-        } else {
-          showPicker = true
-        }
-        
-      } else {
-        showPicker = true
-      }
+      showPicker = true
     }
   }
+//      if settingModel.useDefaultEnabled {
+//        if let selection = settingModel.isGui ? settingModel.defaultGui : settingModel.defaultNonGui {
+//          connectionStart(selection)
+//        } else {
+//          showPicker = true
+//        }
+//        
+//      }
+//      else {
+//    }
+//  }
   
   // ----------------------------------------------------------------------------
   // MARK: - Private methods
   
-  private func connectionStart(_ id: RadioId)  {
+  private func connectionStart(_ radioId: RadioId, _ station: String)  {
     
     // identify the Packet and Staion for the connection
-    objectModel.activeSelection = setPacketAndStation(id, settingModel.isGui)
-    if objectModel.activeSelection == nil { return }
+    objectModel.activeSelection = setPacketAndStation(settingModel.isGui, radioId, station)
+    guard objectModel.activeSelection != nil else { return }
     
     // handle Multiflex
     if settingModel.isGui && objectModel.activeSelection!.radio.guiClients.count > 0 {
       showMultiflex = true
     } else {
-      Task { await connect() }
+      Task { await connect(objectModel.activeSelection!) }
     }
   }
   
@@ -266,14 +268,14 @@ public class ViewModel {
     isConnected = false
   }
   
-  private func connect() async {
+  private func connect(_ activeSelection: ActiveSelection) async {
     messageModel.start(settingModel.clearOnStart)
     
     // attempt to connect to the selected Radio / Station
     // try to connect
     let connectTask = Task {
       do {
-        try await objectModel.connect(selection: objectModel.activeSelection!,
+        try await objectModel.connect(selection: activeSelection,
                                       isGui: settingModel.isGui,
                                       programName: "ApiViewer",
                                       mtuValue: settingModel.mtuValue,
@@ -297,17 +299,14 @@ public class ViewModel {
     }
   }
   
-  private func setPacketAndStation(_ id: String, _ isGui: Bool) -> ActiveSelection? {
-    var radio: Radio
+  private func setPacketAndStation(_ isGui: Bool, _ radioId: String, _ station: String) -> ActiveSelection? {
     
     // find the Radio
-    radio = objectModel.radios.first(where: {$0.id == id})!
-    if isGui {
-      return ActiveSelection((radio, "ApiViewer", nil))
-      
-    } else {
-      for guiClient in radio.guiClients where guiClient.id == id {
-        return ActiveSelection((radio, guiClient.station, nil))
+    if let radio = objectModel.radios.first(where: {$0.id == radioId}) {
+      if isGui {
+        return ActiveSelection((radio, "ApiViewer", nil))
+      } else {
+        return ActiveSelection((radio, station, nil))
       }
     }
     return nil
