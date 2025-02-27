@@ -22,8 +22,22 @@ struct GpsSubView: View {
       if let radio = viewModel.objectModel.activeSelection?.radio {
         if radio.gpsPresent {
           HeadingView()
-          DetailView(gps: viewModel.objectModel.gps)
-          
+          let gps = viewModel.objectModel.gps
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            Text(gps.altitude)
+            Text(gps.frequencyError.formatted(.percent.precision(.fractionLength(4))))
+              .gridColumnAlignment(.trailing)
+            Text(gps.grid)
+            Text(gps.latitude)
+            Text(gps.longitude)
+            Text(gps.speed)
+            Text(gps.time)
+            Text(gps.track.formatted(.percent.precision(.fractionLength(4)))).gridColumnAlignment(.trailing)
+            Text(gps.tracked ? "Y" : "N").foregroundColor(gps.tracked ? .green : nil)
+            Text(gps.visible ? "Y" : "N").foregroundColor(gps.visible ? .green : nil)
+          }
+
         } else {
           GridRow {
             Text("GPS")
@@ -34,6 +48,7 @@ struct GpsSubView: View {
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -53,41 +68,6 @@ private struct HeadingView: View {
       Text("Track")
       Text("Tracked")
       Text("Visible")
-    }
-  }
-}
-/*
- public var altitude = ""
- public var frequencyError: Double = 0
- public var grid = ""
- public var installed = false
- public var latitude = ""
- public var longitude = ""
- public var speed = ""
- public var time = ""
- public var track: Double = 0
- public var tracked = false
- public var visible = false
-
- */
-private struct DetailView: View {
-  var gps: Gps
-
-  @Environment(ViewModel.self) private var viewModel
-
-  var body: some View {
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-      Text(gps.altitude)
-      Text(gps.frequencyError.formatted(.percent.precision(.fractionLength(4)))).gridColumnAlignment(.trailing)
-      Text(gps.grid)
-      Text(gps.latitude)
-      Text(gps.longitude)
-      Text(gps.speed)
-      Text(gps.time)
-      Text(gps.track.formatted(.percent.precision(.fractionLength(4)))).gridColumnAlignment(.trailing)
-      Text(gps.tracked ? "Y" : "N").foregroundColor(gps.tracked ? .green : nil)
-      Text(gps.visible ? "Y" : "N").foregroundColor(gps.visible ? .green : nil)
     }
   }
 }

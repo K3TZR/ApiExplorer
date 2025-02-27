@@ -25,20 +25,24 @@ struct TesterSubView: View {
           
           HStack(spacing: 5) {
             Text("Bound to Station")
-            Text("\(viewModel.objectModel.activeSelection!.station)").foregroundColor(.secondary)
+            Text("\(viewModel.objectModel.activeSelection!.station)")
+              .foregroundColor(.secondary)
           }
           
           HStack(spacing: 5) {
             Text("Handle")
-            Text(viewModel.objectModel.connectionHandle?.hex ?? "???").foregroundColor(.secondary)
+            Text(viewModel.objectModel.connectionHandle?.hex ?? "???")
+              .foregroundColor(.secondary)
           }
           
           HStack(spacing: 5) {
             Text("Client Id")
-            Text("\(viewModel.objectModel.boundClientId ?? "???")").foregroundColor(.secondary)
+            Text("\(viewModel.objectModel.boundClientId ?? "???")")
+              .foregroundColor(.secondary)
           }
         }
-      }.frame(maxWidth: .infinity, minHeight: 50)
+      }
+      .frame(maxWidth: .infinity, minHeight: 50)
     }
   }
 }

@@ -39,20 +39,24 @@ struct ApiView: View {
       SendView()
 
       Divider().background(Color(.gray))
-
+      
       VSplitView {
         VStack(alignment: .leading) {
           ObjectsView()
+            .frame(minHeight: 200)
 
           Divider().background(Color(.cyan))
           
           MessagesView()
+            .frame(minHeight: 200)
         }
       }
+      
       Spacer()
       Divider().background(Color(.gray))
       BottomButtonsView()
-    }.padding(10)
+    }
+    .padding(10)
     
     // initialize
     .onAppear {

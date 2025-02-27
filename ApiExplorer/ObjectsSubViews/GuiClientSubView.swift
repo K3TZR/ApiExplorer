@@ -93,7 +93,6 @@ private struct GuiClientDetailView: View {
       case .interlock:         InterlockSubView()
         //      case .memories:          MemorySubView()
         //      case .meters:            MeterSubView(sliceId: nil, sliceClientHandle: nil, handle: handle)
-        //      case .misc:              MiscSubView()
         //      case .network:           NetworkSubView()
         //      case .profiles:          ProfileSubView()
         //      case .streams:           StreamSubView(handle: handle)

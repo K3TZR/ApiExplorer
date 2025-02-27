@@ -26,10 +26,37 @@ struct MemorySubView: View {
         }
       } else {
         ForEach(viewModel.objectModel.memories) { memory in
-          DetailView(memory: memory)
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+
+            Text("\(memory.id)")
+            
+            Text(memory.name)
+            Text(memory.group.isEmpty ? "none" : memory.group)
+            Text(memory.owner)
+            Text("\(memory.frequency)")
+            Text(memory.mode)
+            Text("\(memory.step)")
+            Text("\(memory.rfPower)")
+            Text("\(memory.filterLow)")
+            Text("\(memory.filterHigh)")
+            Text(memory.squelchEnabled ? "Y" : "N")
+              .foregroundColor(memory.squelchEnabled ? .green : nil)
+            Text("\(memory.squelchLevel)")
+            Text(memory.offsetDirection)
+            Text("\(memory.offset)")
+            Text(memory.toneMode)
+            Text("\(String(format: "%3.0f", memory.toneValue))")
+            Text("\(memory.rttyMark)")
+            Text("\(memory.rttyShift)")
+            Text("\(memory.digitalLowerOffset)")
+            Text("\(memory.digitalUpperOffset)")
+          }
+          .foregroundColor(.secondary)
         }
       }
-    } 
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -60,43 +87,7 @@ private struct HeadingView: View {
       Text("DIGU")
       Text("DIGL")
     }
-  }
-}
-
-private struct DetailView: View {
-  var memory: Memory
-  
-  var body: some View {
-    
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-//        .frame(width: 100)
-
-      Text("\(memory.id)")
-      
-      Text(memory.name).help(memory.name)
-      Text(memory.group.isEmpty ? "none" : memory.group).help(memory.group)
-      Text(memory.owner).help(memory.owner)
-      Text("\(memory.frequency)")
-      Text(memory.mode)
-      Text("\(memory.step)")
-      Text("\(memory.rfPower)")
-      Text("\(memory.filterLow)")
-      Text("\(memory.filterHigh)")
-      Text(memory.squelchEnabled ? "Y" : "N").foregroundColor(memory.squelchEnabled ? .green : nil)
-      Text("\(memory.squelchLevel)")
-      Text(memory.offsetDirection)
-      Text("\(memory.offset)")
-      Text(memory.toneMode)
-      Text("\(String(format: "%3.0f", memory.toneValue))")
-      Text("\(memory.rttyMark)")
-      Text("\(memory.rttyShift)")
-      Text("\(memory.digitalLowerOffset)")
-      Text("\(memory.digitalUpperOffset)")
-    }
-    .gridColumnAlignment(.trailing)
-//    .truncationMode(.middle)
-    .foregroundColor(.secondary)
+    .gridCellAnchor(.leading)
   }
 }
 

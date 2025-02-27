@@ -20,9 +20,26 @@ struct EqualizerSubView: View {
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       ForEach(viewModel.objectModel.equalizers) { eq in
-        DetailView(eq: eq)
+        GridRow {
+          Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+
+          Text(eq.id)
+
+          Text("\(eq.eqEnabled ? "ON" : "OFF")")
+            .foregroundColor(eq.eqEnabled ? .green : .red)
+          Text(eq.hz63.formatted(.number))
+          Text(eq.hz125.formatted(.number))
+          Text(eq.hz250.formatted(.number))
+          Text(eq.hz500.formatted(.number))
+          Text(eq.hz1000.formatted(.number))
+          Text(eq.hz2000.formatted(.number))
+          Text(eq.hz4000.formatted(.number))
+          Text(eq.hz8000.formatted(.number))
+        }
+        .foregroundColor(.secondary)
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -34,8 +51,6 @@ private struct HeadingView: View {
         .frame(width: 100, alignment: .leading)
 
       Text("ID")
-        .gridColumnAlignment(.leading)
-
       Text("Enabled")
       Text("63 Hz")
       Text("125 Hz")
@@ -46,33 +61,7 @@ private struct HeadingView: View {
       Text("4000 Hz")
       Text("8000 Hz")
     }
-//    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-  }
-}
-
-private struct DetailView: View {
-  var eq: Equalizer
-  
-  var body: some View {
-    
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-
-      Text(eq.id)
-
-      Text("\(eq.eqEnabled ? "ON" : "OFF")").foregroundColor(eq.eqEnabled ? .green : .red)
-      Text(eq.hz63.formatted(.number))
-      Text(eq.hz125.formatted(.number))
-      Text(eq.hz250.formatted(.number))
-      Text(eq.hz500.formatted(.number))
-      Text(eq.hz1000.formatted(.number))
-      Text(eq.hz2000.formatted(.number))
-      Text(eq.hz4000.formatted(.number))
-      Text(eq.hz8000.formatted(.number))
-    }
-    .gridColumnAlignment(.trailing)
-//    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-    .foregroundColor(.secondary)
+    .gridCellAnchor(.leading)
   }
 }
 

@@ -17,16 +17,13 @@ struct RadioSubView: View {
   @Environment(ViewModel.self) var viewModel
   
   @State var showDetails = true
-  
-  //  @MainActor private func sourceColor(_ packet: Packet) -> Color {
-  //    packet.source == .local ? .blue : .red
-  //  }
-  
+
   var body: some View {
     
     if viewModel.objectModel.activeSelection != nil {
       let radio = viewModel.objectModel.activeSelection!.radio
-      ScrollView {
+      
+      ScrollView([.vertical]) {
         VStack(alignment: .leading, spacing: 0) {
           Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
@@ -36,9 +33,9 @@ struct RadioSubView: View {
                 .foregroundColor(.green)
                 .onTapGesture{ showDetails.toggle() }
                 .gridColumnAlignment(.leading)
-
+              
               Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
-
+              
               Text("ip")
               Text(radio.packet.publicIp)
                 .foregroundColor(.green)
@@ -80,10 +77,10 @@ struct RadioSubView: View {
                 .gridColumnAlignment(.trailing)
             }
           }
+          .frame(maxWidth: .infinity, alignment: .leading)
           
           if showDetails { DetailView(filter: viewModel.settingModel.radioObjectFilter) }
         }
-        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
       }
     }
   }

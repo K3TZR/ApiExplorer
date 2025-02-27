@@ -59,6 +59,8 @@ public struct ObjectsView: View {
 //            TesterSubView()
 //          }
         }
+//        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+
         .textSelection(.enabled)
         .font(.system(size: CGFloat(viewModel.settingModel.fontSize), weight: .regular, design: .monospaced))
         .padding(.horizontal, 10)

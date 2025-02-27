@@ -13,17 +13,6 @@ struct ListsView: View {
   
   @Environment(ViewModel.self) var viewModel
 
-//  func stringArrayToString( _ list: [String]?) -> String {
-//    guard list != nil else { return "Unknown"}
-//    let str = list!.reduce("") {$0 + $1 + ", "}
-//    return String(str.dropLast(2))
-//  }
-  
-//  func uint32ArrayToString( _ list: [UInt32]) -> String {
-//    let str = list.reduce("") {String($0) + String($1) + ", "}
-//    return String(str.dropLast(2))
-//  }
-  
   var body: some View {
    
     if let radio = viewModel.objectModel.activeSelection?.radio {
@@ -43,6 +32,7 @@ struct ListsView: View {
           }
         }
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 }

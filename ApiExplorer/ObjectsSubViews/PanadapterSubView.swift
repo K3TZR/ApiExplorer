@@ -137,50 +137,66 @@ private struct SliceDetailView: View {
   
   var body: some View {
     
-    GridRow {
-      Text("SLICE")
+    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+      GridRow {
+        Text("SLICE")
+        
+        Text("ID")
+        Text(String(format: "%02d", slice.id))
+          .foregroundColor(.secondary)
+        
+        Text("Freq")
+        Text("\(slice.frequency)")
+          .foregroundColor(.secondary)
+        
+        Text("Mode")
+        Text("\(slice.mode)")
+          .foregroundColor(.secondary)
+        
+        Text("Rx Ant")
+          .gridColumnAlignment(.leading)
+        
+        Text("\(slice.rxAnt)")
+          .foregroundColor(.secondary)
+        
+        Text("Tx Ant")
+          .gridColumnAlignment(.leading)
+        
+        Text("\(slice.txAnt)")
+          .foregroundColor(.secondary)
+        
+        
+      }
       
-      Text("ID")
-      Text(String(format: "%02d", slice.id)).foregroundColor(.secondary)
-      
-      Text("Freq")
-      Text("\(slice.frequency)").foregroundColor(.secondary)
-      
-      Text("Mode")
-      Text("\(slice.mode)").foregroundColor(.secondary)
-      
-      Text("Rx Ant")
-        .gridColumnAlignment(.leading)
-      Text("\(slice.rxAnt)").foregroundColor(.secondary)
-      
-      Text("Tx Ant")
-        .gridColumnAlignment(.leading)
-      Text("\(slice.txAnt)").foregroundColor(.secondary)
-      
-      
-    }
-    
-    GridRow {
-      Text("SLICE").hidden()
-      
-      Text("DAX_channel")
-      Text("\(slice.daxChannel)").foregroundColor(.secondary)
-      
-      Text("DAX_clients")
-      Text("\(slice.daxClients)").foregroundColor(.secondary)
-      
-      Text("Low")
-      Text("\(slice.filterLow)").foregroundColor(.secondary)
-      
-      Text("High")
-      Text("\(slice.filterHigh)").foregroundColor(.secondary)
-      
-      Text("Active")
-      Text("\(slice.active ? "Y" : "N")").foregroundColor(slice.active ? .green : .red)
-      
-      Text("Locked")
-        .gridColumnAlignment(.leading)
-      Text("\(slice.locked ? "Y" : "N")").foregroundColor(slice.locked ? .green : .red)
+      GridRow {
+        Text("SLICE").hidden()
+        
+        Text("DAX_channel")
+        Text("\(slice.daxChannel)")
+          .foregroundColor(.secondary)
+        
+        Text("DAX_clients")
+        Text("\(slice.daxClients)")
+          .foregroundColor(.secondary)
+        
+        Text("Low")
+        Text("\(slice.filterLow)")
+          .foregroundColor(.secondary)
+        
+        Text("High")
+        Text("\(slice.filterHigh)")
+          .foregroundColor(.secondary)
+        
+        Text("Active")
+        Text("\(slice.active ? "Y" : "N")")
+          .foregroundColor(slice.active ? .green : .red)
+        
+        Text("Locked")
+          .gridColumnAlignment(.leading)
+        
+        Text("\(slice.locked ? "Y" : "N")")
+          .foregroundColor(slice.locked ? .green : .red)
+      }
     }
   }
 }

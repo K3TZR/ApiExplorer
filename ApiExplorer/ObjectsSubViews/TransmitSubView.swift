@@ -22,6 +22,7 @@ struct TransmitSubView: View {
       TransmitView(transmit: viewModel.objectModel.transmit)
       CwView(transmit: viewModel.objectModel.transmit)
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -36,37 +37,46 @@ private struct TransmitView: View {
       Group {
         HStack(spacing: 5) {
           Text("Compander")
-          Text("\(transmit.companderEnabled ? "ON" : "OFF")").foregroundColor(transmit.companderEnabled ? .green : .red)
+          Text("\(transmit.companderEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.companderEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Processor")
-          Text("\(transmit.speechProcessorEnabled ? "ON" : "OFF")").foregroundColor(transmit.speechProcessorEnabled ? .green : .red)
+          Text("\(transmit.speechProcessorEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.speechProcessorEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Monitor")
-          Text("\(transmit.txMonitorEnabled ? "ON" : "OFF")").foregroundColor(transmit.txMonitorEnabled ? .green : .red)
+          Text("\(transmit.txMonitorEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.txMonitorEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Mic Acc")
-          Text("\(transmit.micAccEnabled ? "ON" : "OFF")").foregroundColor(transmit.micAccEnabled ? .green : .red)
+          Text("\(transmit.micAccEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.micAccEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Dax")
-          Text("\(transmit.daxEnabled ? "ON" : "OFF")").foregroundColor(transmit.daxEnabled ? .green : .red)
+          Text("\(transmit.daxEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.daxEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Vox")
-          Text("\(transmit.voxEnabled ? "ON" : "OFF")").foregroundColor(transmit.voxEnabled ? .green : .red)
+          Text("\(transmit.voxEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.voxEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Vox Delay")
-          Text(transmit.voxDelay, format: .number).foregroundColor(.secondary)
+          Text(transmit.voxDelay, format: .number)
+            .foregroundColor(.secondary)
         }
         HStack(spacing: 5) {
           Text("Vox Level")
-          Text(transmit.voxLevel, format: .number).foregroundColor(.secondary)
+          Text(transmit.voxLevel, format: .number)
+            .foregroundColor(.secondary)
         }
-      }.frame(alignment: .leading)
+      }
+      .frame(alignment: .leading)
     }
   }
 }
@@ -83,25 +93,31 @@ private struct CwView: View {
       Group {
         HStack(spacing: 5) {
           Text("Sidetone")
-          Text("\(transmit.cwSidetoneEnabled ? "ON" : "OFF")").foregroundColor(transmit.cwSidetoneEnabled ? .green : .red)
+          Text("\(transmit.cwSidetoneEnabled ? "ON" : "OFF")")
+            .foregroundColor(transmit.cwSidetoneEnabled ? .green : .red)
         }
         HStack(spacing: 5) {
           Text("Level")
-          Text(transmit.cwMonitorGain, format: .number).foregroundColor(.secondary)
+          Text(transmit.cwMonitorGain, format: .number)
+            .foregroundColor(.secondary)
         }
         HStack(spacing: 5) {
           Text("Pan")
-          Text(transmit.cwMonitorPan, format: .number).foregroundColor(.secondary)
+          Text(transmit.cwMonitorPan, format: .number)
+            .foregroundColor(.secondary)
         }
         HStack(spacing: 5) {
           Text("Pitch")
-          Text(transmit.cwPitch, format: .number).foregroundColor(.secondary)
+          Text(transmit.cwPitch, format: .number)
+            .foregroundColor(.secondary)
         }
         HStack(spacing: 5) {
           Text("Speed")
-          Text(transmit.cwSpeed, format: .number).foregroundColor(.secondary)
+          Text(transmit.cwSpeed, format: .number)
+            .foregroundColor(.secondary)
         }
-      }.frame(alignment: .leading)
+      }
+      .frame(alignment: .leading)
     }
   }
 }

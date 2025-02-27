@@ -17,11 +17,20 @@ struct AmplifierSubView: View {
   @Environment(ViewModel.self) private var viewModel
 
   var body: some View {
-    Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 5) {
+    
+    Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 5) {
       if viewModel.objectModel.amplifiers.count > 0 {
         HeadingView()
         ForEach(viewModel.objectModel.amplifiers) { amplifier in
-          DetailView(amplifier: amplifier)
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            Text(amplifier.id.hex)
+            Text(amplifier.model)
+            Text(amplifier.ip)
+            Text(amplifier.port, format: .number)
+            Text(amplifier.state)
+          }
+          .foregroundColor(.secondary)
         }
         
       } else {
@@ -34,16 +43,17 @@ struct AmplifierSubView: View {
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
 private struct HeadingView: View {
 
   var body: some View {
+    
     GridRow {
       Text("AMPLIFIER")
         .frame(width: 100, alignment: .leading)
-        .foregroundColor(.yellow)
 
       Text("ID")
       Text("Model")
@@ -51,21 +61,7 @@ private struct HeadingView: View {
       Text("Port")
       Text("State")
     }
-  }
-}
-
-private struct DetailView: View {
-  var amplifier: Amplifier
-  
-  var body: some View {
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-      Text(amplifier.id.hex)
-      Text(amplifier.model)
-      Text(amplifier.ip)
-      Text(amplifier.port, format: .number)
-      Text(amplifier.state)
-    }.foregroundColor(.secondary)
+    .gridCellAnchor(.leading)
   }
 }
 

@@ -16,12 +16,33 @@ struct TnfSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
+  private func depthName(_ depth: UInt) -> String {
+    switch depth {
+    case 1: return "Normal"
+    case 2: return "Deep"
+    case 3: return "Very Deep"
+    default:  return "Invalid"
+    }
+  }
+
   var body: some View {
+    
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       if viewModel.objectModel.tnfs.count > 0 {
         HeaderView()
+        
         ForEach(viewModel.objectModel.tnfs, id: \.id) { tnf in
-          DetailView(tnf: tnf)
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            
+            Text(tnf.id.formatted(.number))
+            Text(tnf.frequency, format: .number)
+            Text(tnf.width, format: .number)
+            Text(depthName(tnf.depth))
+            Text(tnf.permanent ? "Y" : "N")
+              .foregroundColor(tnf.permanent ? .green : .red)
+          }
+          .foregroundColor(.secondary)
         }
         
       } else {
@@ -33,12 +54,14 @@ struct TnfSubView: View {
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
 private struct HeaderView: View {
 
   var body: some View {
+    
     GridRow {
       Text("TNFS")
         .frame(width: 100, alignment: .leading)
@@ -51,33 +74,6 @@ private struct HeaderView: View {
       Text("Depth")
       Text("Permanent")
     }
-  }
-}
-
-private struct DetailView: View {
-  var tnf: Tnf
-  
-  func depthName(_ depth: UInt) -> String {
-    switch depth {
-    case 1: return "Normal"
-    case 2: return "Deep"
-    case 3: return "Very Deep"
-    default:  return "Invalid"
-    }
-  }
-  
-  var body: some View {
-    
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-      
-      Text(tnf.id.formatted(.number))
-      Text(tnf.frequency, format: .number)
-      Text(tnf.width, format: .number)
-      Text(depthName(tnf.depth))
-      Text(tnf.permanent ? "Yes" : "No")
-    }
-    .foregroundColor(.secondary)
   }
 }
 

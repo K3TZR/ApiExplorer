@@ -36,8 +36,8 @@ struct MeterSubView: View {
           DetailView(meter: meter)
 //        }
       }
-      .foregroundColor(.secondary)
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -50,22 +50,15 @@ private struct HeadingView: View {
         .frame(width: 100, alignment: .leading)
 
       Text("ID")
-        .frame(width: 50, alignment: .leading)
-
       Text("Group")
-//        .gridColumnAlignment(.trailing)
-
       Text("Source")
       Text("Name")
       Text("Value")
-//        .gridColumnAlignment(.trailing)
-
       Text("Units")
       Text("Fps")
-//        .gridColumnAlignment(.trailing)
       Text("Description")
-        .gridColumnAlignment(.leading)
     }
+    .gridCellAnchor(.leading)
   }
 }
 
@@ -99,8 +92,11 @@ private struct DetailView: View {
       
       Text(meter.units)
       Text(String(format: "% 2d", meter.fps))
-      Text(meter.desc).foregroundColor(.secondary)
+      Text(meter.desc)
+        .gridColumnAlignment(.leading)
     }
+    .foregroundColor(.secondary)
+
   }
 }
 

@@ -18,11 +18,25 @@ struct BandSettingSubView: View {
   
   var body: some View {
 
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       if viewModel.objectModel.bandSettings.count > 0 {
-        ForEach(viewModel.objectModel.bandSettings.sorted(by: {$0.name > $1.name})) { setting in
-          DetailView(bandSetting: setting)
+        ForEach(viewModel.objectModel.bandSettings.sorted(by: {$0.name > $1.name})) { bandSetting in
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            
+            Text(bandSetting.name == 999 ? " GEN" : String(format: "%#4d", bandSetting.name))
+            Text(bandSetting.rfPower, format: .number)
+            Text(bandSetting.tunePower, format: .number)
+            Text("\(bandSetting.inhibit ? "ON" : "OFF")").foregroundColor(bandSetting.inhibit ? .green : .red)
+            Text("\(bandSetting.accTxEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.accTxEnabled ? .green : .red)
+            Text("\(bandSetting.rcaTxReqEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.rcaTxReqEnabled ? .green : .red)
+            Text("\(bandSetting.accTxReqEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.accTxReqEnabled ? .green : .red)
+            Text("\(bandSetting.tx1Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx1Enabled ? .green : .red)
+            Text("\(bandSetting.tx2Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx2Enabled ? .green : .red)
+            Text("\(bandSetting.tx3Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx3Enabled ? .green : .red)
+            Text("\(bandSetting.hwAlcEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.hwAlcEnabled ? .green : .red)
+          }
         }
 
       } else {
@@ -31,6 +45,7 @@ struct BandSettingSubView: View {
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -54,31 +69,7 @@ private struct HeadingView: View {
       Text("RCA TX3")
       Text("HW ALC")
     }
-  }
-}
-
-private struct DetailView: View {
-  let bandSetting: BandSetting
-
-  var body: some View {
-        
-    GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-      
-      Text(bandSetting.name == 999 ? " GEN" : String(format: "%#4d", bandSetting.name))
-      Text(bandSetting.rfPower, format: .number)
-      Text(bandSetting.tunePower, format: .number)
-      Text("\(bandSetting.inhibit ? "ON" : "OFF")").foregroundColor(bandSetting.inhibit ? .green : .red)
-      Text("\(bandSetting.accTxEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.accTxEnabled ? .green : .red)
-      Text("\(bandSetting.rcaTxReqEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.rcaTxReqEnabled ? .green : .red)
-      Text("\(bandSetting.accTxReqEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.accTxReqEnabled ? .green : .red)
-      Text("\(bandSetting.tx1Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx1Enabled ? .green : .red)
-      Text("\(bandSetting.tx2Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx2Enabled ? .green : .red)
-      Text("\(bandSetting.tx3Enabled ? "ON" : "OFF")").foregroundColor(bandSetting.tx3Enabled ? .green : .red)
-      Text("\(bandSetting.hwAlcEnabled ? "ON" : "OFF")").foregroundColor(bandSetting.hwAlcEnabled ? .green : .red)
-    }
-    .gridColumnAlignment(.trailing)
-    .foregroundColor(.secondary)
+    .gridCellAnchor(.leading)
   }
 }
 

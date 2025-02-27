@@ -21,8 +21,35 @@ struct AtuSubView: View {
     Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
       if let radio = viewModel.objectModel.activeSelection?.radio {
         if radio.atuPresent {
-          DetailView(atu: viewModel.objectModel.atu)
-          
+          let atu = viewModel.objectModel.atu
+          GridRow {
+            Text("ATU")
+              .frame(width: 100, alignment: .leading)
+            
+            HStack(spacing: 5){
+              Text("ATU Enabled")
+              Text(atu.enabled ? "Y" : "N")
+                .foregroundColor(atu.enabled ? .green : .red)
+            }
+            
+            HStack(spacing: 5){
+              Text("Memories Enabled")
+              Text(atu.memoriesEnabled ? "Y" : "N")
+                .foregroundColor(atu.memoriesEnabled ? .green : .red)
+            }
+            
+            HStack(spacing: 5){
+              Text("Using Memories")
+              Text(atu.usingMemory ? "Y" : "N")
+                .foregroundColor(atu.usingMemory ? .green : .red)
+            }
+            HStack(spacing: 5){
+              Text("Tune Status")
+              Text(atu.status.rawValue)
+                .foregroundColor(.secondary)
+            }
+          }
+
         } else {
           GridRow {
             Text("ATU")
@@ -33,36 +60,7 @@ struct AtuSubView: View {
         }
       }
     }
-  }
-}
-
-private struct DetailView: View {
-  var atu: Atu
-
-  var body: some View {
-    GridRow {
-      Text("ATU")
-        .frame(width: 100, alignment: .leading)
-      
-      HStack(spacing: 5){
-        Text("ATU Enabled")
-        Text(atu.enabled ? "Y" : "N").foregroundColor(atu.enabled ? .green : .red)
-      }
-      
-      HStack(spacing: 5){
-        Text("Memories Enabled")
-        Text(atu.memoriesEnabled ? "Y" : "N").foregroundColor(atu.memoriesEnabled ? .green : .red)
-      }
-      
-      HStack(spacing: 5){
-        Text("Using Memories")
-        Text(atu.usingMemory ? "Y" : "N").foregroundColor(atu.usingMemory ? .green : .red)
-      }
-      HStack(spacing: 5){
-        Text("Tune Status")
-        Text(atu.status.rawValue).foregroundColor(.secondary)
-      }
-    }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
