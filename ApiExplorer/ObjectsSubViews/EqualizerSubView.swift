@@ -48,7 +48,7 @@ private struct HeadingView: View {
   var body: some View {
     GridRow {
       Text("EQUALIZERS")
-        .frame(width: 100, alignment: .leading)
+        .frame(width: 110, alignment: .leading)
 
       Text("ID")
       Text("Enabled")

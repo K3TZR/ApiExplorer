@@ -55,11 +55,10 @@ public struct ObjectsView: View {
               .frame(maxHeight: 150)
           }
           
-//          if viewModel.settingModel.isGui == true {
-//            TesterSubView()
-//          }
+          if viewModel.settingModel.isGui == false {
+            TesterSubView()
+          }
         }
-//        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
 
         .textSelection(.enabled)
         .font(.system(size: CGFloat(viewModel.settingModel.fontSize), weight: .regular, design: .monospaced))
@@ -118,6 +117,7 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
   case bandSettings = "band settings"
   case equalizers
   case gps
+  case interlocks
   case lists
   case memories
   case meters

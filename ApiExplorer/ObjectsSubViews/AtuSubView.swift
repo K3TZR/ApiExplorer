@@ -24,7 +24,7 @@ struct AtuSubView: View {
           let atu = viewModel.objectModel.atu
           GridRow {
             Text("ATU")
-              .frame(width: 100, alignment: .leading)
+              .frame(width: 110, alignment: .leading)
             
             HStack(spacing: 5){
               Text("ATU Enabled")

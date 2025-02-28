@@ -28,7 +28,7 @@ struct RadioSubView: View {
           Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
               Label("Radio", systemImage: showDetails ? "chevron.down" : "chevron.right")
-                .frame(width: 100, alignment: .leading)
+                .frame(width: 110, alignment: .leading)
                 .font(.title)
                 .foregroundColor(.green)
                 .onTapGesture{ showDetails.toggle() }
@@ -100,6 +100,7 @@ private struct DetailView: View {
         BandSettingSubView()
         EqualizerSubView()
         GpsSubView()
+        InterlockSubView()
         MemorySubView()
         MeterSubView()
         ListsView()
@@ -109,6 +110,7 @@ private struct DetailView: View {
       case .bandSettings: BandSettingSubView()
       case .equalizers:   EqualizerSubView()
       case .gps:          GpsSubView()
+      case .interlocks:   InterlockSubView()
       case .lists:        ListsView()
       case .memories:     MemorySubView()
       case .meters:       MeterSubView()

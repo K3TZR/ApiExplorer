@@ -16,33 +16,27 @@ struct TesterSubView: View {
   
   var body: some View {
     
-    if viewModel.isConnected && viewModel.settingModel.isGui == false {
-      VStack(alignment: .leading) {
-        HStack(spacing: 20) {
-          
-          Text("SDRApi").foregroundColor(.green)
+    if viewModel.objectModel.activeSelection != nil {
+      Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+        GridRow {
+          Text("ApiExplorer").foregroundColor(.blue)
+            .frame(width: 110, alignment: .leading)
             .font(.title)
           
-          HStack(spacing: 5) {
             Text("Bound to Station")
             Text("\(viewModel.objectModel.activeSelection!.station)")
               .foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Handle")
+
+          Text("Handle")
             Text(viewModel.objectModel.connectionHandle?.hex ?? "???")
               .foregroundColor(.secondary)
-          }
-          
-          HStack(spacing: 5) {
-            Text("Client Id")
+
+          Text("Client Id")
             Text("\(viewModel.objectModel.boundClientId ?? "???")")
               .foregroundColor(.secondary)
-          }
         }
       }
-      .frame(maxWidth: .infinity, minHeight: 50)
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 }

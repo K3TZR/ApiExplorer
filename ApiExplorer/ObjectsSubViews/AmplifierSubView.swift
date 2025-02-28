@@ -36,8 +36,7 @@ struct AmplifierSubView: View {
       } else {
         GridRow {
           Text("AMPLIFIER")
-            .frame(width: 100, alignment: .leading)
-            .foregroundColor(.yellow)
+            .frame(width: 110, alignment: .leading)
           
           Text("----- NONE PRESENT -----").foregroundColor(.red)
         }
@@ -53,7 +52,7 @@ private struct HeadingView: View {
     
     GridRow {
       Text("AMPLIFIER")
-        .frame(width: 100, alignment: .leading)
+        .frame(width: 110, alignment: .leading)
 
       Text("ID")
       Text("Model")

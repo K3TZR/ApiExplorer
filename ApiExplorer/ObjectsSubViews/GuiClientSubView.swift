@@ -34,7 +34,7 @@ struct GuiClientSubView: View {
               Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
                 .foregroundColor(.yellow)
                 .font(.title)
-                .frame(width: 100, alignment: .leading)
+                .frame(width: 110, alignment: .leading)
                 .onTapGesture{ showSubView.toggle() }
 
               Text("\(guiClient.station)")

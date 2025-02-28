@@ -19,7 +19,7 @@ struct ListsView: View {
       Grid(alignment: .leading, horizontalSpacing: 10) {
         GridRow {
           Text("LISTS")
-            .frame(width: 100, alignment: .leading)
+            .frame(width: 110, alignment: .leading)
           
           HStack(spacing: 5) {
             Text("Ant List")

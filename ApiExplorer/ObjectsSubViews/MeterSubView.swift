@@ -47,7 +47,7 @@ private struct HeadingView: View {
   var body: some View {
     GridRow {
       Text("METERS")
-        .frame(width: 100, alignment: .leading)
+        .frame(width: 110, alignment: .leading)
 
       Text("ID")
       Text("Group")
@@ -78,7 +78,7 @@ private struct DetailView: View {
     
     GridRow {
       Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 100)
+        .frame(width: 110)
 
       Text("\(meter.id)")
       

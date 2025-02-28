@@ -55,7 +55,7 @@ private struct HeadingView: View {
     
     GridRow {
       Text("BAND SETTINGS")
-        .frame(width: 100, alignment: .leading)
+        .frame(width: 110, alignment: .leading)
 
       Text("Band")
       Text("Rf Power")
