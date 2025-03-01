@@ -94,7 +94,8 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Picker actions
   
-  public func defaultButtonTapped(_ radioId: String, _ station: String) {
+//  public func defaultButtonTapped(_ radioId: String, _ station: String) {
+  public func defaultButtonTapped(_ radioId: String) {
     // set / reset the default
     if settingModel.isGui {
       if settingModel.defaultGui == radioId {
@@ -118,9 +119,10 @@ public class ViewModel {
   
   public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
     print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
-    
+
+    objectModel.activeStation = station
     // try to connect to the selected radio / station
-    connectionStart(radioId, station)
+    connectionStart(radioId)
   }
   
   // ----------------------------------------------------------------------------
@@ -222,7 +224,10 @@ public class ViewModel {
       if settingModel.smartlinkLoginRequired {
         showSmartlinkLogin = true
       }
+      
+      // FIXME: remove hard coded user/pwd
       Task { await objectModel.startSmartlinkListener("douglas.adams@me.com", "fleX!20Comm") }
+      
     } else {
       objectModel.stopSmartlinkListener()
       objectModel.removeRadios(.smartlink)
@@ -233,29 +238,25 @@ public class ViewModel {
     if isConnected {
       Task { await connectionStop() }
       
+    } else if settingModel.useDefaultEnabled {
+      if let selection = settingModel.isGui ? settingModel.defaultGui : settingModel.defaultNonGui {
+        connectionStart(selection)
+      } else {
+        showPicker = true
+      }
+      
     } else {
       showPicker = true
     }
   }
-//      if settingModel.useDefaultEnabled {
-//        if let selection = settingModel.isGui ? settingModel.defaultGui : settingModel.defaultNonGui {
-//          connectionStart(selection)
-//        } else {
-//          showPicker = true
-//        }
-//        
-//      }
-//      else {
-//    }
-//  }
   
   // ----------------------------------------------------------------------------
   // MARK: - Private methods
   
-  private func connectionStart(_ radioId: RadioId, _ station: String)  {
-    
+  private func connectionStart(_ radioId: RadioId)  {
+
     // identify the Packet and Staion for the connection
-    objectModel.activeSelection = setPacketAndStation(settingModel.isGui, radioId, station)
+    objectModel.activeSelection = setPacketAndStation(settingModel.isGui, radioId)
     guard objectModel.activeSelection != nil else { return }
     
     // handle Multiflex
@@ -303,15 +304,12 @@ public class ViewModel {
     }
   }
   
-  private func setPacketAndStation(_ isGui: Bool, _ radioId: String, _ station: String) -> ActiveSelection? {
-    
+//  private func setPacketAndStation(_ isGui: Bool, _ radioId: String, _ station: String) -> ActiveSelection? {
+  private func setPacketAndStation(_ isGui: Bool, _ radioId: String) -> ActiveSelection? {
+
     // find the Radio
     if let radio = objectModel.radios.first(where: {$0.id == radioId}) {
-      if isGui {
-        return ActiveSelection((radio, "ApiViewer", nil))
-      } else {
-        return ActiveSelection((radio, station, nil))
-      }
+      return ActiveSelection((radio, nil))
     }
     return nil
   }
