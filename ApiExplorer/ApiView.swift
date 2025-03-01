@@ -8,11 +8,7 @@
 import Foundation
 import SwiftUI
 
-//import ClientFeature
-//import DirectFeature
 import ApiPackage
-//import LoginFeature
-//import PickerFeature
 
 public enum DaxChoice: String, CaseIterable, Sendable {
   case none
@@ -39,18 +35,8 @@ struct ApiView: View {
       SendView()
 
       Divider().background(Color(.gray))
-      
-      VSplitView {
-        VStack(alignment: .leading) {
-          ObjectsView()
-            .frame(minHeight: 200)
-
-          Divider().background(Color(.cyan))
-          
-          MessagesView()
-            .frame(minHeight: 200)
-        }
-      }
+            
+      ObjectsMessagesSplitView()
       
       Spacer()
       Divider().background(Color(.gray))
@@ -91,6 +77,7 @@ struct ApiView: View {
     .toolbar {
       Button("Discovery") { viewModel.showDiscovery = true }
       Button("Gui Clients") { viewModel.showGuiClients = true }
+      SettingsLink{ Label( "Settings", systemImage: "gearshape") }
     }
 
     // LogAlert Notification (an Error or Warning occurred)
@@ -108,7 +95,54 @@ struct ApiView: View {
 //    .sheet(item: $store.scope(state: \.destination?.loginItem, action: \.destination.loginItem))
 //    { store in LoginView(store: store) }
     
-    .frame(minWidth: 1300, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+//    .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+  }
+}
+
+struct ObjectsMessagesSplitView: View {
+  @State private var topHeight: CGFloat = 300  // Initial height for the top view
+  let minHeight: CGFloat = 100                 // Minimum height for sections
+  
+  var body: some View {
+#if os(macOS)
+    // Use native `VSplitView` on macOS
+    VSplitView {
+      ObjectsView()
+        .frame(minHeight: minHeight)
+      
+      MessagesView()
+        .frame(minHeight: minHeight)
+    }
+#else
+    // Custom resizable vertical split for iOS
+    GeometryReader { geometry in
+      VStack(spacing: 0) {
+        ObjectsView()
+          .frame(height: topHeight)
+          .frame(maxWidth: .infinity)
+          .background(Color.blue.opacity(0.2)) // Just for visualization
+        
+        Divider()
+          .frame(height: 5)
+          .background(Color.gray)
+          .gesture(
+            DragGesture()
+              .onChanged { value in
+                let newHeight = topHeight + value.translation.height
+                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
+                  topHeight = newHeight
+                }
+              }
+          )
+        
+        MessagesView()
+          .frame(maxHeight: .infinity)
+          .frame(maxWidth: .infinity)
+          .background(Color.green.opacity(0.2)) // Just for visualization
+      }
+      .frame(maxHeight: .infinity)
+    }
+#endif
   }
 }
 
@@ -119,6 +153,6 @@ struct ApiView: View {
   ApiView()
     .environment(ViewModel())
     
-  .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+  .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   .padding()
 }

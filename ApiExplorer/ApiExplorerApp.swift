@@ -12,8 +12,12 @@ import ApiPackage
 
 @main
 struct ApiViewerApp: App {
-  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-  
+#if os(macOS)
+@NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+#else
+@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+#endif
+
   @State var viewModel = ViewModel()
 
   /// Struct to hold a Semantic Version number
@@ -46,28 +50,49 @@ struct ApiViewerApp: App {
         .environment(viewModel)
 
     }
+#if os(macOS)
+    Settings {
+      SettingsView()
+        .environment(viewModel)
+    }
+#endif
+
   }
 }
 
 // ----------------------------------------------------------------------------
 // MARK: - App Delegate
 
+#if os(macOS)
+import AppKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
-  
-  func applicationDidFinishLaunching(_ notification: Notification) {
-    // disable tab view
-    NSWindow.allowsAutomaticWindowTabbing = false
-    // disable restoring windows
-    UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApplication.shared.windows.forEach { $0.tabbingMode = .disallowed }
+        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows": false])
+    }
 
-  }
-  
-  func applicationWillTerminate(_ notification: Notification) {
-    log.debug("ApiExplorer: application terminated")
-  }
-  
-  func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-    true
-  }
+    func applicationWillTerminate(_ notification: Notification) {
+        print("ApiExplorer (macOS): application terminated")
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        true
+    }
 }
 
+#else
+import UIKit
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        print("ApiExplorer (iOS): application launched")
+        return true
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        print("ApiExplorer (iOS): application terminated")
+    }
+}
+#endif

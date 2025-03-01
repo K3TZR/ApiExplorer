@@ -78,7 +78,7 @@ struct MessagesView: View {
       ////          store.send(.onAppear)
       ////        }
     }
-    .frame(minWidth: 1250, maxWidth: .infinity)
+//    .frame(minWidth: 1250, maxWidth: .infinity)
   }
 }
 

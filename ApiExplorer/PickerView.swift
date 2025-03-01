@@ -15,20 +15,10 @@ import ApiPackage
 public struct PickerView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  
+  @Environment(\.dismiss) var dismiss
+
   @State var selectedRadioId: String? = nil
   @State var selectedStation: String? = nil
-
-  //  private var stationCount: Int {
-  //    var count = 0
-  //
-  //    for radio in viewModel.objectModel.radios {
-  //      for _ in radio.guiClients {
-  //        count += 1
-  //      }
-  //    }
-  //    return count
-  //  }
   
   private var guiClients: [GuiClient] {
     return viewModel.objectModel.radios
@@ -85,6 +75,7 @@ public struct PickerView: View {
               .buttonStyle(PlainButtonStyle()) // Removes default button appearance
               .simultaneousGesture(
                 TapGesture(count: 2).onEnded {
+                  dismiss()
                   viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
                 }
               )
@@ -121,6 +112,7 @@ public struct PickerView: View {
                 .buttonStyle(PlainButtonStyle()) // Removes default button appearance
                 .simultaneousGesture(
                   TapGesture(count: 2).onEnded {
+                    dismiss()
                     viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
                   }
                 )

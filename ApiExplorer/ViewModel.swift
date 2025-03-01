@@ -212,6 +212,10 @@ public class ViewModel {
     print("remoteTxAudioEnabledChanged")
   }
   
+  public func remoteTxAudioCompressedChanged() {
+    print("remoteTxAudioCompressedChanged")
+  }
+  
   public func smartlinkChanged(_ enabled: Bool)  {
     if enabled {
       settingModel.directEnabled = false

@@ -30,6 +30,7 @@ public struct TopButtonsView: View {
       .disabled(startButtonDisabled)
       
       Toggle("Gui", isOn: $viewModelBinding.settingModel.isGui)
+        .frame(width: 60, alignment: .leading)
 
       // Connection types
       ControlGroup {
@@ -49,50 +50,41 @@ public struct TopButtonsView: View {
       .frame(width: 180)
       .disabled(viewModel.isConnected)
       
-      Toggle("Use Default", isOn: $viewModelBinding.settingModel.useDefaultEnabled)
-        .disabled(viewModel.isConnected)
+      Spacer()
       
-      Toggle("Smartlink Login", isOn: $viewModelBinding.settingModel.smartlinkLoginRequired)
-        .disabled(viewModel.isConnected)
+      Picker("Dax", selection: $viewModelBinding.settingModel.daxSelection) {
+        ForEach(DaxChoice.allCases, id: \.self) {
+          Text($0.rawValue.capitalized).tag($0)
+        }
+      }
+      .frame(width: 180)
+      .disabled(viewModel.settingModel.isGui == false)
+
+      .onChange(of: viewModel.settingModel.daxSelection) {
+        viewModel.daxSelectionChanged($0, $1)
+      }
       
       Spacer()
       
-      HStack(spacing: 0) {
-        Picker("Dax", selection: $viewModelBinding.settingModel.daxSelection) {
-          ForEach(DaxChoice.allCases, id: \.self) {
-            Text($0.rawValue.capitalized).tag($0)
-          }
-        }
-        .onChange(of: viewModel.settingModel.daxSelection) {
-          viewModel.daxSelectionChanged($0, $1)
-        }
-        
-        Toggle("Low BW", isOn: $viewModelBinding.settingModel.lowBandwidthDax)
-          .disabled(viewModel.isConnected)
-      }
-      .frame(width: 180)
-      .disabled(viewModel.settingModel.isGui == false)
-
-
-      HStack(spacing: 0) {
+      HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $viewModelBinding.settingModel.remoteRxAudioEnabled)
+//          .frame(width: 100)
           .disabled(viewModel.settingModel.isGui == false)
+        
           .onChange(of: viewModel.settingModel.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledChanged()
           }
-
-        Toggle("Compress", isOn: $viewModelBinding.settingModel.remoteRxAudioCompressed)
-          .onChange(of: viewModel.settingModel.remoteRxAudioCompressed) { _, _ in
-            viewModel.remoteRxAudioCompressedChanged()
+        
+        Toggle("Tx Audio", isOn: $viewModelBinding.settingModel.remoteTxAudioEnabled)
+//          .frame(width: 100)
+          .disabled(viewModel.settingModel.isGui == false)
+        
+          .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
+            viewModel.remoteTxAudioEnabledChanged()
           }
       }
-      .disabled(viewModel.settingModel.isGui == false)
-      .frame(width: 180)
-      
-      Toggle("Tx Audio", isOn: $viewModelBinding.settingModel.remoteTxAudioEnabled)
-        .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
-          viewModel.remoteTxAudioEnabledChanged()
-        }
+      .frame(width: 150)
+
     }
     .toggleStyle(.button)
   }

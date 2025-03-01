@@ -23,42 +23,55 @@ public struct ObjectsView: View {
       }
       
       if viewModel.isConnected == false {
-        VSplitView {
-          VStack(alignment: .center) {
-            Spacer()
-            Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
-            Spacer()
-          }
-          
-          VStack(alignment: .center) {
-            Spacer()
-            Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-            Spacer()
-          }
-          
+        VStack(alignment: .center) {
+          Spacer()
+          Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
+          Spacer()
+          Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
           if viewModel.settingModel.isGui == false {
-            VStack(alignment: .center) {
-              Spacer()
-              Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
-              Spacer()
-            }
+            Spacer()
+            Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
           }
+          Spacer()
         }
-        
+ 
+//        VSplitView {
+//          VStack(alignment: .center) {
+//            Spacer()
+//            Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
+//            Spacer()
+//          }
+//          
+//          VStack(alignment: .center) {
+//            Spacer()
+//            Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
+//            Spacer()
+//          }
+//          
+//          if viewModel.settingModel.isGui == false {
+//            VStack(alignment: .center) {
+//              Spacer()
+//              Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
+//              Spacer()
+//            }
+//          }
+//        }
+//        
       } else {
-        VSplitView {
-          RadioSubView()
-            .frame(maxHeight: 150)
-          
-          if let radio = viewModel.objectModel.activeSelection?.radio {
-            GuiClientSubView(radio: radio)
-              .frame(maxHeight: 150)
-          }
-          
-          if viewModel.settingModel.isGui == false {
-            TesterSubView()
-          }
-        }
+        RadioClientTesterSplitView()
+//        VSplitView {
+//          RadioSubView()
+//            .frame(maxHeight: 150)
+//          
+//          if let radio = viewModel.objectModel.activeSelection?.radio {
+//            GuiClientSubView(radio: radio)
+//              .frame(maxHeight: 150)
+//          }
+//          
+//          if viewModel.settingModel.isGui == false {
+//            TesterSubView()
+//          }
+//        }
 
         .textSelection(.enabled)
         .font(.system(size: CGFloat(viewModel.settingModel.fontSize), weight: .regular, design: .monospaced))
@@ -97,6 +110,69 @@ private struct FilterStationObjectsView: View {
     }
     .pickerStyle(MenuPickerStyle())
     .frame(width: 300)
+  }
+}
+
+private struct RadioClientTesterSplitView: View {
+  @Environment(ViewModel.self) private var viewModel
+
+  @State private var topHeight: CGFloat = 300  // Initial height for the top view
+
+  let minHeight: CGFloat = 100                 // Minimum height for sections
+  
+  var body: some View {
+#if os(macOS)
+    // Use native `VSplitView` on macOS
+    RadioSubView()
+      .frame(maxHeight: 150)
+    
+    if let radio = viewModel.objectModel.activeSelection?.radio {
+      GuiClientSubView(radio: radio)
+        .frame(maxHeight: 150)
+    }
+    
+    if viewModel.settingModel.isGui == false {
+      TesterSubView()
+    }
+#else
+    // Custom resizable vertical split for iOS
+    GeometryReader { geometry in
+      VStack(spacing: 0) {
+        RadioSubView()
+          .frame(height: topHeight)
+          .frame(maxWidth: .infinity)
+          .background(Color.blue.opacity(0.2)) // Just for visualization
+        
+        Divider()
+          .frame(height: 5)
+          .background(Color.gray)
+          .gesture(
+            DragGesture()
+              .onChanged { value in
+                let newHeight = topHeight + value.translation.height
+                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
+                  topHeight = newHeight
+                }
+              }
+          )
+        
+        if let radio = viewModel.objectModel.activeSelection?.radio {
+          GuiClientSubView(radio: radio)
+            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity)
+            .background(Color.green.opacity(0.2)) // Just for visualization
+        }
+
+        if viewModel.settingModel.isGui == false {
+          TesterSubView()
+            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity)
+            .background(Color.green.opacity(0.2)) // Just for visualization
+        }
+      }
+      .frame(maxHeight: .infinity)
+    }
+#endif
   }
 }
 

@@ -46,6 +46,7 @@ public class SettingModel {
     refreshToken = _settings.string(forKey: "refreshToken") ?? ""
     remoteRxAudioCompressed = _settings.bool(forKey: "remoteRxAudioCompressed")
     remoteRxAudioEnabled = _settings.bool(forKey: "remoteRxAudioEnabled")
+    remoteTxAudioCompressed = _settings.bool(forKey: "remoteTxAudioCompressed")
     remoteTxAudioEnabled = _settings.bool(forKey: "remoteTxAudioEnabled")
     showPings = _settings.bool(forKey: "showPings")
     showReplies = _settings.bool(forKey: "showReplies")
@@ -90,6 +91,7 @@ public class SettingModel {
   public var refreshToken: String { didSet { _settings.set(refreshToken, forKey: "refreshToken") }}
   public var remoteRxAudioCompressed: Bool { didSet { _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed") }}
   public var remoteRxAudioEnabled: Bool { didSet { _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled") }}
+  public var remoteTxAudioCompressed: Bool { didSet { _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed") }}
   public var remoteTxAudioEnabled: Bool { didSet { _settings.set(remoteTxAudioEnabled, forKey: "remoteTxAudioEnabled") }}
   public var showPings: Bool { didSet { _settings.set(showPings, forKey: "showPings") }}
   public var showReplies: Bool { didSet { _settings.set(showReplies, forKey: "showReplies") }}
@@ -138,6 +140,7 @@ public class SettingModel {
     _settings.set(refreshToken, forKey: "refreshToken")
     _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed")
     _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled")
+    _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed")
     _settings.set(remoteTxAudioEnabled, forKey: "remoteTxAudioEnabled")
     _settings.set(showPings, forKey: "showPings")
     _settings.set(showReplies, forKey: "showReplies")
