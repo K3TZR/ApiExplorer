@@ -63,13 +63,16 @@ public struct DiscoveryView: View {
         }
       }
       Spacer()
-      Divider()
-      FooterView()
+      if viewModel.settingModel.discoveryDisplayType != .hex {
+        Divider()
+        FooterView()
+      }
     }
     .monospaced()
     .padding()
     .frame(height: 600)
     
+    // Save Dialog
   }
 }
 
@@ -175,22 +178,83 @@ private struct PayloadFieldsView: View {
 
 private struct RawView: View {
   let data: Data
+  
+  @State var isSaving = false
+  @State var document: BroadcastDocument?
 
   @Environment(ViewModel.self) private var viewModel
-  
-  var body: some View {
-    ScrollView {
-      Text(viewModel.hexDump(data))
+  @Environment(\.dismiss) var dismiss
+
+  struct BroadcastDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.plainText] }
+    
+    var text: String
+    
+    init(text: String = "") {
+        self.text = text
     }
+
+      // this initializer loads data that has been saved previously
+    init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents,
+           let string = String(data: data, encoding: .utf8) {
+            text = string
+        } else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+    }
+    
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = text.data(using: .utf8) ?? Data()
+        return FileWrapper(regularFileWithContents: data)
+    }
+  }
+
+  var body: some View {
+    VStack {
+      ScrollView {
+        Text(viewModel.hexDump(data))
+      }
+
+      Divider()
+
+      HStack {
+        Button("Save") {
+          document = BroadcastDocument(text: viewModel.hexDump(data))
+          isSaving = true
+        }
+        Spacer()
+        Button("Close") { dismiss() }
+          .keyboardShortcut(.defaultAction)
+      }
+    }
+    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiViewer.bcast") { result in
+        switch result {
+        case .success(let url):
+          log.info("ApiViewer: Broadcast Exported to \(url)")
+        case .failure(let error):
+          log.warning("ApiViewer: Broadcast Export failed, \(error)")
+        }
+      }
   }
 }
 
 private struct FooterView: View {
-  
+//  let data: Data?
+//  let isSaving: Binding<Bool>
+//  let document: Binding<BroadcastDocument?>
+
+  @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
     HStack {
+//      Button("Save") {
+//        document.wrappedValue = BroadcastDocument(text: viewModel.hexDump(data!))
+//        isSaving.wrappedValue = true
+//      }
+//      .disabled(data == nil)
+      
       Spacer()
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
@@ -205,4 +269,34 @@ private struct FooterView: View {
 #Preview("DiscoveryView") {
   DiscoveryView()
     .environment(ViewModel())
+}
+
+// ----------------------------------------------------------------------------
+// MARK: - Save support
+
+import UniformTypeIdentifiers
+
+struct BroadcastDocument: FileDocument {
+  static var readableContentTypes: [UTType] { [.plainText] }
+  
+  var text: String
+  
+  init(text: String = "") {
+      self.text = text
+  }
+
+    // this initializer loads data that has been saved previously
+  init(configuration: ReadConfiguration) throws {
+      if let data = configuration.file.regularFileContents,
+         let string = String(data: data, encoding: .utf8) {
+          text = string
+      } else {
+          throw CocoaError(.fileReadCorruptFile)
+      }
+  }
+  
+  func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+      let data = text.data(using: .utf8) ?? Data()
+      return FileWrapper(regularFileWithContents: data)
+  }
 }
