@@ -57,10 +57,13 @@ struct ApiView: View {
       GuiClientsView()
     }
     .sheet(isPresented: $viewModel.showMultiflex, onDismiss: {} ) {
-      MultiflexView(activeSelection: viewModel.objectModel.activeSelection!)
+      MultiflexView()
+        .environment(viewModel)
     }
     .sheet(isPresented: $viewModel.showPicker, onDismiss: {} ) {
       PickerView()
+        .frame(width: 600, height: 300)
+        .padding(10)
     }
     .sheet(isPresented: $viewModel.showSmartlinkLogin, onDismiss: viewModel.smartlinkLoginDidDismiss) {
       SmartlinkLoginView()

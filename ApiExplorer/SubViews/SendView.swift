@@ -30,9 +30,9 @@ public struct SendView: View {
           .help("Clear the command field")
         
         Stepper("", onIncrement: {
-          viewModel.previousTapped()
+          viewModel.previousStepperTapped()
         }, onDecrement: {
-          viewModel.nextTapped()
+          viewModel.nextStepperTapped()
         })
         .help("Load previously sent commands")
         

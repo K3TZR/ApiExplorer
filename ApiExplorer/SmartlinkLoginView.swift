@@ -11,42 +11,46 @@ import SwiftUI
 // MARK: - View(s)
 
 public struct SmartlinkLoginView: View {
-
+  
   @Environment(ViewModel.self) var viewModel
   @Environment(\.dismiss) var dismiss
   
   @State var password = ""
-
+  
   public var body: some View {
     @Bindable var viewModel = viewModel
-
+    
     VStack(spacing: 10) {
       Text( "Smartlink Login" ).font( .title2 )
       Divider()
-      HStack {
-        Text( "User" )
-        TextField( "", text: $viewModel.settingModel.smartlinkUser)
+      Grid(alignment: .leading) {
+        GridRow {
+          Text( "User" ).frame(alignment: .leading)
+          TextField( "", text: $viewModel.settingModel.smartlinkUser)
+        }
+        GridRow {
+          Text( "Password").frame(alignment: .leading)
+          SecureField( "", text: $password)
+        }
       }
-      HStack {
-        Text( "Password")
-        SecureField( "", text: $password)
-      }
+      
+      Divider()
       
       HStack( spacing: 60 ) {
         Button( "Cancel" ) {
           viewModel.smartlinkCancelButtonTapped()
           dismiss()
         }
-          .keyboardShortcut( .cancelAction )
+        .keyboardShortcut( .cancelAction )
         
-        Button( "Log in" ) { 
+        Button( "Log in" ) {
           viewModel.smartlinkLoginButtonTapped(viewModel.settingModel.smartlinkUser, password)
           dismiss() }
-          .keyboardShortcut( .defaultAction )
-          .disabled( viewModel.settingModel.smartlinkUser.isEmpty || password.isEmpty )
+        .keyboardShortcut( .defaultAction )
+        .disabled( viewModel.settingModel.smartlinkUser.isEmpty || password.isEmpty )
       }
     }
-//    .frame( minWidth: store.overallWidth )
+    .frame(width: 300)
     .padding(10)
   }
 }

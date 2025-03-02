@@ -64,16 +64,17 @@ private struct RadioClientTesterSplitView: View {
   var body: some View {
 #if os(macOS)
     // Use native `VSplitView` on macOS
-    RadioSubView()
-      .frame(maxHeight: 150)
-    
-    if let radio = viewModel.objectModel.activeSelection?.radio {
-      GuiClientSubView(radio: radio)
-        .frame(maxHeight: 150)
-    }
-    
-    if viewModel.settingModel.isGui == false {
-      TesterSubView()
+    VSplitView {
+      RadioSubView()
+        .layoutPriority(1)
+
+      if let radio = viewModel.objectModel.activeSelection?.radio {
+        GuiClientSubView(radio: radio)
+      }
+      
+      if viewModel.settingModel.isGui == false {
+        TesterSubView()
+      }
     }
 #else
     // Custom resizable vertical split for iOS

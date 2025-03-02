@@ -73,28 +73,84 @@ public class ViewModel {
     }
   }
   
-  // ----------------------------------------------------------------------------
-  // MARK: - BottomButtonsView actions
-  
-  public func saveButtonTapped() {
-    print("saveButtonTapped")
+  public func hexDump(_ data: Data) -> String {
+    let len = data.count
+    var bytes = [UInt8](repeating: 0x00, count: len)
+
+    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
+    
+    var string = "  \(String(format: "%3d", len ))    00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
+    string += " bytes    -------------------------------------------------\n\n"
+    
+    string += "----- HEADER (Hex) -----\n"
+    
+    var address = 0
+    string += address.toHex() + "   "
+    for i in 1...28 {
+      string += String(format: "%02X", bytes[i-1]) + " "
+      if (i % 8) == 0 { string += "  " }
+      if (i % 16) == 0 {
+        string += "\n"
+        address += 16
+        string += address.toHex() + "   "
+      }
+    }
+
+    string += "\n\n----- PAYLOAD (Hex) -----\n"
+      
+    
+    string += address.toHex() + "                                         "
+    for i in 29...len {
+      string += String(format: "%02X", bytes[i-1]) + " "
+      if (i % 8) == 0 { string += "  " }
+      if (i % 16) == 0 {
+        string += "\n"
+        address += 16
+        string += address.toHex() + "   "
+      }
+    }
+
+    string += "\n\n----- PAYLOAD (UTF8) -----\n"
+      
+    address = 16
+    string += address.toHex() + "                                         "
+    for i in 29...len {
+      string += String(decoding: bytes[i-1...i-1], as: UTF8.self) + "  "
+      if (i % 8) == 0 { string += "  " }
+      if (i % 16) == 0 {
+        string += "\n"
+        address += 16
+        string += address.toHex() + "   "
+      }
+    }
+    return string
   }
   
+  public func payloadProperties(_ data: Data) -> KeyValuesArray {
+    //    let len = 552
+    let len = data.count
+    var bytes = [UInt8](repeating: 0x00, count: len)
+
+    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
+
+    let payloadBytes = bytes[27...len-1]
+    let text = String(decoding: payloadBytes, as: UTF8.self)
+    return text.keyValuesArray()
+  }
+
   // ----------------------------------------------------------------------------
-  // MARK: - GuiClientsView actions
+  // MARK: - Public actions
   
-  
-  // ----------------------------------------------------------------------------
-  // MARK: - MultiflexView actions
-  
-  public func multiflexConnect(_ activeSelection: ActiveSelection) {
-    Task { await connect(activeSelection) }
+  public func clearTextButtonTapped() {
+    settingModel.commandToSend = ""
   }
   
-  // ----------------------------------------------------------------------------
-  // MARK: - Picker actions
+  public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
+    print("daxSelectionChanged")
+    alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
+    showAlert = true
+  }
   
-//  public func defaultButtonTapped(_ radioId: String, _ station: String) {
   public func defaultButtonTapped(_ radioId: String) {
     // set / reset the default
     if settingModel.isGui {
@@ -112,75 +168,7 @@ public class ViewModel {
     }
   }
   
-  public func testButtonTapped(_ id: RadioId) {
-    // perform a connection test on the smartlink radio
-    print("testButtonTapped: \(id)")
-  }
-  
-  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
-    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
-
-    objectModel.activeStation = station
-    // try to connect to the selected radio / station
-    connectionStart(radioId)
-  }
-  
-  // ----------------------------------------------------------------------------
-  // MARK: - SendView actions
-  
-  public func clearTextButtonTapped() {
-    settingModel.commandToSend = ""
-  }
-  public func nextTapped() {
-    print("nextTapped")
-    if settingModel.commandsIndex == settingModel.commandsArray.count - 1 {
-      settingModel.commandsIndex = 0
-    } else {
-      settingModel.commandsIndex += 1
-    }
-    settingModel.commandToSend = settingModel.commandsArray[settingModel.commandsIndex]
-  }
-  
-  public func previousTapped() {
-    print("previousTapped")
-    if settingModel.commandsIndex == 0 {
-      settingModel.commandsIndex = settingModel.commandsArray.count - 1
-    } else {
-      settingModel.commandsIndex -= 1
-    }
-    settingModel.commandToSend = settingModel.commandsArray[settingModel.commandsIndex]
-  }
-  
-  public func sendButtonTapped() {
-    settingModel.commandsArray.append(settingModel.commandToSend)
-    // send command to the radio
-    objectModel.sendTcp(settingModel.commandToSend)
-    if settingModel.clearOnSend { clearTextButtonTapped() }
-  }
-  
-  // ----------------------------------------------------------------------------
-  // MARK: - SmartlinkLogin actions
-  
-  public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
-    Task { await objectModel.startSmartlinkListener( user, password) }
-  }
-  
-  public func smartlinkCancelButtonTapped() {
-    settingModel.smartlinkEnabled = false
-  }
-  
-  public func smartlinkLoginDidDismiss() {
-    
-  }
-  
-  // ----------------------------------------------------------------------------
-  // MARK: - TopButtonsView actions
-  
-  public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
-    print("daxSelectionChanged")
-  }
-  
-  public func directChanged(_ enabled: Bool) {
+  public func directButtonChanged(_ enabled: Bool) {
     print("directChanged \(enabled)")
     if enabled {
       settingModel.localEnabled = false
@@ -192,7 +180,7 @@ public class ViewModel {
     settingModel.isGui.toggle()
   }
   
-  public func localChanged(_ enabled: Bool) {
+  public func localButtonChanged(_ enabled: Bool) {
     print("localChanged \(enabled)")
     if enabled {
       settingModel.directEnabled = false
@@ -202,23 +190,67 @@ public class ViewModel {
     }
   }
   
-  public func remoteRxAudioCompressedChanged() {
-    print("remoteRxAudioCompressedChanged")
+  public func multiflexConnectButtonTapped() {
+    Task { await connect(objectModel.activeSelection!) }
   }
   
-  public func remoteRxAudioEnabledChanged() {
-    print("remoteRxAudioEnabledChanged")
+  public func nextStepperTapped() {
+    print("nextTapped")
+    if settingModel.commandsIndex == settingModel.commandsArray.count - 1 {
+      settingModel.commandsIndex = 0
+    } else {
+      settingModel.commandsIndex += 1
+    }
+    settingModel.commandToSend = settingModel.commandsArray[settingModel.commandsIndex]
   }
   
-  public func remoteTxAudioEnabledChanged() {
+  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
+    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
+    
+    objectModel.activeStation = station
+    // try to connect to the selected radio / station
+    connectionStart(radioId)
+  }
+  
+  public func previousStepperTapped() {
+    print("previousTapped")
+    if settingModel.commandsIndex == 0 {
+      settingModel.commandsIndex = settingModel.commandsArray.count - 1
+    } else {
+      settingModel.commandsIndex -= 1
+    }
+    settingModel.commandToSend = settingModel.commandsArray[settingModel.commandsIndex]
+  }
+  
+  public func remoteRxAudioCompressedButtonChanged() {
+    alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func remoteRxAudioEnabledButtonChanged() {
+    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func remoteTxAudioEnabledButtonChanged() {
     print("remoteTxAudioEnabledChanged")
+    alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
+    showAlert = true
   }
   
-  public func remoteTxAudioCompressedChanged() {
-    print("remoteTxAudioCompressedChanged")
+  public func remoteTxAudioCompressedButtonChanged() {
+    alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
+    showAlert = true
   }
   
-  public func smartlinkChanged(_ enabled: Bool)  {
+  public func sendButtonTapped() {
+    settingModel.commandsArray.append(settingModel.commandToSend)
+    // send command to the radio
+    objectModel.sendTcp(settingModel.commandToSend)
+    if settingModel.clearOnSend { clearTextButtonTapped() }
+  }
+  
+  public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
       settingModel.directEnabled = false
       if settingModel.smartlinkLoginRequired {
@@ -232,6 +264,18 @@ public class ViewModel {
       objectModel.stopSmartlinkListener()
       objectModel.removeRadios(.smartlink)
     }
+  }
+  
+  public func smartlinkCancelButtonTapped() {
+    settingModel.smartlinkEnabled = false
+  }
+  
+  public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
+    Task { await objectModel.startSmartlinkListener( user, password) }
+  }
+  
+  public func smartlinkLoginDidDismiss() {
+    
   }
   
   public func startButtonTapped() {
@@ -250,28 +294,14 @@ public class ViewModel {
     }
   }
   
+  public func testButtonTapped(_ id: RadioId) {
+    // perform a connection test on the smartlink radio
+    alertInfo = AlertInfo("Test Button", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
   // ----------------------------------------------------------------------------
-  // MARK: - Private methods
-  
-  private func connectionStart(_ radioId: RadioId)  {
-
-    // identify the Packet and Staion for the connection
-    objectModel.activeSelection = setPacketAndStation(settingModel.isGui, radioId)
-    guard objectModel.activeSelection != nil else { return }
-    
-    // handle Multiflex
-    if settingModel.isGui && objectModel.activeSelection!.radio.guiClients.count > 0 {
-      showMultiflex = true
-    } else {
-      Task { await connect(objectModel.activeSelection!) }
-    }
-  }
-  
-  private func connectionStop() async {
-    messageModel.stop(settingModel.clearOnStop)
-    await objectModel.disconnect()
-    isConnected = false
-  }
+  // MARK: - Private supporting methods
   
   private func connect(_ activeSelection: ActiveSelection) async {
     messageModel.start(settingModel.clearOnStart)
@@ -304,14 +334,26 @@ public class ViewModel {
     }
   }
   
-//  private func setPacketAndStation(_ isGui: Bool, _ radioId: String, _ station: String) -> ActiveSelection? {
-  private func setPacketAndStation(_ isGui: Bool, _ radioId: String) -> ActiveSelection? {
-
-    // find the Radio
+  private func connectionStart(_ radioId: RadioId)  {
+    // validate the radio id
     if let radio = objectModel.radios.first(where: {$0.id == radioId}) {
-      return ActiveSelection((radio, nil))
+      objectModel.activeSelection = ActiveSelection((radio, nil))
+    } else {
+      log.error("ApiViewer: Radio not found for ID \(radioId)")
+      return
     }
-    return nil
+    // handle Multiflex
+    if settingModel.isGui && objectModel.activeSelection!.radio.guiClients.count > 0 {
+      showMultiflex = true
+    } else {
+      Task { await connect(objectModel.activeSelection!) }
+    }
+  }
+  
+  private func connectionStop() async {
+    messageModel.stop(settingModel.clearOnStop)
+    await objectModel.disconnect()
+    isConnected = false
   }
   
   //  private func findRadio(radioId id: String) -> Radio? {
@@ -389,71 +431,4 @@ public class ViewModel {
   //      await $0(.connectionStatus(.disconnected))
   //    }
   //  }
-  
-  
-  public func hexDump(_ data: Data) -> String {
-//    let len = 552
-    let len = data.count
-    var bytes = [UInt8](repeating: 0x00, count: len)
-
-    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
-    
-    var string = "  \(String(format: "%3d", len ))    00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
-    string += " bytes    -------------------------------------------------\n\n"
-    
-    string += "----- HEADER (Hex) -----\n"
-    
-    var address = 0
-    string += address.toHex() + "   "
-    for i in 1...28 {
-      string += String(format: "%02X", bytes[i-1]) + " "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
-    }
-
-    string += "\n\n----- PAYLOAD (Hex) -----\n"
-      
-    
-    string += address.toHex() + "                                         "
-    for i in 29...len {
-      string += String(format: "%02X", bytes[i-1]) + " "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
-    }
-
-    string += "\n\n----- PAYLOAD (UTF8) -----\n"
-      
-    address = 16
-    string += address.toHex() + "                                         "
-    for i in 29...len {
-      string += String(decoding: bytes[i-1...i-1], as: UTF8.self) + "  "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
-    }
-    return string
-  }
-  
-  public func payloadProperties(_ data: Data) -> KeyValuesArray {
-    //    let len = 552
-    let len = data.count
-    var bytes = [UInt8](repeating: 0x00, count: len)
-
-    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
-
-    let payloadBytes = bytes[27...len-1]
-    let text = String(decoding: payloadBytes, as: UTF8.self)
-    return text.keyValuesArray()
-  }
 }

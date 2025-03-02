@@ -83,10 +83,6 @@ public struct BottomButtonsView: View {
       }
       
       Spacer()
-      HStack {
-        Toggle("Start", isOn: $viewModel.settingModel.clearOnStart)
-        Toggle("Stop", isOn: $viewModel.settingModel.clearOnStop)
-      }
       
       Button("Clear") { viewModel.messageModel.clearButtonTapped() }
     }

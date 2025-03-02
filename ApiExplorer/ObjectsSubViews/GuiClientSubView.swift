@@ -8,7 +8,6 @@
 import SwiftUI
 
 import ApiPackage
-//import SharedFeature
 
 // ----------------------------------------------------------------------------
 // MARK: - View
@@ -19,10 +18,6 @@ struct GuiClientSubView: View {
   @Environment(ViewModel.self) private var viewModel
   
   @State var showSubView = true
-  
-  //  @MainActor func getGuiClientId(_ id: String) -> String {
-  //    return viewModel.objects.guiClientIds.first(where: { $0.id == id })?.clientId?.uuidString ?? ""
-  //  }
   
   var body: some View {
     
@@ -68,6 +63,7 @@ struct GuiClientSubView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
       }
+      .frame(minHeight: 70)
     }
   }
 }

@@ -28,16 +28,20 @@ public struct SettingsView: View {
         
         Toggle("Use saved Defaults", isOn: $viewModelBinding.settingModel.useDefaultEnabled)
         
+        Toggle("Clear messages on Start", isOn: $viewModelBinding.settingModel.clearOnStart)
+
+        Toggle("Clear messages on Stop", isOn: $viewModelBinding.settingModel.clearOnStop)
+
         Toggle("Low BW Connect", isOn: $viewModelBinding.settingModel.lowBandwidthDax)
         
         Toggle("Rx Audio Compression", isOn: $viewModelBinding.settingModel.remoteRxAudioCompressed)
           .onChange(of: viewModel.settingModel.remoteRxAudioCompressed) { _, _ in
-            viewModel.remoteRxAudioCompressedChanged()
+            viewModel.remoteRxAudioCompressedButtonChanged()
           }
         
         Toggle("Tx Audio Compression", isOn: $viewModelBinding.settingModel.remoteTxAudioCompressed)
           .onChange(of: viewModel.settingModel.remoteTxAudioCompressed) { _, _ in
-            viewModel.remoteTxAudioCompressedChanged()
+            viewModel.remoteTxAudioCompressedButtonChanged()
           }
       }
       .disabled(viewModel.isConnected)

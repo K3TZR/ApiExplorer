@@ -15,199 +15,167 @@ import ApiPackage
 public struct PickerView: View {
   
   @Environment(ViewModel.self) private var viewModel
-
+  
+  @State var selectedRadioId: String? = nil
+  @State var selectedStation: String = "ApiExplorer"
+  
   private var guiClients: [GuiClient] {
     return viewModel.objectModel.radios
       .flatMap(\.guiClients)
   }
-
+  
   public var body: some View {
     VStack(alignment: .leading) {
-      HeaderView(isGui: viewModel.settingModel.isGui)
+      
+      HeaderView()
       
       if (viewModel.settingModel.isGui && viewModel.objectModel.radios.count == 0) || (!viewModel.settingModel.isGui && guiClients.count == 0) {
-       NothingView()
-        
-      } else if viewModel.settingModel.isGui {
-        GuiView()
-        
-      } else {
-        NonGuiView()
+        NothingView()
       }
+      else if viewModel.settingModel.isGui {
+        GuiView(selectedRadioId: $selectedRadioId)
+      }
+      else {
+        NonGuiView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
+      }
+      
+      FooterView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
     }
-    .padding()
   }
 }
 
+
 private struct HeaderView: View {
-  let isGui: Bool
+  
+  @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
-    VStack(alignment: .leading)  {
-      HStack {
-        Spacer()
-        Text("Select a \(isGui ? "RADIO" : "STATION")")
-          .font(.title)
-        Spacer()
-      }
-      
-      HStack(spacing: 10) {
-        Text("\(isGui ? "Radio" : "Station")")
-          .frame(width: 140, alignment: .leading)
-        
-        Text("Type")
-          .frame(width: 60, alignment: .leading)
-        
-        Text("Status")
-          .frame(width: 60, alignment: .leading)
-        
-        Text("\(isGui ? "Station(s)" : "Radio")")
-      }
-      Divider()
+    
+    HStack {
+      Spacer()
+      Text("Select a \(viewModel.settingModel.isGui ? "RADIO" : "STATION")")
+        .font(.title)
+      Spacer()
     }
+    
+    HStack(spacing: 0) {
+      Text("\(viewModel.settingModel.isGui ? "Radio" : "Station")")
+        .frame(width: 200, alignment: .leading)
+      
+      Text("Type")
+        .frame(width: 70, alignment: .leading)
+      
+      Text("Status")
+        .frame(width: 100, alignment: .leading)
+      
+      Text("\(viewModel.settingModel.isGui  ? "Station(s)" : "Radio")")
+        .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+    }
+    .padding(.leading, 10)
     .font(.title3)
+    
+    Divider()
   }
 }
 
 private struct NothingView: View {
-
+  
   @Environment(ViewModel.self) private var viewModel
-
+  
   var body: some View {
     VStack {
       Spacer()
-      
       HStack {
         Spacer()
         Text("----------  NO \(viewModel.settingModel.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
           .foregroundColor(.red)
         Spacer()
       }
-      
-      
-      FooterView(selectedRadioId: nil, selectedStation: nil)
+      Spacer()
     }
-    .frame(minHeight: 200)
   }
 }
 
 private struct GuiView: View {
-
+  let selectedRadioId: Binding<String?>
+  
   @Environment(ViewModel.self) private var viewModel
-  @Environment(\.dismiss) var dismiss
-
-  @State var selectedRadioId: String? = nil
-  @State var selectedStation: String? = nil
-
-  private var guiClients: [GuiClient] {
-    return viewModel.objectModel.radios
-      .flatMap(\.guiClients)
-  }
-
-  private var stations: [String] {
-    return guiClients.map(\.self.station)
-  }
   
   var body: some View {
+    
     // ----- List of Radios -----
-    VStack {
-      List(selection: $selectedRadioId) {
-        ForEach(viewModel.objectModel.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
-          Button(action: {
-            selectedRadioId = radio.id // Manually select the row
-            selectedStation = "ApiExplorer"
-          }) {
-            HStack(spacing: 10) {
-              Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
-                .frame(minWidth: 140, alignment: .leading)
-              
-              Text(radio.packet.source.rawValue)
-                .frame(minWidth: 60, alignment: .leading)
-              
-              Text(radio.packet.status)
-                .frame(minWidth: 60, alignment: .leading)
-              
-              Text(stations.joined(separator: ", "))
-            }
-            .font(.title3)
-            .foregroundColor(viewModel.settingModel.defaultGui == radio.id ? .red : nil)
-            .contentShape(Rectangle()) // Ensures full row is clickable
-          }
-          .buttonStyle(PlainButtonStyle()) // Removes default button appearance
-          .simultaneousGesture(
-            TapGesture(count: 2).onEnded {
-              dismiss()
-              viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
-            }
-          )
+    List(selection: selectedRadioId) {
+      ForEach(viewModel.objectModel.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
+        HStack(spacing: 0) {
+          Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
+            .frame(width: 200, alignment: .leading)
+            .truncationMode(.middle)
+          
+          Text(radio.packet.source.rawValue)
+            .frame(width: 70, alignment: .leading)
+          
+          Text(radio.packet.status)
+            .frame(width: 100, alignment: .leading)
+          
+          Text(radio.packet.guiClientStations.joined(separator: ", "))
+            .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+            .truncationMode(.middle)
         }
+        .font(.title3)
+        .foregroundColor(viewModel.settingModel.defaultGui == radio.id ? .red : nil)
       }
-      
-      FooterView(selectedRadioId: selectedRadioId, selectedStation: selectedStation)
     }
-    .frame(minHeight: 200)
+    .listStyle(.plain)
   }
 }
 
 private struct NonGuiView: View {
-
+  let selectedRadioId: Binding<String?>
+  let selectedStation: Binding<String>
+  
   @Environment(ViewModel.self) private var viewModel
-  @Environment(\.dismiss) var dismiss
-
-  @State var selectedRadioId: String? = nil
-  @State var selectedStation: String? = nil
-
-  private var guiClients: [GuiClient] {
-    return viewModel.objectModel.radios
-      .flatMap(\.guiClients)
-  }
-
+  
   var body: some View {
-    VStack {
-      // ----- List of Stations -----
-      List(selection: $selectedRadioId) {
-        ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-          ForEach(radio.guiClients, id: \.self) { guiClient in
-            Button(action: {
-              selectedRadioId = radio.id // Manually select the row
-              selectedStation = guiClient.station
-            }) {
-              HStack(spacing: 10) {
-                Text(guiClient.station)
-                  .frame(minWidth: 140, alignment: .leading)
-                
-                Text(radio.packet.source.rawValue)
-                  .frame(minWidth: 60, alignment: .leading)
-                
-                Text(radio.packet.status)
-                  .frame(minWidth: 60, alignment: .leading)
-                
-                Text(radio.packet.nickname)
-              }
-              .font(.title3)
-              .foregroundColor(viewModel.settingModel.defaultNonGui == radio.id ? .red : nil )
-              .contentShape(Rectangle()) // Ensures full row is clickable
-            }
-            .buttonStyle(PlainButtonStyle()) // Removes default button appearance
-            .simultaneousGesture(
-              TapGesture(count: 2).onEnded {
-                dismiss()
-                viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
-              }
-            )
+
+    // ----- List of Stations -----
+    List {
+      ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
+        ForEach(radio.guiClients, id: \.self) { guiClient in
+          HStack(spacing: 0) {
+            Text(guiClient.station)
+              .frame(width: 200, alignment: .leading)
+              .truncationMode(.middle)
+            
+            Text(radio.packet.source.rawValue)
+              .frame(width: 70, alignment: .leading)
+            
+            Text(radio.packet.status)
+              .frame(width: 100, alignment: .leading)
+            
+            Text(radio.packet.nickname)
+              .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+              .truncationMode(.middle)
+          }
+          .font(.title3)
+          .foregroundColor(viewModel.settingModel.defaultNonGui == radio.id ? .red : nil)
+          
+          .background(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.3) : Color.clear) // Highlight selection
+          .cornerRadius(8)
+          .onTapGesture { // Update selection manually
+            selectedRadioId.wrappedValue = radio.id
+            selectedStation.wrappedValue = guiClient.station
           }
         }
       }
-      
-      FooterView(selectedRadioId: selectedRadioId, selectedStation: selectedStation)
+      .listStyle(.plain)
+      .frame(maxWidth: .infinity, maxHeight: .infinity) // Forces it to take full space
     }
-    .frame(minHeight: 200)
   }
 }
 
 private struct FooterView: View {
-  let selectedRadioId: String?
-  let selectedStation: String?
+  let selectedRadioId: Binding<String?>
+  let selectedStation: Binding<String>
   //  let selectionIsSmartlink: Bool
   
   @Environment(ViewModel.self) private var viewModel
@@ -217,7 +185,7 @@ private struct FooterView: View {
     Spacer()
     
     Divider()
-
+    
     HStack {
       //      Button("Test") { viewModel.testButtonTapped(selection!) }
       //        .disabled(!selectionIsSmartlink)
@@ -226,21 +194,21 @@ private struct FooterView: View {
       //        .frame(width: 20, height: 20)
       
       Button("Default") {
-        viewModel.defaultButtonTapped(selectedRadioId!)
+        viewModel.defaultButtonTapped(selectedRadioId.wrappedValue!)
       }
-      .disabled(selectedRadioId == nil || selectedStation == nil)
-
+      .disabled(selectedRadioId.wrappedValue == nil)
+      
       Spacer()
       Button("Cancel") { dismiss() }
         .keyboardShortcut(.cancelAction)
       
       Spacer()
       Button("Connect") {
-        viewModel.pickerConnectButtonTapped(selectedRadioId!, selectedStation!)
+        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue!, selectedStation.wrappedValue)
         dismiss()
       }
       .keyboardShortcut(.defaultAction)
-      .disabled(selectedRadioId == nil || selectedStation == nil)
+      .disabled(selectedRadioId.wrappedValue == nil)
     }
   }
 }

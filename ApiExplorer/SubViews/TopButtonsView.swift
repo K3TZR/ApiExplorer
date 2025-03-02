@@ -36,15 +36,15 @@ public struct TopButtonsView: View {
       ControlGroup {
         Toggle("Direct", isOn: $viewModelBinding.settingModel.directEnabled)
           .onChange(of: viewModel.settingModel.directEnabled) {
-            viewModel.directChanged($1)
+            viewModel.directButtonChanged($1)
           }
         Toggle("Local", isOn: $viewModelBinding.settingModel.localEnabled)
           .onChange(of: viewModel.settingModel.localEnabled) {
-            viewModel.localChanged($1)
+            viewModel.localButtonChanged($1)
           }
         Toggle("Smartlink", isOn: $viewModelBinding.settingModel.smartlinkEnabled)
           .onChange(of: viewModel.settingModel.smartlinkEnabled) {
-            viewModel.smartlinkChanged($1)
+            viewModel.smartlinkButtonChanged($1)
           }
        }
       .frame(width: 180)
@@ -68,19 +68,17 @@ public struct TopButtonsView: View {
       
       HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $viewModelBinding.settingModel.remoteRxAudioEnabled)
-//          .frame(width: 100)
           .disabled(viewModel.settingModel.isGui == false)
         
           .onChange(of: viewModel.settingModel.remoteRxAudioEnabled) { _, _ in
-            viewModel.remoteRxAudioEnabledChanged()
+            viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
         Toggle("Tx Audio", isOn: $viewModelBinding.settingModel.remoteTxAudioEnabled)
-//          .frame(width: 100)
           .disabled(viewModel.settingModel.isGui == false)
-        
+
           .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
-            viewModel.remoteTxAudioEnabledChanged()
+            viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }
       .frame(width: 150)
