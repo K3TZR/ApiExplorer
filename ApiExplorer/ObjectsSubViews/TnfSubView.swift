@@ -28,10 +28,10 @@ struct TnfSubView: View {
   var body: some View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
-      if viewModel.objectModel.tnfs.count > 0 {
+      if viewModel.apiModel.tnfs.count > 0 {
         HeaderView()
         
-        ForEach(viewModel.objectModel.tnfs, id: \.id) { tnf in
+        ForEach(viewModel.apiModel.tnfs, id: \.id) { tnf in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             

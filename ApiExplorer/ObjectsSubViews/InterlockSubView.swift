@@ -15,7 +15,7 @@ struct InterlockSubView: View {
   
   var body: some View {
     
-    let interlock = viewModel.objectModel.interlock
+    let interlock = viewModel.apiModel.interlock
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       GridRow {
         Text("INTERLOCK")

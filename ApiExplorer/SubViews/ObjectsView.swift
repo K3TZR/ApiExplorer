@@ -68,7 +68,7 @@ private struct RadioClientTesterSplitView: View {
       RadioSubView()
         .layoutPriority(1)
 
-      if let radio = viewModel.objectModel.activeSelection?.radio {
+      if let radio = viewModel.apiModel.activeSelection?.radio {
         GuiClientSubView(radio: radio)
       }
       
@@ -98,7 +98,7 @@ private struct RadioClientTesterSplitView: View {
               }
           )
         
-        if let radio = viewModel.objectModel.activeSelection?.radio {
+        if let radio = viewModel.apiModel.activeSelection?.radio {
           GuiClientSubView(radio: radio)
             .frame(maxHeight: .infinity)
             .frame(maxWidth: .infinity)

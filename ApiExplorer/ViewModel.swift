@@ -18,7 +18,7 @@ public class ViewModel {
   
   public init() {
     messageModel = MessageModel()
-    objectModel = ObjectModel()
+    apiModel = ApiModel()
     settingModel = SettingModel()
   }
   
@@ -27,7 +27,7 @@ public class ViewModel {
   
   // models
   public var messageModel: MessageModel!
-  public let objectModel: ObjectModel!
+  public let apiModel: ApiModel!
   public var settingModel: SettingModel!
   
   // transient properties
@@ -57,14 +57,14 @@ public class ViewModel {
       // mark as initialized
       initialized = true
       if settingModel.localEnabled {
-        objectModel.startLocalListener()
+        apiModel.localListenerStart()
       }
       if settingModel.smartlinkEnabled {
         // start smartlink listener
         if settingModel.smartlinkLoginRequired {
           showSmartlinkLogin = true
         } else {
-          Task { await objectModel.startSmartlinkListener() }
+          Task { await apiModel.smartlinkListenerStart() }
         }
       }
       if settingModel.guiClientId.isEmpty {
@@ -184,14 +184,14 @@ public class ViewModel {
     print("localChanged \(enabled)")
     if enabled {
       settingModel.directEnabled = false
-      objectModel.startLocalListener()
+      apiModel.localListenerStart()
     } else {
-      objectModel.stopLocalListener()
+      apiModel.localListenerStop()
     }
   }
   
   public func multiflexConnectButtonTapped() {
-    Task { await connect(objectModel.activeSelection!) }
+    Task { await connect(apiModel.activeSelection!) }
   }
   
   public func nextStepperTapped() {
@@ -207,7 +207,7 @@ public class ViewModel {
   public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
     print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
     
-    objectModel.activeStation = station
+    apiModel.activeStation = station
     // try to connect to the selected radio / station
     connectionStart(radioId)
   }
@@ -246,7 +246,7 @@ public class ViewModel {
   public func sendButtonTapped() {
     settingModel.commandsArray.append(settingModel.commandToSend)
     // send command to the radio
-    objectModel.sendTcp(settingModel.commandToSend)
+    apiModel.sendTcp(settingModel.commandToSend)
     if settingModel.clearOnSend { clearTextButtonTapped() }
   }
   
@@ -258,11 +258,11 @@ public class ViewModel {
       }
       
       // FIXME: remove hard coded user/pwd
-      Task { await objectModel.startSmartlinkListener("douglas.adams@me.com", "fleX!20Comm") }
+      Task { await apiModel.smartlinkListenerStart("douglas.adams@me.com", "fleX!20Comm") }
       
     } else {
-      objectModel.stopSmartlinkListener()
-      objectModel.removeRadios(.smartlink)
+      apiModel.smartlinkListenerStop()
+      apiModel.removeRadios(.smartlink)
     }
   }
   
@@ -271,11 +271,11 @@ public class ViewModel {
   }
   
   public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
-    Task { await objectModel.startSmartlinkListener( user, password) }
+    Task { await apiModel.smartlinkListenerStart( user, password) }
   }
   
   public func smartlinkLoginDidDismiss() {
-    
+    // no action required
   }
   
   public func startButtonTapped() {
@@ -294,10 +294,14 @@ public class ViewModel {
     }
   }
   
-  public func testButtonTapped(_ id: RadioId) {
-    // perform a connection test on the smartlink radio
-    alertInfo = AlertInfo("Test Button", "Not Implemented (yet)")
-    showAlert = true
+  public func smartlinkTestButtonTapped(_ id: RadioId) {
+    // find the radio
+    if let radio = apiModel.radios.first(where: { $0.id == id }) {
+      // result the result
+      apiModel.smartlinkTestResult = SmartlinkTestResult()
+      // perform a connection test on the smartlink radio
+      apiModel.sendSmartlinkTest(radio.packet.serial)
+    }
   }
   
   // ----------------------------------------------------------------------------
@@ -310,7 +314,7 @@ public class ViewModel {
     // try to connect
     let connectTask = Task {
       do {
-        try await objectModel.connect(selection: activeSelection,
+        try await apiModel.connect(selection: activeSelection,
                                       isGui: settingModel.isGui,
                                       programName: "ApiViewer",
                                       mtuValue: settingModel.mtuValue,
@@ -328,31 +332,31 @@ public class ViewModel {
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log.info("ApiViewer: connection attempt SUCCEEDED for \(self.objectModel.activeSelection!.radio.id)")
+      log.info("ApiViewer: connection attempt SUCCEEDED for \(self.apiModel.activeSelection!.radio.id)")
     } else {
-      log.error("ApiViewer: connection attempt FAILED for \(self.objectModel.activeSelection!.radio.id)")
+      log.error("ApiViewer: connection attempt FAILED for \(self.apiModel.activeSelection!.radio.id)")
     }
   }
   
   private func connectionStart(_ radioId: RadioId)  {
     // validate the radio id
-    if let radio = objectModel.radios.first(where: {$0.id == radioId}) {
-      objectModel.activeSelection = ActiveSelection((radio, nil))
+    if let radio = apiModel.radios.first(where: {$0.id == radioId}) {
+      apiModel.activeSelection = ActiveSelection((radio, nil))
     } else {
       log.error("ApiViewer: Radio not found for ID \(radioId)")
       return
     }
     // handle Multiflex
-    if settingModel.isGui && objectModel.activeSelection!.radio.guiClients.count > 0 {
+    if settingModel.isGui && apiModel.activeSelection!.radio.guiClients.count > 0 {
       showMultiflex = true
     } else {
-      Task { await connect(objectModel.activeSelection!) }
+      Task { await connect(apiModel.activeSelection!) }
     }
   }
   
   private func connectionStop() async {
     messageModel.stop(settingModel.clearOnStop)
-    await objectModel.disconnect()
+    await apiModel.disconnect()
     isConnected = false
   }
   

@@ -20,14 +20,14 @@ struct PanadapterSubView: View {
   
   var body: some View {
     
-    if viewModel.objectModel.panadapters.count == 0 {
+    if viewModel.apiModel.panadapters.count == 0 {
       HStack(spacing: 20) {
         Text("PANADAPTER").frame(width: 110, alignment: .leading)
         Text("----- NONE PRESENT -----").foregroundColor(.red)
       }
       
     } else {
-      ForEach(viewModel.objectModel.panadapters, id: \.id) { panadapter in
+      ForEach(viewModel.apiModel.panadapters, id: \.id) { panadapter in
         
         if panadapter.clientHandle == handle {
           
@@ -37,12 +37,12 @@ struct PanadapterSubView: View {
             PanadapterDetailView(panadapter: panadapter)
             
             // corresponding Waterfall
-            ForEach(viewModel.objectModel.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
+            ForEach(viewModel.apiModel.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
               WaterfallDetailView(waterfall: waterfall)
             }
             
             // corresponding Slice(s)
-//            ForEach(viewModel.objectModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+//            ForEach(viewModel.apiModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
 //              SliceDetailView(slice: slice)
 //              
 //              //            // slice meter(s)

@@ -30,7 +30,7 @@ public struct SmartlinkLoginView: View {
         }
         GridRow {
           Text( "Password").frame(alignment: .leading)
-          SecureField( "", text: $password)
+         TextField( "", text: $password)
         }
       }
       

@@ -20,8 +20,8 @@ public struct DiscoveryView: View {
   @State var radioSelection: String?
   
   var data: Data? {
-    if let index = viewModel.objectModel.radios.firstIndex(where: {$0.id == radioSelection}) {
-      return viewModel.objectModel.radios[index].discoveryData
+    if let index = viewModel.apiModel.radios.firstIndex(where: {$0.id == radioSelection}) {
+      return viewModel.apiModel.radios[index].discoveryData
     }
     return nil
   }
@@ -35,7 +35,7 @@ public struct DiscoveryView: View {
       HStack {
         Picker("Choose a Radio", selection: $radioSelection) {
           Text("Select a Radio").tag(nil as String?)
-          ForEach(viewModel.objectModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
+          ForEach(viewModel.apiModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
         }.frame(width: 250)

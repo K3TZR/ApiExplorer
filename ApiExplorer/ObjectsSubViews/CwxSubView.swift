@@ -18,7 +18,7 @@ struct CwxSubView: View {
 
   var body: some View {
     
-    let cwx = viewModel.objectModel.cwx
+    let cwx = viewModel.apiModel.cwx
     
     Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {

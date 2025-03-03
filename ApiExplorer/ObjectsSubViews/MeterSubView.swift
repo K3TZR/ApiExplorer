@@ -31,7 +31,7 @@ struct MeterSubView: View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
-      ForEach(viewModel.objectModel.meters ) { meter in
+      ForEach(viewModel.apiModel.meters ) { meter in
 //        if showMeter(sliceId, meter.source, meter.group) {
           DetailView(meter: meter)
 //        }

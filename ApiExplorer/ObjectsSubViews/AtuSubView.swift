@@ -19,9 +19,9 @@ struct AtuSubView: View {
   var body: some View {
     
     Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
-      if let radio = viewModel.objectModel.activeSelection?.radio {
+      if let radio = viewModel.apiModel.activeSelection?.radio {
         if radio.atuPresent {
-          let atu = viewModel.objectModel.atu
+          let atu = viewModel.apiModel.atu
           GridRow {
             Text("ATU")
               .frame(width: 110, alignment: .leading)

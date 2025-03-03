@@ -16,7 +16,7 @@ struct TesterSubView: View {
   
   var body: some View {
     
-    if viewModel.objectModel.activeSelection != nil {
+    if viewModel.apiModel.activeSelection != nil {
       Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
         GridRow {
           Text("ApiExplorer").foregroundColor(.blue)
@@ -24,15 +24,15 @@ struct TesterSubView: View {
             .font(.title)
           
             Text("Bound to Station")
-            Text("\(viewModel.objectModel.activeStation ?? "Unknown")")
+            Text("\(viewModel.apiModel.activeStation ?? "Unknown")")
               .foregroundColor(.secondary)
 
           Text("Handle")
-            Text(viewModel.objectModel.connectionHandle?.hex ?? "???")
+            Text(viewModel.apiModel.connectionHandle?.hex ?? "???")
               .foregroundColor(.secondary)
 
           Text("Client Id")
-            Text("\(viewModel.objectModel.boundClientId ?? "???")")
+            Text("\(viewModel.apiModel.boundClientId ?? "???")")
               .foregroundColor(.secondary)
         }
       }

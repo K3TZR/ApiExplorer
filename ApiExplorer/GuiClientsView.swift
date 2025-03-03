@@ -19,7 +19,7 @@ public struct GuiClientsView: View {
 //  private var stationCount: Int {
 //    var count = 0
 //    
-//    for radio in viewModel.objectModel.radios {
+//    for radio in viewModel.apiModel.radios {
 //      for _ in radio.guiClients {
 //        count += 1
 //      }
@@ -28,7 +28,7 @@ public struct GuiClientsView: View {
 //  }
   
   private var guiClients: [GuiClient] {
-    return viewModel.objectModel.radios
+    return viewModel.apiModel.radios
       .flatMap(\.guiClients)
   }
   

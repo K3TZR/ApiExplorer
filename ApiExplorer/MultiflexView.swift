@@ -18,7 +18,7 @@ public struct MultiflexView: View {
   @Environment(\.dismiss) var dismiss
   
   private var guiClients: [GuiClient] {
-    return viewModel.objectModel.radios
+    return viewModel.apiModel.radios
       .flatMap(\.guiClients)
   }
 
@@ -38,7 +38,7 @@ public struct MultiflexView: View {
       
       ForEach(guiClients) { guiClient in
         Button("Close " + guiClient.station) {
-          viewModel.objectModel.activeSelection?.disconnectHandle = guiClient.handle
+          viewModel.apiModel.activeSelection?.disconnectHandle = guiClient.handle
           viewModel.multiflexConnectButtonTapped()
           dismiss()
         }
