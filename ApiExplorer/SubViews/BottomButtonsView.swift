@@ -48,43 +48,43 @@ public struct BottomButtonsView: View {
     @Bindable var viewModel = viewModel
 
     HStack {
-      Toggle(isOn: $viewModel.settingModel.gotoBottom) {
+      Toggle(isOn: $viewModel.settings.gotoBottom) {
         Image(systemName: "arrow.down.square").font(.title)
       }
       
       Spacer()
       
       HStack(spacing: 5) {
-        Stepper("Font", value: $viewModel.settingModel.fontSize, in: 8...14)
-        Text(viewModel.settingModel.fontSize, format: .number).frame(alignment: .leading)
+        Stepper("Font", value: $viewModel.settings.fontSize, in: 8...14)
+        Text(viewModel.settings.fontSize, format: .number).frame(alignment: .leading)
       }
-      Toggle("Spacing", isOn: $viewModel.settingModel.newLineBetweenMessages)
+      Toggle("Spacing", isOn: $viewModel.settings.newLineBetweenMessages)
 
       Spacer()
       HStack {
-        Toggle("Times", isOn: $viewModel.settingModel.showTimes)
-        Toggle("Pings", isOn: $viewModel.settingModel.showPings)
-        Toggle("Replies", isOn: $viewModel.settingModel.showReplies)
-        Toggle("Alerts", isOn: $viewModel.settingModel.alertOnError)
+        Toggle("Times", isOn: $viewModel.settings.showTimes)
+        Toggle("Pings", isOn: $viewModel.settings.showPings)
+        Toggle("Replies", isOn: $viewModel.settings.showReplies)
+        Toggle("Alerts", isOn: $viewModel.settings.alertOnError)
           .help("Display a sheet when an Error / Warning occurs")
       }
       
-      .onChange(of: viewModel.settingModel.showPings) { _, newValue in
-        viewModel.messageModel.showPings = newValue
+      .onChange(of: viewModel.settings.showPings) { _, newValue in
+        viewModel.messages.showPings = newValue
       }
-      .onChange(of: viewModel.settingModel.showReplies) { _, newValue in
-        viewModel.messageModel.showReplies = newValue
+      .onChange(of: viewModel.settings.showReplies) { _, newValue in
+        viewModel.messages.showReplies = newValue
       }
       
       Spacer()
       Button("Save") {
-        document = MessagesDocument(text: viewModel.messageModel.messagesText())
+        document = MessagesDocument(text: viewModel.messages.messagesText())
         isSaving = true
       }
       
       Spacer()
       
-      Button("Clear") { viewModel.messageModel.clearButtonTapped() }
+      Button("Clear") { viewModel.messages.clearButtonTapped() }
     }
     .toggleStyle(.button)
     

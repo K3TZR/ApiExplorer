@@ -20,8 +20,8 @@ struct BandSettingSubView: View {
 
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
-      if viewModel.apiModel.bandSettings.count > 0 {
-        ForEach(viewModel.apiModel.bandSettings.sorted(by: {$0.name > $1.name})) { bandSetting in
+      if viewModel.api.bandSettings.count > 0 {
+        ForEach(viewModel.api.bandSettings.sorted(by: {$0.name > $1.name})) { bandSetting in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             

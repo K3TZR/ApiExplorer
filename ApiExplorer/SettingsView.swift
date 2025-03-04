@@ -24,23 +24,23 @@ public struct SettingsView: View {
     VStack(alignment: .center) {
       
       VStack(alignment: .leading) {
-        Toggle("Require Smartlink Login", isOn: $viewModelBinding.settingModel.smartlinkLoginRequired)
+        Toggle("Require Smartlink Login", isOn: $viewModelBinding.settings.smartlinkLoginRequired)
         
-        Toggle("Use saved Defaults", isOn: $viewModelBinding.settingModel.useDefaultEnabled)
+        Toggle("Use saved Defaults", isOn: $viewModelBinding.settings.useDefaultEnabled)
         
-        Toggle("Clear messages on Start", isOn: $viewModelBinding.settingModel.clearOnStart)
+        Toggle("Clear messages on Start", isOn: $viewModelBinding.settings.clearOnStart)
 
-        Toggle("Clear messages on Stop", isOn: $viewModelBinding.settingModel.clearOnStop)
+        Toggle("Clear messages on Stop", isOn: $viewModelBinding.settings.clearOnStop)
 
-        Toggle("Low BW Connect", isOn: $viewModelBinding.settingModel.lowBandwidthDax)
+        Toggle("Low BW Connect", isOn: $viewModelBinding.settings.lowBandwidthDax)
         
-        Toggle("Rx Audio Compression", isOn: $viewModelBinding.settingModel.remoteRxAudioCompressed)
-          .onChange(of: viewModel.settingModel.remoteRxAudioCompressed) { _, _ in
+        Toggle("Rx Audio Compression", isOn: $viewModelBinding.settings.remoteRxAudioCompressed)
+          .onChange(of: viewModel.settings.remoteRxAudioCompressed) { _, _ in
             viewModel.remoteRxAudioCompressedButtonChanged()
           }
         
-        Toggle("Tx Audio Compression", isOn: $viewModelBinding.settingModel.remoteTxAudioCompressed)
-          .onChange(of: viewModel.settingModel.remoteTxAudioCompressed) { _, _ in
+        Toggle("Tx Audio Compression", isOn: $viewModelBinding.settings.remoteTxAudioCompressed)
+          .onChange(of: viewModel.settings.remoteTxAudioCompressed) { _, _ in
             viewModel.remoteTxAudioCompressedButtonChanged()
           }
       }

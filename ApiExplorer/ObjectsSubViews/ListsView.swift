@@ -15,7 +15,7 @@ struct ListsView: View {
 
   var body: some View {
    
-    if let radio = viewModel.apiModel.activeSelection?.radio {
+    if let radio = viewModel.api.activeSelection?.radio {
       Grid(alignment: .leading, horizontalSpacing: 10) {
         GridRow {
           Text("LISTS")

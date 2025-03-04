@@ -25,7 +25,7 @@ public struct ObjectsView: View {
       if viewModel.isConnected {
         RadioClientTesterSplitView()
           .textSelection(.enabled)
-          .font(.system(size: CGFloat(viewModel.settingModel.fontSize), weight: .regular, design: .monospaced))
+          .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
           .padding(.horizontal, 10)
 
       } else {
@@ -46,7 +46,7 @@ private struct ObjectsEmptyView: View {
       Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
       Spacer()
       Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-      if viewModel.settingModel.isGui == false {
+      if viewModel.settings.isGui == false {
         Spacer()
         Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
       }
@@ -68,11 +68,11 @@ private struct RadioClientTesterSplitView: View {
       RadioSubView()
         .layoutPriority(1)
 
-      if let radio = viewModel.apiModel.activeSelection?.radio {
+      if let radio = viewModel.api.activeSelection?.radio {
         GuiClientSubView(radio: radio)
       }
       
-      if viewModel.settingModel.isGui == false {
+      if viewModel.settings.isGui == false {
         TesterSubView()
       }
     }
@@ -105,7 +105,7 @@ private struct RadioClientTesterSplitView: View {
             .background(Color.green.opacity(0.2)) // Just for visualization
         }
 
-        if viewModel.settingModel.isGui == false {
+        if viewModel.settings.isGui == false {
           TesterSubView()
             .frame(maxHeight: .infinity)
             .frame(maxWidth: .infinity)
@@ -124,7 +124,7 @@ private struct FilterRadioObjectsView: View {
   var body: some View {
     @Bindable var viewModel = viewModel
     
-    Picker("Show RADIO Objects of type", selection: $viewModel.settingModel.radioObjectFilter) {
+    Picker("Show RADIO Objects of type", selection: $viewModel.settings.radioObjectFilter) {
       ForEach(RadioObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }
@@ -140,7 +140,7 @@ private struct FilterStationObjectsView: View {
   var body: some View {
     @Bindable var viewModel = viewModel
 
-    Picker("Show STATION Objects of type", selection: $viewModel.settingModel.stationObjectFilter) {
+    Picker("Show STATION Objects of type", selection: $viewModel.settings.stationObjectFilter) {
       ForEach(StationObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }

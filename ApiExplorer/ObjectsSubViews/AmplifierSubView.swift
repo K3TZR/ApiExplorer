@@ -19,9 +19,9 @@ struct AmplifierSubView: View {
   var body: some View {
     
     Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 5) {
-      if viewModel.apiModel.amplifiers.count > 0 {
+      if viewModel.api.amplifiers.count > 0 {
         HeadingView()
-        ForEach(viewModel.apiModel.amplifiers) { amplifier in
+        ForEach(viewModel.api.amplifiers) { amplifier in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             Text(amplifier.id.hex)

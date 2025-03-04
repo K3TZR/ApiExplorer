@@ -20,7 +20,7 @@ public struct PickerView: View {
   @State var selectedStation: String = "ApiExplorer"
   
   private var guiClients: [GuiClient] {
-    return viewModel.apiModel.radios
+    return viewModel.api.radios
       .flatMap(\.guiClients)
   }
   
@@ -29,10 +29,10 @@ public struct PickerView: View {
       
       HeaderView()
       
-      if (viewModel.settingModel.isGui && viewModel.apiModel.radios.count == 0) || (!viewModel.settingModel.isGui && guiClients.count == 0) {
+      if (viewModel.settings.isGui && viewModel.api.radios.count == 0) || (!viewModel.settings.isGui && guiClients.count == 0) {
         NothingView()
       }
-      else if viewModel.settingModel.isGui {
+      else if viewModel.settings.isGui {
         GuiView(selectedRadioId: $selectedRadioId)
       }
       else {
@@ -53,13 +53,13 @@ private struct HeaderView: View {
     
     HStack {
       Spacer()
-      Text("Select a \(viewModel.settingModel.isGui ? "RADIO" : "STATION")")
+      Text("Select a \(viewModel.settings.isGui ? "RADIO" : "STATION")")
         .font(.title)
       Spacer()
     }
     
     HStack(spacing: 0) {
-      Text("\(viewModel.settingModel.isGui ? "Radio" : "Station")")
+      Text("\(viewModel.settings.isGui ? "Radio" : "Station")")
         .frame(width: 200, alignment: .leading)
       
       Text("Type")
@@ -68,7 +68,7 @@ private struct HeaderView: View {
       Text("Status")
         .frame(width: 100, alignment: .leading)
       
-      Text("\(viewModel.settingModel.isGui  ? "Station(s)" : "Radio")")
+      Text("\(viewModel.settings.isGui  ? "Station(s)" : "Radio")")
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
     }
     .padding(.leading, 10)
@@ -87,7 +87,7 @@ private struct NothingView: View {
       Spacer()
       HStack {
         Spacer()
-        Text("----------  NO \(viewModel.settingModel.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
+        Text("----------  NO \(viewModel.settings.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
           .foregroundColor(.red)
         Spacer()
       }
@@ -105,7 +105,7 @@ private struct GuiView: View {
     
     // ----- List of Radios -----
     List(selection: selectedRadioId) {
-      ForEach(viewModel.apiModel.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
+      ForEach(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
         HStack(spacing: 0) {
           Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
             .frame(width: 200, alignment: .leading)
@@ -122,7 +122,7 @@ private struct GuiView: View {
             .truncationMode(.middle)
         }
         .font(.title3)
-        .foregroundColor(viewModel.settingModel.defaultGui == radio.id ? .red : nil)
+        .foregroundColor(viewModel.settings.defaultGui == radio.id ? .red : nil)
       }
     }
     .listStyle(.plain)
@@ -139,7 +139,7 @@ private struct NonGuiView: View {
 
     // ----- List of Stations -----
     List {
-      ForEach(viewModel.apiModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
+      ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
         ForEach(radio.guiClients, id: \.self) { guiClient in
           HStack(spacing: 0) {
             Text(guiClient.station)
@@ -157,7 +157,7 @@ private struct NonGuiView: View {
               .truncationMode(.middle)
           }
           .font(.title3)
-          .foregroundColor(viewModel.settingModel.defaultNonGui == radio.id ? .red : nil)
+          .foregroundColor(viewModel.settings.defaultNonGui == radio.id ? .red : nil)
           
           .background(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.3) : Color.clear) // Highlight selection
           .cornerRadius(8)
@@ -183,7 +183,7 @@ private struct FooterView: View {
   
   var selectedRadioIsNotSmartlink: Bool {
     guard let selectedRadioId = selectedRadioId.wrappedValue else { return false }
-    return viewModel.apiModel.radios.first(where: { $0.id == selectedRadioId })?.packet.source != .smartlink
+    return viewModel.api.radios.first(where: { $0.id == selectedRadioId })?.packet.source != .smartlink
   }
   
   
@@ -196,7 +196,7 @@ private struct FooterView: View {
       Button("Test") { viewModel.smartlinkTestButtonTapped(selectedRadioId.wrappedValue!)}
         .disabled(selectedRadioIsNotSmartlink || selectedRadioId.wrappedValue == nil)
       Circle()
-        .fill(viewModel.apiModel.smartlinkTestResult.success ? Color.green : Color.red)
+        .fill(viewModel.api.smartlinkTestResult.success ? Color.green : Color.red)
         .frame(width: 20, height: 20)
       
       Spacer()

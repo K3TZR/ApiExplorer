@@ -12,7 +12,7 @@ import ApiPackage
 
 @MainActor
 @Observable
-public final class MessageModel: TcpProcessor {
+public final class MessagesModel: TcpProcessor {
   
   public init() {
   }

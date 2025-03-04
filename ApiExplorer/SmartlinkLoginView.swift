@@ -26,7 +26,7 @@ public struct SmartlinkLoginView: View {
       Grid(alignment: .leading) {
         GridRow {
           Text( "User" ).frame(alignment: .leading)
-          TextField( "", text: $viewModel.settingModel.smartlinkUser)
+          TextField( "", text: $viewModel.settings.smartlinkUser)
         }
         GridRow {
           Text( "Password").frame(alignment: .leading)
@@ -44,10 +44,10 @@ public struct SmartlinkLoginView: View {
         .keyboardShortcut( .cancelAction )
         
         Button( "Log in" ) {
-          viewModel.smartlinkLoginButtonTapped(viewModel.settingModel.smartlinkUser, password)
+          viewModel.smartlinkLoginButtonTapped(viewModel.settings.smartlinkUser, password)
           dismiss() }
         .keyboardShortcut( .defaultAction )
-        .disabled( viewModel.settingModel.smartlinkUser.isEmpty || password.isEmpty )
+        .disabled( viewModel.settings.smartlinkUser.isEmpty || password.isEmpty )
       }
     }
     .frame(width: 300)

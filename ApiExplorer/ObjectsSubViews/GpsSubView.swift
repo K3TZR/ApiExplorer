@@ -19,10 +19,10 @@ struct GpsSubView: View {
   var body: some View {
     
     Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
-      if let radio = viewModel.apiModel.activeSelection?.radio {
+      if let radio = viewModel.api.activeSelection?.radio {
         if radio.gpsPresent {
           HeadingView()
-          let gps = viewModel.apiModel.gps
+          let gps = viewModel.api.gps
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             Text(gps.altitude)

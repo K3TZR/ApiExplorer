@@ -28,7 +28,7 @@ public struct GuiClientsView: View {
 //  }
   
   private var guiClients: [GuiClient] {
-    return viewModel.apiModel.radios
+    return viewModel.api.radios
       .flatMap(\.guiClients)
   }
   

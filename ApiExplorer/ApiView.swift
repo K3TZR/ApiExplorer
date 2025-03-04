@@ -86,7 +86,7 @@ struct ApiView: View {
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
       .receive(on: RunLoop.main)) { note in
-        if viewModel.settingModel.alertOnError {
+        if viewModel.settings.alertOnError {
           viewModel.alertInfo = note.object! as? AlertInfo
           viewModel.showAlert = true
         }

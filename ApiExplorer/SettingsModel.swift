@@ -10,7 +10,7 @@ import Foundation
 import ApiPackage
 
 @Observable
-public class SettingModel {
+public class SettingsModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
 
@@ -37,13 +37,11 @@ public class SettingModel {
     localEnabled = _settings.bool(forKey: "localEnabled")
     lowBandwidthConnect = _settings.bool(forKey: "lowBandwidthConnect")
     lowBandwidthDax = _settings.bool(forKey: "lowBandwidthDax")
-    messageFilter = MessageModel.Filter(rawValue: _settings.string(forKey: "messageFilter") ?? "all") ?? .all
+    messageFilter = MessagesModel.Filter(rawValue: _settings.string(forKey: "messageFilter") ?? "all") ?? .all
     messageFilterText = _settings.string(forKey: "messageFilterText") ?? ""
     mtuValue = _settings.integer(forKey: "mtuValue")
     newLineBetweenMessages = _settings.bool(forKey: "newLineBetweenMessages")
-    previousIdToken = _settings.string(forKey: "previousIdToken") ?? ""
     radioObjectFilter = RadioObjectFilter(rawValue: _settings.string(forKey: "radioObjectFilter") ?? "all") ?? .all
-    refreshToken = _settings.string(forKey: "refreshToken") ?? ""
     remoteRxAudioCompressed = _settings.bool(forKey: "remoteRxAudioCompressed")
     remoteRxAudioEnabled = _settings.bool(forKey: "remoteRxAudioEnabled")
     remoteTxAudioCompressed = _settings.bool(forKey: "remoteTxAudioCompressed")
@@ -53,6 +51,8 @@ public class SettingModel {
     showTimes = _settings.bool(forKey: "showTimes")
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
+    smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
+    smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken") ?? ""
     smartlinkUser = _settings.string(forKey: "smartlinkUser") ?? ""
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
@@ -82,13 +82,11 @@ public class SettingModel {
   public var localEnabled: Bool { didSet { _settings.set(localEnabled, forKey: "localEnabled") }}
   public var lowBandwidthConnect: Bool { didSet { _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect") }}
   public var lowBandwidthDax: Bool { didSet { _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax") }}
-  public var messageFilter: MessageModel.Filter { didSet { _settings.set(messageFilter.rawValue, forKey: "messageFilter") }}
+  public var messageFilter: MessagesModel.Filter { didSet { _settings.set(messageFilter.rawValue, forKey: "messageFilter") }}
   public var messageFilterText: String { didSet { _settings.set(messageFilterText, forKey: "messageFilterText") }}
   public var mtuValue: Int { didSet { _settings.set(mtuValue, forKey: "mtuValue") }}
   public var newLineBetweenMessages: Bool { didSet { _settings.set(newLineBetweenMessages, forKey: "newLineBetweenMessages") }}
-  public var previousIdToken: String { didSet { _settings.set(previousIdToken, forKey: "previousIdToken") }}
   public var radioObjectFilter: RadioObjectFilter { didSet { _settings.set(radioObjectFilter.rawValue, forKey: "radioObjectFilter") }}
-  public var refreshToken: String { didSet { _settings.set(refreshToken, forKey: "refreshToken") }}
   public var remoteRxAudioCompressed: Bool { didSet { _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed") }}
   public var remoteRxAudioEnabled: Bool { didSet { _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled") }}
   public var remoteTxAudioCompressed: Bool { didSet { _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed") }}
@@ -98,6 +96,8 @@ public class SettingModel {
   public var showTimes: Bool { didSet { _settings.set(showTimes, forKey: "showTimes") }}
   public var smartlinkEnabled: Bool { didSet { _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled") }}
   public var smartlinkLoginRequired: Bool { didSet { _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired") }}
+  public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
+  public var smartlinkRefreshToken: String { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
   public var smartlinkUser: String { didSet { _settings.set(smartlinkUser, forKey: "smartlinkUser") }}
   public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
   public var useDefaultEnabled: Bool { didSet { _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled") }}
@@ -135,9 +135,7 @@ public class SettingModel {
     _settings.set(messageFilterText, forKey: "messageFilterText")
     _settings.set(mtuValue, forKey: "mtuValue")
     _settings.set(newLineBetweenMessages, forKey: "newLineBetweenMessages")
-    _settings.set(previousIdToken, forKey: "previousIdToken")
     _settings.set(radioObjectFilter.rawValue, forKey: "radioObjectFilter")
-    _settings.set(refreshToken, forKey: "refreshToken")
     _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed")
     _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled")
     _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed")
@@ -147,6 +145,8 @@ public class SettingModel {
     _settings.set(showTimes, forKey: "showTimes")
     _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled")
     _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired")
+    _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
+    _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken")
     _settings.set(smartlinkUser, forKey: "smartlinkUser")
     _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter")
     _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled")

@@ -19,7 +19,7 @@ struct EqualizerSubView: View {
   var body: some View {
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
-      ForEach(viewModel.apiModel.equalizers) { eq in
+      ForEach(viewModel.api.equalizers) { eq in
         GridRow {
           Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
 

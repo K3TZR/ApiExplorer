@@ -76,7 +76,7 @@ private struct GuiClientDetailView: View {
   var body: some View {
     
     VStack(alignment: .leading) {
-      switch viewModel.settingModel.stationObjectFilter {
+      switch viewModel.settings.stationObjectFilter {
         
       case .all:
         PanadapterSubView(handle: handle, showMeters: true)

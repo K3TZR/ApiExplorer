@@ -20,8 +20,8 @@ struct RadioSubView: View {
 
   var body: some View {
     
-    if viewModel.apiModel.activeSelection != nil {
-      let radio = viewModel.apiModel.activeSelection!.radio
+    if viewModel.api.activeSelection != nil {
+      let radio = viewModel.api.activeSelection!.radio
       
       ScrollView([.vertical]) {
         VStack(alignment: .leading, spacing: 0) {
@@ -57,7 +57,7 @@ struct RadioSubView: View {
                 .gridColumnAlignment(.trailing)
               
               Text("HW")
-              Text(viewModel.apiModel.hardwareVersion ?? "")
+              Text(viewModel.api.hardwareVersion ?? "")
                 .foregroundColor(.green)
                 .gridColumnAlignment(.trailing)
               
@@ -79,7 +79,7 @@ struct RadioSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading)
           
-          if showDetails { DetailView(filter: viewModel.settingModel.radioObjectFilter) }
+          if showDetails { DetailView(filter: viewModel.settings.radioObjectFilter) }
         }
       }
     }

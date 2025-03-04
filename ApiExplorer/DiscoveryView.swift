@@ -20,8 +20,8 @@ public struct DiscoveryView: View {
   @State var radioSelection: String?
   
   var data: Data? {
-    if let index = viewModel.apiModel.radios.firstIndex(where: {$0.id == radioSelection}) {
-      return viewModel.apiModel.radios[index].discoveryData
+    if let index = viewModel.api.radios.firstIndex(where: {$0.id == radioSelection}) {
+      return viewModel.api.radios[index].discoveryData
     }
     return nil
   }
@@ -35,11 +35,11 @@ public struct DiscoveryView: View {
       HStack {
         Picker("Choose a Radio", selection: $radioSelection) {
           Text("Select a Radio").tag(nil as String?)
-          ForEach(viewModel.apiModel.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
+          ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
         }.frame(width: 250)
-        Picker("Display", selection: $viewModel.settingModel.discoveryDisplayType) {
+        Picker("Display", selection: $viewModel.settings.discoveryDisplayType) {
           ForEach(DiscoveryDisplayType.allCases, id: \.self) {
             Text($0.rawValue).tag($0)
           }
@@ -49,7 +49,7 @@ public struct DiscoveryView: View {
       Divider().frame(height: 2).overlay(.blue)
       
       if let data {
-        switch viewModel.settingModel.discoveryDisplayType  {
+        switch viewModel.settings.discoveryDisplayType  {
         case .fields:     VitaFieldsView(data: data)
         case .keyValues:  PayloadFieldsView(data: data)
         case .hex:        RawView(data: data)
@@ -63,7 +63,7 @@ public struct DiscoveryView: View {
         }
       }
       Spacer()
-      if viewModel.settingModel.discoveryDisplayType != .hex {
+      if viewModel.settings.discoveryDisplayType != .hex {
         Divider()
         FooterView()
       }

@@ -14,7 +14,7 @@ public struct TopButtonsView: View {
   @Environment(ViewModel.self) private var viewModel
 
   private var startButtonDisabled: Bool {
-    return !(viewModel.settingModel.directEnabled || viewModel.settingModel.localEnabled || viewModel.settingModel.smartlinkEnabled)
+    return !(viewModel.settings.directEnabled || viewModel.settings.localEnabled || viewModel.settings.smartlinkEnabled)
   }
 
   public var body: some View {
@@ -29,21 +29,21 @@ public struct TopButtonsView: View {
       .frame(width: 60, alignment: .leading)
       .disabled(startButtonDisabled)
       
-      Toggle("Gui", isOn: $viewModelBinding.settingModel.isGui)
+      Toggle("Gui", isOn: $viewModelBinding.settings.isGui)
         .frame(width: 60, alignment: .leading)
 
       // Connection types
       ControlGroup {
-        Toggle("Direct", isOn: $viewModelBinding.settingModel.directEnabled)
-          .onChange(of: viewModel.settingModel.directEnabled) {
+        Toggle("Direct", isOn: $viewModelBinding.settings.directEnabled)
+          .onChange(of: viewModel.settings.directEnabled) {
             viewModel.directButtonChanged($1)
           }
-        Toggle("Local", isOn: $viewModelBinding.settingModel.localEnabled)
-          .onChange(of: viewModel.settingModel.localEnabled) {
+        Toggle("Local", isOn: $viewModelBinding.settings.localEnabled)
+          .onChange(of: viewModel.settings.localEnabled) {
             viewModel.localButtonChanged($1)
           }
-        Toggle("Smartlink", isOn: $viewModelBinding.settingModel.smartlinkEnabled)
-          .onChange(of: viewModel.settingModel.smartlinkEnabled) {
+        Toggle("Smartlink", isOn: $viewModelBinding.settings.smartlinkEnabled)
+          .onChange(of: viewModel.settings.smartlinkEnabled) {
             viewModel.smartlinkButtonChanged($1)
           }
        }
@@ -52,32 +52,32 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      Picker("Dax", selection: $viewModelBinding.settingModel.daxSelection) {
+      Picker("Dax", selection: $viewModelBinding.settings.daxSelection) {
         ForEach(DaxChoice.allCases, id: \.self) {
           Text($0.rawValue.capitalized).tag($0)
         }
       }
       .frame(width: 180)
-      .disabled(viewModel.settingModel.isGui == false)
+      .disabled(viewModel.settings.isGui == false)
 
-      .onChange(of: viewModel.settingModel.daxSelection) {
+      .onChange(of: viewModel.settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
       
       Spacer()
       
       HStack(spacing: 10) {
-        Toggle("Rx Audio", isOn: $viewModelBinding.settingModel.remoteRxAudioEnabled)
-          .disabled(viewModel.settingModel.isGui == false)
+        Toggle("Rx Audio", isOn: $viewModelBinding.settings.remoteRxAudioEnabled)
+          .disabled(viewModel.settings.isGui == false)
         
-          .onChange(of: viewModel.settingModel.remoteRxAudioEnabled) { _, _ in
+          .onChange(of: viewModel.settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
-        Toggle("Tx Audio", isOn: $viewModelBinding.settingModel.remoteTxAudioEnabled)
-          .disabled(viewModel.settingModel.isGui == false)
+        Toggle("Tx Audio", isOn: $viewModelBinding.settings.remoteTxAudioEnabled)
+          .disabled(viewModel.settings.isGui == false)
 
-          .onChange(of: viewModel.settingModel.remoteTxAudioEnabled) { _, _ in
+          .onChange(of: viewModel.settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }

@@ -36,10 +36,10 @@ public struct SendView: View {
         })
         .help("Load previously sent commands")
         
-        TextField("Command to send", text: $viewModelBinding.settingModel.commandToSend)
+        TextField("Command to send", text: $viewModelBinding.settings.commandToSend)
       }
   
-      Toggle("Clear on Send", isOn: $viewModelBinding.settingModel.clearOnSend)
+      Toggle("Clear on Send", isOn: $viewModelBinding.settings.clearOnSend)
         .toggleStyle(.button)
         .help("Clear the field after sending a command")
     }
