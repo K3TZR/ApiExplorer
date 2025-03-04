@@ -16,7 +16,8 @@ import ApiPackage
 public struct DiscoveryView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  
+  @Environment(\.dismiss) var dismiss
+
   @State var radioSelection: String?
   
   var data: Data? {
@@ -60,6 +61,8 @@ public struct DiscoveryView: View {
           Spacer()
           Text("Did you choose a Radio?")
           Spacer()
+          Button("Close") { dismiss() }
+            .keyboardShortcut(.defaultAction)
         }
       }
       Spacer()

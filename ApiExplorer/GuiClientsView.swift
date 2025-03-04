@@ -16,17 +16,6 @@ public struct GuiClientsView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-//  private var stationCount: Int {
-//    var count = 0
-//    
-//    for radio in viewModel.apiModel.radios {
-//      for _ in radio.guiClients {
-//        count += 1
-//      }
-//    }
-//    return count
-//  }
-  
   private var guiClients: [GuiClient] {
     return viewModel.api.radios
       .flatMap(\.guiClients)
@@ -39,15 +28,13 @@ public struct GuiClientsView: View {
       Divider()
       
       if guiClients.count == 0 {
-        VStack {
-          HStack {
-            Spacer()
-            Text("----------  NO Gui Clients FOUND  ----------")
-              .foregroundColor(.red)
-            Spacer()
-          }.frame(minWidth: 140, minHeight: 100, alignment: .leading)
+        HStack {
+          Spacer()
+          Text("----------  NO Gui Clients FOUND  ----------")
+            .foregroundColor(.red)
+          Spacer()
         }
-        
+        .frame(minHeight: 150)
         
       } else {
         // ----- List of Gui Clients -----
@@ -56,7 +43,7 @@ public struct GuiClientsView: View {
             VStack(alignment: .leading) {
               HStack(spacing: 0) {
                 Group {
-                  Text(guiClient.station)
+                  Text(guiClient.station).border(.red)
                   Text(guiClient.handle)
                   Text(guiClient.program)
                   Text(guiClient.ip)
@@ -68,13 +55,14 @@ public struct GuiClientsView: View {
               Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
             }
           }
-        }.frame(minHeight: 100)
+        }
+        .listStyle(.plain)
+        .frame(minHeight: 150)
       }
       Divider()
       FooterView()
     }
-    .padding(.vertical)
-    .frame(minHeight: 250)
+    .padding(10)
   }
 }
 
@@ -82,21 +70,21 @@ private struct HeaderView: View {
   
   var body: some View {
     VStack {
-      Text("Gui Clients").font(.title2)
+      Text("Gui Clients").font(.title)
       
       HStack(spacing: 0) {
         Group {
-          Text("Station")
+          Text("Station").border(.red)
           Text("Handle")
           Text("Program")
           Text("Ip")
           Text("Host")
         }
+        .font(.title3)
         .frame(width: 140, alignment: .leading)
       }
+      .padding(.leading, 10)
     }
-    .padding(.horizontal)
-    .font(.title3)
   }
 }
 
@@ -110,7 +98,6 @@ private struct FooterView: View {
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
-    .padding(.horizontal)
   }
 }
 
