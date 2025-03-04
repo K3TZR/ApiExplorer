@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 import ApiPackage
+import JWTDecode
 
 @MainActor
 @Observable
@@ -41,7 +42,13 @@ public class ViewModel {
   public var showMultiflex: Bool = false
   public var showPicker: Bool = false
   public var showSmartlinkLogin: Bool = false
+    
+  // ----------------------------------------------------------------------------
+  // MARK: - Private properties
   
+  private let kDomain             = "https://frtest.auth0.com/"
+  private let kClientId           = "4Y9fEIIsVYyQo5u6jr7yBWc4lV5ugC2m"
+
   // ----------------------------------------------------------------------------
   // MARK: - Public action methods
   
@@ -120,15 +127,7 @@ public class ViewModel {
       
       // start Smartlink if enabled
       if settings.smartlinkEnabled {
-        // start smartlink listener
-        if settings.smartlinkLoginRequired {
-          showSmartlinkLogin = true
-        } else {
-          if settings.smartlinkRefreshToken.isEmpty {
-            showSmartlinkLogin = true
-          }
-          Task { await api.smartlinkListenerStart(settings.smartlinkRefreshToken) }
-        }
+        smartlinkLoginOptions()
       }
       
       // make sure we have a Client Id
@@ -193,15 +192,7 @@ public class ViewModel {
   public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
       settings.directEnabled = false
-      if settings.smartlinkLoginRequired {
-        showSmartlinkLogin = true
-      } else {
-        let refreshToken = settings.smartlinkRefreshToken
-        Task { await api.smartlinkListenerStart(refreshToken) }
-      }
-      
-      // FIXME: remove hard coded user/pwd
-      //      Task { await apiModel.smartlinkListenerStart("douglas.adams@me.com", "fleX!20Comm") }
+      smartlinkLoginOptions()
       
     } else {
       api.smartlinkListenerStop()
@@ -219,11 +210,6 @@ public class ViewModel {
       settings.smartlinkRefreshToken = tokens!.refreshToken
       settings.smartlinkIdToken = tokens!.idToken
     }
-//    let result = Task { return await api.smartlinkListenerStart( user, password) }
-//    Task {
-//      settings.smartlinkRefreshToken = await result.value!.refreshToken
-//      settings.smartlinkIdToken = await result.value!.idToken
-//    }
   }
   
   public func smartlinkLoginDidDismiss() {
@@ -455,4 +441,45 @@ public class ViewModel {
   //      await $0(.connectionStatus(.disconnected))
   //    }
   //  }
+
+  /// Validate an Id Token
+  /// - Parameter idToken:        the Id Token
+  /// - Returns:                  true / false
+  private func isValid(_ idToken: IdToken?) -> Bool {
+    if let token = idToken {
+      if let jwt = try? decode(jwt: token) {
+        let result = IDTokenValidation(issuer: kDomain, audience: kClientId).validate(jwt)
+        if result == nil { return true }
+      }
+    }
+    return false
+  }
+
+  private func smartlinkLoginOptions() {
+    // start smartlink listener
+    if settings.smartlinkLoginRequired {
+      // LOGIN required
+      showSmartlinkLogin = true
+      
+    } else if isValid(settings.smartlinkIdToken) && settings.smartlinkRefreshToken.isEmpty == false {
+      // use ID Token
+      Task {
+        let tokens = await api.smartlinkListenerStart(idToken: settings.smartlinkIdToken, refreshToken: settings.smartlinkRefreshToken)
+        settings.smartlinkRefreshToken = tokens!.refreshToken
+        settings.smartlinkIdToken = tokens!.idToken
+      }
+      
+    } else if settings.smartlinkRefreshToken.isEmpty == false {
+      // use Refresh Token
+      Task {
+        let tokens = await api.smartlinkListenerStart(refreshToken: settings.smartlinkRefreshToken)
+        settings.smartlinkRefreshToken = tokens!.refreshToken
+        settings.smartlinkIdToken = tokens!.idToken
+      }
+      
+    } else {
+      // show LOGIN sheet
+      showSmartlinkLogin = true
+    }
+  }
 }
