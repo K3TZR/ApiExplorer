@@ -11,7 +11,7 @@ import os
 import ApiPackage
 
 @main
-struct ApiViewerApp: App {
+struct ApiExplorerApp: App {
 #if os(macOS)
 @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #else

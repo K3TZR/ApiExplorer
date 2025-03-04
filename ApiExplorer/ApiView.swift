@@ -1,6 +1,6 @@
 //
 //  ApiView.swift
-//  ApiViewer
+//  ApiExplorer
 //
 //  Created by Douglas Adams on 10/06/24.
 //

@@ -1,6 +1,6 @@
 //
 //  DiscoveryView.swift
-//  ApiViewer
+//  ApiExplorer
 //
 //  Created by Douglas Adams on 2/16/25.
 //
@@ -228,12 +228,12 @@ private struct RawView: View {
           .keyboardShortcut(.defaultAction)
       }
     }
-    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiViewer.bcast") { result in
+    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
         switch result {
         case .success(let url):
-          log.info("ApiViewer: Broadcast Exported to \(url)")
+          log.info("ApiExplorer: Broadcast Exported to \(url)")
         case .failure(let error):
-          log.warning("ApiViewer: Broadcast Export failed, \(error)")
+          log.warning("ApiExplorer: Broadcast Export failed, \(error)")
         }
       }
   }

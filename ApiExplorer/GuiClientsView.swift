@@ -1,6 +1,6 @@
 //
 //  GuiClientsView.swift
-//  ApiViewer
+//  ApiExplorer
 //
 //  Created by Douglas Adams on 12/2/24.
 //

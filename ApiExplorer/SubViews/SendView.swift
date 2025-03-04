@@ -1,6 +1,6 @@
 //
 //  SendView.swift
-//  ApiViewer/Subviews
+//  ApiExplorer/Subviews
 //
 //  Created by Douglas Adams on 10/06/24.
 //

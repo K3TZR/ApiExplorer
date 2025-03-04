@@ -1,6 +1,6 @@
 //
 //  SimpleSettings.swift
-//  ApiViewer
+//  ApiExplorer
 //
 //  Created by Douglas Adams on 12/30/24.
 //
@@ -49,6 +49,7 @@ public class SettingsModel {
     showPings = _settings.bool(forKey: "showPings")
     showReplies = _settings.bool(forKey: "showReplies")
     showTimes = _settings.bool(forKey: "showTimes")
+    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
     smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
@@ -94,6 +95,7 @@ public class SettingsModel {
   public var showPings: Bool { didSet { _settings.set(showPings, forKey: "showPings") }}
   public var showReplies: Bool { didSet { _settings.set(showReplies, forKey: "showReplies") }}
   public var showTimes: Bool { didSet { _settings.set(showTimes, forKey: "showTimes") }}
+  public var smartlinkIdToken: String { didSet { _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken") }}
   public var smartlinkEnabled: Bool { didSet { _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled") }}
   public var smartlinkLoginRequired: Bool { didSet { _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired") }}
   public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
@@ -143,6 +145,7 @@ public class SettingsModel {
     _settings.set(showPings, forKey: "showPings")
     _settings.set(showReplies, forKey: "showReplies")
     _settings.set(showTimes, forKey: "showTimes")
+    _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken")
     _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled")
     _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired")
     _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")

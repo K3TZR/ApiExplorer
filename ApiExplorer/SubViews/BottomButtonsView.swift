@@ -89,12 +89,12 @@ public struct BottomButtonsView: View {
     .toggleStyle(.button)
     
     // Save Dialog
-    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiViewer.log") { result in
+    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.log") { result in
         switch result {
         case .success(let url):
-          log.info("ApiViewer: Log Exported to \(url)")
+          log.info("ApiExplorer: Log Exported to \(url)")
         case .failure(let error):
-          log.warning("ApiViewer: Log Export failed, \(error)")
+          log.warning("ApiExplorer: Log Export failed, \(error)")
         }
       }
   }

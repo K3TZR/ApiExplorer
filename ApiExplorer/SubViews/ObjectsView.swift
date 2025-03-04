@@ -1,6 +1,6 @@
 //
 //  ObjectsView.swift
-//  ApiViewer/Subviews
+//  ApiExplorer/Subviews
 //
 //  Created by Douglas Adams on 10/07/24.
 //

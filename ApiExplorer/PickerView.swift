@@ -176,7 +176,6 @@ private struct NonGuiView: View {
 private struct FooterView: View {
   let selectedRadioId: Binding<String?>
   let selectedStation: Binding<String>
-//  let selectionIsNotSmartlink: Bool
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss

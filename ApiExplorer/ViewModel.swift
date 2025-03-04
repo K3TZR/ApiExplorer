@@ -1,6 +1,6 @@
 //
 //  ViewModel.swift
-//  ApiViewer
+//  ApiExplorer
 //
 //  Created by Douglas Adams on 10/6/24.
 //
@@ -43,35 +43,221 @@ public class ViewModel {
   public var showSmartlinkLogin: Bool = false
   
   // ----------------------------------------------------------------------------
-  // MARK: - Public methods
+  // MARK: - Public action methods
+  
+  public func clearTextButtonTapped() {
+    settings.commandToSend = ""
+  }
+  
+  public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
+    print("daxSelectionChanged")
+    alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func defaultButtonTapped(_ radioId: String) {
+    // set / reset the default
+    if settings.isGui {
+      if settings.defaultGui == radioId {
+        settings.defaultGui = ""
+      } else {
+        settings.defaultGui = radioId
+      }
+    } else {
+      if settings.defaultNonGui == radioId {
+        settings.defaultNonGui = ""
+      } else {
+        settings.defaultNonGui = radioId
+      }
+    }
+  }
+  
+  public func directButtonChanged(_ enabled: Bool) {
+    print("directChanged \(enabled)")
+    if enabled {
+      settings.localEnabled = false
+      settings.smartlinkEnabled = false
+    }
+  }
+  
+  public func guiButtonTapped() {
+    settings.isGui.toggle()
+  }
+  
+  public func localButtonChanged(_ enabled: Bool) {
+    print("localChanged \(enabled)")
+    if enabled {
+      settings.directEnabled = false
+      api.localListenerStart()
+    } else {
+      api.localListenerStop()
+    }
+  }
+  
+  public func multiflexConnectButtonTapped() {
+    Task { await connect(api.activeSelection!) }
+  }
+  
+  public func nextStepperTapped() {
+    print("nextTapped")
+    if settings.commandsIndex == settings.commandsArray.count - 1 {
+      settings.commandsIndex = 0
+    } else {
+      settings.commandsIndex += 1
+    }
+    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
+  }
   
   public func onAppear() {
     if initialized == false {
-      log.debug("ApiViewer: application started")
+      log.debug("ApiExplorer: application started")
       
+      // initialize the Messages model
       messages.filter = settings.messageFilter
       messages.text = settings.messageFilterText
       messages.showPings = settings.showPings
       messages.showReplies = settings.showReplies
       
-      // mark as initialized
-      initialized = true
-      if settings.localEnabled {
-        api.localListenerStart()
-      }
+      // start Smartlink if enabled
       if settings.smartlinkEnabled {
         // start smartlink listener
         if settings.smartlinkLoginRequired {
           showSmartlinkLogin = true
         } else {
+          if settings.smartlinkRefreshToken.isEmpty {
+            showSmartlinkLogin = true
+          }
           Task { await api.smartlinkListenerStart(settings.smartlinkRefreshToken) }
         }
       }
+      
+      // make sure we have a Client Id
       if settings.guiClientId.isEmpty {
         settings.guiClientId = UUID().uuidString
       }
+
+      // mark as initialized
+      initialized = true
+      if settings.localEnabled {
+        api.localListenerStart()
+      }
     }
   }
+  
+  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
+    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
+    
+    api.activeStation = station
+    // try to connect to the selected radio / station
+    connectionStart(radioId)
+  }
+  
+  public func previousStepperTapped() {
+    print("previousTapped")
+    if settings.commandsIndex == 0 {
+      settings.commandsIndex = settings.commandsArray.count - 1
+    } else {
+      settings.commandsIndex -= 1
+    }
+    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
+  }
+  
+  public func remoteRxAudioCompressedButtonChanged() {
+    alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func remoteRxAudioEnabledButtonChanged() {
+    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func remoteTxAudioEnabledButtonChanged() {
+    print("remoteTxAudioEnabledChanged")
+    alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func remoteTxAudioCompressedButtonChanged() {
+    alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
+    showAlert = true
+  }
+  
+  public func sendButtonTapped() {
+    settings.commandsArray.append(settings.commandToSend)
+    // send command to the radio
+    api.sendTcp(settings.commandToSend)
+    if settings.clearOnSend { clearTextButtonTapped() }
+  }
+  
+  public func smartlinkButtonChanged(_ enabled: Bool)  {
+    if enabled {
+      settings.directEnabled = false
+      if settings.smartlinkLoginRequired {
+        showSmartlinkLogin = true
+      } else {
+        let refreshToken = settings.smartlinkRefreshToken
+        Task { await api.smartlinkListenerStart(refreshToken) }
+      }
+      
+      // FIXME: remove hard coded user/pwd
+      //      Task { await apiModel.smartlinkListenerStart("douglas.adams@me.com", "fleX!20Comm") }
+      
+    } else {
+      api.smartlinkListenerStop()
+      api.removeRadios(.smartlink)
+    }
+  }
+  
+  public func smartlinkCancelButtonTapped() {
+    settings.smartlinkEnabled = false
+  }
+  
+  public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
+    Task {
+      let tokens = await api.smartlinkListenerStart( user, password)
+      settings.smartlinkRefreshToken = tokens!.refreshToken
+      settings.smartlinkIdToken = tokens!.idToken
+    }
+//    let result = Task { return await api.smartlinkListenerStart( user, password) }
+//    Task {
+//      settings.smartlinkRefreshToken = await result.value!.refreshToken
+//      settings.smartlinkIdToken = await result.value!.idToken
+//    }
+  }
+  
+  public func smartlinkLoginDidDismiss() {
+    // no action required
+  }
+  
+  public func startButtonTapped() {
+    if isConnected {
+      Task { await connectionStop() }
+      
+    } else if settings.useDefaultEnabled {
+      if let selection = settings.isGui ? settings.defaultGui : settings.defaultNonGui {
+        connectionStart(selection)
+      } else {
+        showPicker = true
+      }
+      
+    } else {
+      showPicker = true
+    }
+  }
+  
+  public func smartlinkTestButtonTapped(_ id: RadioId) {
+    // find the radio
+    if let radio = api.radios.first(where: { $0.id == id }) {
+      // result the result
+      api.smartlinkTestResult = SmartlinkTestResult()
+      // perform a connection test on the smartlink radio
+      api.sendSmartlinkTest(radio.packet.serial)
+    }
+  }
+  
+  // ----------------------------------------------------------------------------
+  // MARK: - Public supporting methods
   
   public func hexDump(_ data: Data) -> String {
     let len = data.count
@@ -139,175 +325,6 @@ public class ViewModel {
   }
 
   // ----------------------------------------------------------------------------
-  // MARK: - Public actions
-  
-  public func clearTextButtonTapped() {
-    settings.commandToSend = ""
-  }
-  
-  public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
-    print("daxSelectionChanged")
-    alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
-    showAlert = true
-  }
-  
-  public func defaultButtonTapped(_ radioId: String) {
-    // set / reset the default
-    if settings.isGui {
-      if settings.defaultGui == radioId {
-        settings.defaultGui = ""
-      } else {
-        settings.defaultGui = radioId
-      }
-    } else {
-      if settings.defaultNonGui == radioId {
-        settings.defaultNonGui = ""
-      } else {
-        settings.defaultNonGui = radioId
-      }
-    }
-  }
-  
-  public func directButtonChanged(_ enabled: Bool) {
-    print("directChanged \(enabled)")
-    if enabled {
-      settings.localEnabled = false
-      settings.smartlinkEnabled = false
-    }
-  }
-  
-  public func guiButtonTapped() {
-    settings.isGui.toggle()
-  }
-  
-  public func localButtonChanged(_ enabled: Bool) {
-    print("localChanged \(enabled)")
-    if enabled {
-      settings.directEnabled = false
-      api.localListenerStart()
-    } else {
-      api.localListenerStop()
-    }
-  }
-  
-  public func multiflexConnectButtonTapped() {
-    Task { await connect(api.activeSelection!) }
-  }
-  
-  public func nextStepperTapped() {
-    print("nextTapped")
-    if settings.commandsIndex == settings.commandsArray.count - 1 {
-      settings.commandsIndex = 0
-    } else {
-      settings.commandsIndex += 1
-    }
-    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
-  }
-  
-  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
-    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
-    
-    api.activeStation = station
-    // try to connect to the selected radio / station
-    connectionStart(radioId)
-  }
-  
-  public func previousStepperTapped() {
-    print("previousTapped")
-    if settings.commandsIndex == 0 {
-      settings.commandsIndex = settings.commandsArray.count - 1
-    } else {
-      settings.commandsIndex -= 1
-    }
-    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
-  }
-  
-  public func remoteRxAudioCompressedButtonChanged() {
-    alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
-    showAlert = true
-  }
-  
-  public func remoteRxAudioEnabledButtonChanged() {
-    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
-    showAlert = true
-  }
-  
-  public func remoteTxAudioEnabledButtonChanged() {
-    print("remoteTxAudioEnabledChanged")
-    alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
-    showAlert = true
-  }
-  
-  public func remoteTxAudioCompressedButtonChanged() {
-    alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
-    showAlert = true
-  }
-  
-  public func sendButtonTapped() {
-    settings.commandsArray.append(settings.commandToSend)
-    // send command to the radio
-    api.sendTcp(settings.commandToSend)
-    if settings.clearOnSend { clearTextButtonTapped() }
-  }
-  
-  public func smartlinkButtonChanged(_ enabled: Bool)  {
-    if enabled {
-      settings.directEnabled = false
-      if settings.smartlinkLoginRequired {
-        showSmartlinkLogin = true
-      } else {
-        let refreshToken = settings.smartlinkRefreshToken
-        Task { await api.smartlinkListenerStart(refreshToken) }
-      }
-      
-      // FIXME: remove hard coded user/pwd
-//      Task { await apiModel.smartlinkListenerStart("douglas.adams@me.com", "fleX!20Comm") }
-      
-    } else {
-      api.smartlinkListenerStop()
-      api.removeRadios(.smartlink)
-    }
-  }
-  
-  public func smartlinkCancelButtonTapped() {
-    settings.smartlinkEnabled = false
-  }
-  
-  public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
-    Task { await api.smartlinkListenerStart( user, password) }
-  }
-  
-  public func smartlinkLoginDidDismiss() {
-    // no action required
-  }
-  
-  public func startButtonTapped() {
-    if isConnected {
-      Task { await connectionStop() }
-      
-    } else if settings.useDefaultEnabled {
-      if let selection = settings.isGui ? settings.defaultGui : settings.defaultNonGui {
-        connectionStart(selection)
-      } else {
-        showPicker = true
-      }
-      
-    } else {
-      showPicker = true
-    }
-  }
-  
-  public func smartlinkTestButtonTapped(_ id: RadioId) {
-    // find the radio
-    if let radio = api.radios.first(where: { $0.id == id }) {
-      // result the result
-      api.smartlinkTestResult = SmartlinkTestResult()
-      // perform a connection test on the smartlink radio
-      api.sendSmartlinkTest(radio.packet.serial)
-    }
-  }
-  
-  // ----------------------------------------------------------------------------
   // MARK: - Private supporting methods
   
   private func connect(_ activeSelection: ActiveSelection) async {
@@ -318,13 +335,13 @@ public class ViewModel {
     let connectTask = Task {
       do {
         try await api.connect(selection: activeSelection,
-                                      isGui: settings.isGui,
-                                      programName: "ApiViewer",
-                                      mtuValue: settings.mtuValue,
-                                      guiClientId: UUID(uuidString: settings.guiClientId)!,
-                                      lowBandwidthDax: settings.lowBandwidthDax,
-                                      lowBandwidthConnect: settings.lowBandwidthConnect,
-                                      testDelegate: messages)
+                              isGui: settings.isGui,
+                              programName: "ApiExplorer",
+                              mtuValue: settings.mtuValue,
+                              guiClientId: UUID(uuidString: settings.guiClientId)!,
+                              lowBandwidthDax: settings.lowBandwidthDax,
+                              lowBandwidthConnect: settings.lowBandwidthConnect,
+                              testDelegate: messages)
         // connection succesful
         return true
         
@@ -335,9 +352,9 @@ public class ViewModel {
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log.info("ApiViewer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
+      log.info("ApiExplorer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
     } else {
-      log.error("ApiViewer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
+      log.error("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
     }
   }
   
@@ -346,7 +363,7 @@ public class ViewModel {
     if let radio = api.radios.first(where: {$0.id == radioId}) {
       api.activeSelection = ActiveSelection((radio, nil))
     } else {
-      log.error("ApiViewer: Radio not found for ID \(radioId)")
+      log.error("ApiExplorer: Radio not found for ID \(radioId)")
       return
     }
     // handle Multiflex
