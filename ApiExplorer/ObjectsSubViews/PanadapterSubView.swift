@@ -42,12 +42,12 @@ struct PanadapterSubView: View {
             }
             
             // corresponding Slice(s)
-//            ForEach(viewModel.apiModel.slices.filter { $0.panadapterId == panadapter.id}) { slice in
-//              SliceDetailView(slice: slice)
-//              
-//              //            // slice meter(s)
-//              //            if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
-//            }
+            ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+              SliceDetailView(slice: slice)
+              
+//              // slice meter(s)
+//              if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
+            }
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
         }
@@ -60,7 +60,7 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("PANADAPTER")
           .frame(width: 110, alignment: .leading)
@@ -81,7 +81,7 @@ private struct PanadapterDetailView: View {
           .gridColumnAlignment(.trailing)
       }
     }
-    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+    .frame(maxWidth: .infinity, minHeight: 10, alignment: .leading) // Ensure left alignment
   }
 }
 
@@ -90,7 +90,7 @@ private struct WaterfallDetailView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("WATERFALL")
           .frame(width: 110, alignment: .leading)
@@ -121,33 +121,36 @@ private struct WaterfallDetailView: View {
           .gridColumnAlignment(.trailing)
       }
     }
-    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+    .frame(maxWidth: .infinity, minHeight: 10, alignment: .leading) // Ensure left alignment
   }
 }
 
 private struct SliceDetailView: View {
   var slice: Slice
   
-  func stringArrayToString( _ list: [String]?) -> String {
-    
-    guard list != nil else { return "Unknown"}
-    let str = list!.reduce("") {$0 + $1 + ", "}
-    return String(str.dropLast(2))
-  }
-  
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("SLICE")
+          .frame(width: 110, alignment: .leading)
         
         Text("ID")
-        Text(String(format: "%02d", slice.id))
+          .border(.red)
+        
+        Text(slice.id.hex)
           .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+          .border(.red)
         
         Text("Freq")
+          .border(.red)
+        
         Text("\(slice.frequency)")
           .foregroundColor(.secondary)
+          .gridColumnAlignment(.trailing)
+          .border(.red)
+        
         
         Text("Mode")
         Text("\(slice.mode)")
@@ -164,13 +167,15 @@ private struct SliceDetailView: View {
         
         Text("\(slice.txAnt)")
           .foregroundColor(.secondary)
-        
-        
       }
-      
+    }
+    .frame(maxWidth: .infinity, minHeight: 10, alignment: .leading) // Ensure left alignment
+
+    Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("SLICE").hidden()
-        
+          .frame(width: 110, alignment: .leading)
+
         Text("DAX_channel")
         Text("\(slice.daxChannel)")
           .foregroundColor(.secondary)
@@ -182,22 +187,23 @@ private struct SliceDetailView: View {
         Text("Low")
         Text("\(slice.filterLow)")
           .foregroundColor(.secondary)
-        
+          .gridColumnAlignment(.trailing)
+
         Text("High")
         Text("\(slice.filterHigh)")
           .foregroundColor(.secondary)
-        
+          .gridColumnAlignment(.trailing)
+
         Text("Active")
         Text("\(slice.active ? "Y" : "N")")
           .foregroundColor(slice.active ? .green : .red)
         
         Text("Locked")
-          .gridColumnAlignment(.leading)
-        
         Text("\(slice.locked ? "Y" : "N")")
           .foregroundColor(slice.locked ? .green : .red)
       }
     }
+    .frame(maxWidth: .infinity, minHeight: 10, alignment: .leading) // Ensure left alignment
   }
 }
 

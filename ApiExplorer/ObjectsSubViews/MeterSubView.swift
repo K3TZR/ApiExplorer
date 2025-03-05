@@ -21,7 +21,7 @@ struct MeterSubView: View {
 
 //  func showMeter(_ sliceId: UInt32?, _ source: String, _ group: String) -> Bool {
 //    if sliceId == nil { return true }
-//    if clientHandle != handle { return false }
+//    if sliceClientHandle != handle { return false }
 //    if source != "slc" { return false }
 //    if UInt32(group) != sliceId { return false }
 //    return true
@@ -103,9 +103,9 @@ private struct DetailView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Preview
 
-#Preview {
-  MeterSubView()
-    .environment(ViewModel())
-
-    .frame(width: 1250)
-}
+//#Preview {
+//  MeterSubView()
+//    .environment(ViewModel())
+//
+//    .frame(width: 1250)
+//}

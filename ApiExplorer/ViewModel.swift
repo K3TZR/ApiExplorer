@@ -46,6 +46,8 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
+  private var _smartlinkIdToken: String?
+  
   private let kDomain             = "https://frtest.auth0.com/"
   private let kClientId           = "4Y9fEIIsVYyQo5u6jr7yBWc4lV5ugC2m"
 
@@ -208,7 +210,7 @@ public class ViewModel {
     Task {
       let tokens = await api.smartlinkListenerStart( user, password)
       settings.smartlinkRefreshToken = tokens!.refreshToken
-      settings.smartlinkIdToken = tokens!.idToken
+      _smartlinkIdToken = tokens!.idToken
     }
   }
   
@@ -461,12 +463,12 @@ public class ViewModel {
       // LOGIN required
       showSmartlinkLogin = true
       
-    } else if isValid(settings.smartlinkIdToken) && settings.smartlinkRefreshToken.isEmpty == false {
+    } else if isValid(_smartlinkIdToken) && settings.smartlinkRefreshToken.isEmpty == false {
       // use ID Token
       Task {
-        let tokens = await api.smartlinkListenerStart(idToken: settings.smartlinkIdToken, refreshToken: settings.smartlinkRefreshToken)
+        let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: settings.smartlinkRefreshToken)
         settings.smartlinkRefreshToken = tokens!.refreshToken
-        settings.smartlinkIdToken = tokens!.idToken
+        _smartlinkIdToken = tokens!.idToken
       }
       
     } else if settings.smartlinkRefreshToken.isEmpty == false {
@@ -474,7 +476,7 @@ public class ViewModel {
       Task {
         let tokens = await api.smartlinkListenerStart(refreshToken: settings.smartlinkRefreshToken)
         settings.smartlinkRefreshToken = tokens!.refreshToken
-        settings.smartlinkIdToken = tokens!.idToken
+        _smartlinkIdToken = tokens!.idToken
       }
       
     } else {
