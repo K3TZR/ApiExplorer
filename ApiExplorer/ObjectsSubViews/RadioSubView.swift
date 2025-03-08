@@ -113,6 +113,7 @@ private struct DetailView: View {
       case .interlocks:   InterlockSubView()
       case .lists:        ListsView()
       case .memories:     MemorySubView()
+      case .network:      NetworkSubView()
       case .meters:       MeterSubView()
       case .tnf:          TnfSubView()
       case .transmit:     TransmitSubView()

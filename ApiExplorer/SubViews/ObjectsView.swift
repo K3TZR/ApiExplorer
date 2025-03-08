@@ -171,6 +171,7 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
   case lists
   case memories
   case meters
+  case network
   case tnf
   case transmit
 }

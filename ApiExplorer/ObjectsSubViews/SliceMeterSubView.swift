@@ -1,10 +1,9 @@
 //
 //  MeterSubView.swift
-//  ApiExplorer
+//  Api6000/SubViews
 //
-//  Created by Douglas Adams on 3/6/25.
+//  Created by Douglas Adams on 1/24/22.
 //
-
 
 import SwiftUI
 
@@ -13,16 +12,29 @@ import ApiPackage
 // ----------------------------------------------------------------------------
 // MARK: - View
 
-struct MeterSubView: View {
+struct SliceMeterSubView: View {
+  let sliceId: UInt32?
+  let sliceClientHandle: UInt32?
+  let handle: UInt32
   
   @Environment(ViewModel.self) private var viewModel
 
+  func showMeter(_ sliceId: UInt32?, _ source: String, _ group: String) -> Bool {
+    if sliceId == nil { return false }
+    if sliceClientHandle != handle { return false }
+    if source != "slc" { return false }
+    if UInt32(group) != sliceId { return false }
+    return true
+  }
+  
   var body: some View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       ForEach(viewModel.api.meters ) { meter in
-        DetailView(meter: meter)
+        if showMeter(sliceId, meter.source, meter.group) {
+          DetailView(meter: meter)
+        }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
@@ -32,7 +44,7 @@ struct MeterSubView: View {
 private struct HeadingView: View {
   
   var body: some View {
-    
+
     GridRow {
       Text("METERS")
         .frame(width: 110, alignment: .leading)
@@ -90,9 +102,9 @@ private struct DetailView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Preview
 
-#Preview {
-  MeterSubView()
-    .environment(ViewModel())
-
-    .frame(width: 1250)
-}
+//#Preview {
+//  MeterSubView()
+//    .environment(ViewModel())
+//
+//    .frame(width: 1250)
+//}

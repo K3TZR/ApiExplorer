@@ -45,8 +45,8 @@ struct PanadapterSubView: View {
             ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
               SliceDetailView(slice: slice)
               
-//              // slice meter(s)
-//              if showMeters { MeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
+              // slice meter(s)
+              if showMeters { SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
             }
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment

@@ -466,20 +466,29 @@ public class ViewModel {
     } else if isValid(_smartlinkIdToken) && settings.smartlinkRefreshToken.isEmpty == false {
       // use ID Token
       Task {
-        let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: settings.smartlinkRefreshToken)
-        settings.smartlinkRefreshToken = tokens!.refreshToken
-        _smartlinkIdToken = tokens!.idToken
+        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: settings.smartlinkRefreshToken) {
+          settings.smartlinkRefreshToken = tokens.refreshToken
+          _smartlinkIdToken = tokens.idToken
+        } else {
+          // show LOGIN sheet
+          showSmartlinkLogin = true
+        }
       }
       
     } else if settings.smartlinkRefreshToken.isEmpty == false {
       // use Refresh Token
       Task {
-        let tokens = await api.smartlinkListenerStart(refreshToken: settings.smartlinkRefreshToken)
-        settings.smartlinkRefreshToken = tokens!.refreshToken
-        _smartlinkIdToken = tokens!.idToken
+        if let tokens = await api.smartlinkListenerStart(refreshToken: settings.smartlinkRefreshToken) {
+          settings.smartlinkRefreshToken = tokens.refreshToken
+          _smartlinkIdToken = tokens.idToken
+        } else {
+          // show LOGIN sheet
+          showSmartlinkLogin = true
+        }
       }
       
     } else {
+      // IdToken and/or refreshToken failure
       // show LOGIN sheet
       showSmartlinkLogin = true
     }
