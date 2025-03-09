@@ -57,7 +57,7 @@ private struct ObjectsEmptyView: View {
 private struct RadioClientTesterSplitView: View {
   @Environment(ViewModel.self) private var viewModel
 
-  @State private var topHeight: CGFloat = 300  // Initial height for the top view
+  @State private var topHeight: CGFloat = 200  // Initial height for the top view
 
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
@@ -66,10 +66,12 @@ private struct RadioClientTesterSplitView: View {
     // Use native `VSplitView` on macOS
     VSplitView {
       RadioSubView()
-        .layoutPriority(1)
 
+      Divider().frame(height: 2).background(.blue)
+      
       if let radio = viewModel.api.activeSelection?.radio {
         GuiClientSubView(radio: radio)
+          .layoutPriority(1)
       }
       
       if viewModel.settings.isGui == false {

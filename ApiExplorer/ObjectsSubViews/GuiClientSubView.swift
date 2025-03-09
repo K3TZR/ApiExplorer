@@ -13,7 +13,7 @@ import ApiPackage
 // MARK: - View
 
 struct GuiClientSubView: View {
-  let radio: Radio
+  var radio: Radio
   
   @Environment(ViewModel.self) private var viewModel
   

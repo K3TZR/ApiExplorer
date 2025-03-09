@@ -60,7 +60,10 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
+    Divider().background(.yellow)
+    
     Grid(alignment: .leading, horizontalSpacing: 10) {
+      
       GridRow {
         Text("PANADAPTER")
           .frame(width: 110, alignment: .leading)
@@ -93,7 +96,7 @@ private struct WaterfallDetailView: View {
     Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("WATERFALL")
-          .frame(width: 110, alignment: .leading)
+          .frame(width: 110, alignment: .trailing)
 
         Text("ID")
         Text(waterfall.id.hex)
@@ -133,24 +136,19 @@ private struct SliceDetailView: View {
     Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("SLICE")
-          .frame(width: 110, alignment: .leading)
+          .frame(width: 110, alignment: .trailing)
         
         Text("ID")
-          .border(.red)
         
         Text(slice.id.hex)
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-          .border(.red)
         
         Text("Freq")
-          .border(.red)
         
         Text("\(slice.frequency)")
           .foregroundColor(.secondary)
-          .gridColumnAlignment(.trailing)
-          .border(.red)
-        
+          .gridColumnAlignment(.trailing)        
         
         Text("Mode")
         Text("\(slice.mode)")
@@ -167,14 +165,6 @@ private struct SliceDetailView: View {
         
         Text("\(slice.txAnt)")
           .foregroundColor(.secondary)
-      }
-    }
-    .frame(maxWidth: .infinity, minHeight: 10, alignment: .leading) // Ensure left alignment
-
-    Grid(alignment: .leading, horizontalSpacing: 10) {
-      GridRow {
-        Text("SLICE").hidden()
-          .frame(width: 110, alignment: .leading)
 
         Text("DAX_channel")
         Text("\(slice.daxChannel)")
