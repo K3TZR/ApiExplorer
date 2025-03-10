@@ -14,19 +14,13 @@ import ApiPackage
 @Observable
 public final class MessagesModel: TcpProcessor {
   
-  public init() {
-  }
+  public init() {}
 
   // ----------------------------------------------------------------------------
   // MARK: - Public properties
   
   public var filteredMessages = [TcpMessage]()
   
-  public var filter: Filter = .all
-  public var text = ""
-  public var showPings: Bool = false
-  public var showReplies: Bool = false
-
   public enum Filter: String, Codable, CaseIterable, Sendable {
     case all
     case prefix
@@ -42,6 +36,7 @@ public final class MessagesModel: TcpProcessor {
   // MARK: - Private properties
 
   private var _messages = [TcpMessage]()
+  private var _settings = SettingsModel.shared
   private var _startTime: Date?
 
   // ----------------------------------------------------------------------------
@@ -62,19 +57,17 @@ public final class MessagesModel: TcpProcessor {
   }
 
  /// Rebuild the entire filteredMessages array
-  public func reFilter(_ filter: Filter, _ text: String) {
-    self.filter = filter
-    self.text  = text
+  public func reFilter() {
     
     // re-filter the entire messages array
-    switch (filter, text) {
+    switch (_settings.messageFilter, _settings.messageFilterText) {
 
     case (.all, _):        filteredMessages = _messages
     case (.prefix, ""):    filteredMessages = _messages
-    case (.prefix, _):     filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains("|" + text) }
-    case (.includes, _):   filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains(text) }
+    case (.prefix, _):     filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains("|" + _settings.messageFilterText) }
+    case (.includes, _):   filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains(_settings.messageFilterText) }
     case (.excludes, ""):  filteredMessages = _messages
-    case (.excludes, _):   filteredMessages = _messages.filter { !$0.text.localizedCaseInsensitiveContains(text) }
+    case (.excludes, _):   filteredMessages = _messages.filter { !$0.text.localizedCaseInsensitiveContains(_settings.messageFilterText) }
     case (.command, _):    filteredMessages = _messages.filter { $0.text.prefix(1) == "C" }
     case (.S0, _):         filteredMessages = _messages.filter { $0.text.prefix(3) == "S0|" }
     case (.status, _):     filteredMessages = _messages.filter { $0.text.prefix(1) == "S" && $0.text.prefix(3) != "S0|"}
@@ -108,7 +101,7 @@ public final class MessagesModel: TcpProcessor {
       if let startTime = _startTime {
         // ignore routine replies (i.e. replies with no error or no attached data)
         @MainActor func ignoreReply(_ text: String) -> Bool {
-          if text.first == "R" && showReplies { return false }      // showing all Replies (including ping replies)
+          if text.first == "R" && _settings.showReplies { return false }      // showing all Replies (including ping replies)
           if text.first != "R" { return false }                     // not a Reply
           let parts = text.components(separatedBy: "|")
           if parts.count < 3 { return false }                       // incomplete
@@ -120,7 +113,7 @@ public final class MessagesModel: TcpProcessor {
         // ignore received replies unless they are non-zero or contain additional data
         if isInput && ignoreReply(text) { return }
         // ignore sent "ping" messages unless showPings is true
-        if text.contains("ping") && showPings == false { return }
+        if text.contains("ping") && _settings.showPings == false { return }
         
         let msg = TcpMessage(text: String(text), isInput: isInput, timeStamp: timeStamp, interval: timeStamp.timeIntervalSince(startTime))
         
@@ -128,14 +121,14 @@ public final class MessagesModel: TcpProcessor {
         _messages.append(msg)
         
         // add it to the public collection (if appropriate)
-        switch (filter, text) {
-          
+        switch (_settings.messageFilter, _settings.messageFilterText) {
+
         case (.all, _):        filteredMessages.append(msg)
         case (.prefix, ""):    filteredMessages.append(msg)
-        case (.prefix, _):     if msg.text.localizedCaseInsensitiveContains("|" + text) { filteredMessages.append(msg) }
-        case (.includes, _):   if msg.text.localizedCaseInsensitiveContains(text) { filteredMessages.append(msg) }
+        case (.prefix, _):     if msg.text.localizedCaseInsensitiveContains("|" + _settings.messageFilterText) { filteredMessages.append(msg) }
+        case (.includes, _):   if msg.text.localizedCaseInsensitiveContains(_settings.messageFilterText) { filteredMessages.append(msg) }
         case (.excludes, ""):  filteredMessages.append(msg)
-        case (.excludes, _):   if !msg.text.localizedCaseInsensitiveContains(text) { filteredMessages.append(msg) }
+        case (.excludes, _):   if !msg.text.localizedCaseInsensitiveContains(_settings.messageFilterText) { filteredMessages.append(msg) }
         case (.command, _):    if msg.text.prefix(1) == "C" { filteredMessages.append(msg) }
         case (.S0, _):         if msg.text.prefix(3) == "S0|" { filteredMessages.append(msg) }
         case (.status, _):     if msg.text.prefix(1) == "S" && msg.text.prefix(3) != "S0|" { filteredMessages.append(msg) }

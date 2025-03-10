@@ -14,7 +14,8 @@ public struct SendView: View {
   @Environment(ViewModel.self) private var viewModel
 
   public var body: some View {
-    @Bindable var viewModelBinding = viewModel
+//    @Bindable var viewModelBinding = viewModel
+    @Bindable var settings = SettingsModel.shared
 
     HStack {
       Button("Send") { viewModel.sendButtonTapped() }
@@ -36,10 +37,10 @@ public struct SendView: View {
         })
         .help("Load previously sent commands")
         
-        TextField("Command to send", text: $viewModelBinding.settings.commandToSend)
+        TextField("Command to send", text: $settings.commandToSend)
       }
   
-      Toggle("Clear on Send", isOn: $viewModelBinding.settings.clearOnSend)
+      Toggle("Clear on Send", isOn: $settings.clearOnSend)
         .toggleStyle(.button)
         .help("Clear the field after sending a command")
     }
@@ -50,8 +51,10 @@ public struct SendView: View {
 // MARK: - Preview
 
 #Preview {
-    SendView()
-      .environment(ViewModel())
-  .frame(minWidth: 1250, maxWidth: .infinity)
+  SendView()
+  
+    .environment(ViewModel())
+  
+    .frame(minWidth: 1250, maxWidth: .infinity)
 }
 

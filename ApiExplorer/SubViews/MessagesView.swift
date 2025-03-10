@@ -22,8 +22,8 @@ struct MessagesView: View {
     if text.prefix(2) == "S0" { attString.foregroundColor = .systemOrange }                      // S0
     
     // highlight any filterText value
-    if !viewModel.settings.messageFilterText.isEmpty {
-      if let range = attString.range(of: viewModel.settings.messageFilterText) {
+    if !SettingsModel.shared.messageFilterText.isEmpty {
+      if let range = attString.range(of: SettingsModel.shared.messageFilterText, options: [.caseInsensitive]) {
         attString[range].underlineStyle = .single
         attString[range].foregroundColor = .yellow
         //        attString[range].font = NSFont(name: "System", size: 16)
@@ -55,11 +55,11 @@ struct MessagesView: View {
           LazyVStack(alignment: .leading) {
             ForEach(viewModel.messages.filteredMessages.reversed(), id: \.id) { tcpMessage in
               HStack(alignment: .top) {
-                if viewModel.settings.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
-                Text(textLine(tcpMessage.text + "\(viewModel.settings.newLineBetweenMessages ? "\n" : "")"))
+                if SettingsModel.shared.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
+                Text(textLine(tcpMessage.text + "\(SettingsModel.shared.newLineBetweenMessages ? "\n" : "")"))
               }
               .textSelection(.enabled)
-              .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
+              .font(.system(size: CGFloat(SettingsModel.shared.fontSize), weight: .regular, design: .monospaced))
             }
           }
         }
@@ -74,9 +74,6 @@ struct MessagesView: View {
         //          }
       }
       
-      ////        .onAppear{
-      ////          store.send(.onAppear)
-      ////        }
     }
 //    .frame(minWidth: 1250, maxWidth: .infinity)
   }
@@ -87,9 +84,10 @@ private struct FilterView: View {
   
   var body: some View {
     @Bindable var viewModelBinding = viewModel
+    @Bindable var settings = SettingsModel.shared
     
     HStack {
-      Picker("Show Tcp Messages of type", selection: $viewModelBinding.settings.messageFilter) {
+      Picker("Show Tcp Messages of type", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
@@ -97,20 +95,20 @@ private struct FilterView: View {
       .pickerStyle(MenuPickerStyle())
       .frame(width: 300)
       
-      .onChange(of: viewModel.settings.messageFilter) { _ , newValue in
-        viewModel.messages.reFilter(newValue, viewModel.settings.messageFilterText)
+      .onChange(of: SettingsModel.shared.messageFilter) { _ , _ in
+        viewModel.messages.reFilter()
       }
       
       Image(systemName: "x.circle").font(.title2)
         .onTapGesture {
-          viewModel.settings.messageFilterText = ""
+          SettingsModel.shared.messageFilterText = ""
 //          viewModel.messagesModel.filtersChanged(viewModel.settings.messageFilter, viewModel.settings.messageFilterText)
         }
       
-      TextField("filter text", text: $viewModelBinding.settings.messageFilterText)
+      TextField("filter text", text: $settings.messageFilterText)
         
-        .onChange(of: viewModel.settings.messageFilterText) { _, newValue in
-          viewModel.messages.reFilter(viewModel.settings.messageFilter, newValue)
+        .onChange(of: SettingsModel.shared.messageFilterText) { _, _ in
+          viewModel.messages.reFilter()
         }
     }
     

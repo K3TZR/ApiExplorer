@@ -29,7 +29,8 @@ public struct DiscoveryView: View {
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    
+    @Bindable var settings = SettingsModel.shared
+
     VStack(alignment: .center) {
       Text("Discovery").font(.title)
       
@@ -40,7 +41,7 @@ public struct DiscoveryView: View {
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
         }.frame(width: 250)
-        Picker("Display", selection: $viewModel.settings.discoveryDisplayType) {
+        Picker("Display", selection: $settings.discoveryDisplayType) {
           ForEach(DiscoveryDisplayType.allCases, id: \.self) {
             Text($0.rawValue).tag($0)
           }
@@ -50,7 +51,7 @@ public struct DiscoveryView: View {
       Divider().frame(height: 2).overlay(.blue)
       
       if let data {
-        switch viewModel.settings.discoveryDisplayType  {
+        switch SettingsModel.shared.discoveryDisplayType  {
         case .fields:     VitaFieldsView(data: data)
         case .keyValues:  PayloadFieldsView(data: data)
         case .hex:        RawView(data: data)
@@ -66,7 +67,7 @@ public struct DiscoveryView: View {
         }
       }
       Spacer()
-      if viewModel.settings.discoveryDisplayType != .hex {
+      if SettingsModel.shared.discoveryDisplayType != .hex {
         Divider()
         FooterView()
       }

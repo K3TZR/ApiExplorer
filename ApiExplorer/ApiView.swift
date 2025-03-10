@@ -86,7 +86,7 @@ struct ApiView: View {
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
       .receive(on: RunLoop.main)) { note in
-        if viewModel.settings.alertOnError {
+        if SettingsModel.shared.alertOnError {
           viewModel.alertInfo = note.object! as? AlertInfo
           viewModel.showAlert = true
         }
@@ -107,27 +107,35 @@ struct ObjectsMessagesSplitView: View {
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
   var body: some View {
-#if os(macOS)
-    // Use native `VSplitView` on macOS
-    VSplitView {
-      ObjectsView()
-        .frame(minHeight: minHeight)
-      
-      MessagesView()
-        .frame(minHeight: minHeight)
-    }
-#else
-    // Custom resizable vertical split for iOS
+
+//#if os(macOS)
+//    // Use native `VSplitView` on macOS
+//    VSplitView {
+//      ObjectsView()
+//        .frame(minHeight: 200)
+//      
+//      MessagesView()
+//        .frame(minHeight: 200)
+//    }
+//
+//#else
+//    // Custom resizable vertical split for iOS
     GeometryReader { geometry in
       VStack(spacing: 0) {
         ObjectsView()
           .frame(height: topHeight)
           .frame(maxWidth: .infinity)
-          .background(Color.blue.opacity(0.2)) // Just for visualization
+//          .background(Color.blue.opacity(0.2)) // Just for visualization
         
         Divider()
-          .frame(height: 5)
-          .background(Color.gray)
+          .frame(height: 3)
+          .background(Color.blue)
+          .onHover { hovering in
+            NSCursor.resizeUpDown.push()
+            if !hovering {
+              NSCursor.pop()
+            }
+          }
           .gesture(
             DragGesture()
               .onChanged { value in
@@ -141,11 +149,11 @@ struct ObjectsMessagesSplitView: View {
         MessagesView()
           .frame(maxHeight: .infinity)
           .frame(maxWidth: .infinity)
-          .background(Color.green.opacity(0.2)) // Just for visualization
+//          .background(Color.green.opacity(0.2)) // Just for visualization
       }
       .frame(maxHeight: .infinity)
     }
-#endif
+//#endif
   }
 }
 

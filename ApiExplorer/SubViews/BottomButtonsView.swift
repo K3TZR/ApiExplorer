@@ -46,35 +46,36 @@ public struct BottomButtonsView: View {
 
   public var body: some View {
     @Bindable var viewModel = viewModel
+    @Bindable var settings = SettingsModel.shared
 
     HStack {
-      Toggle(isOn: $viewModel.settings.gotoBottom) {
+      Toggle(isOn: $settings.gotoBottom) {
         Image(systemName: "arrow.down.square").font(.title)
       }
       
       Spacer()
       
       HStack(spacing: 5) {
-        Stepper("Font", value: $viewModel.settings.fontSize, in: 8...14)
-        Text(viewModel.settings.fontSize, format: .number).frame(alignment: .leading)
+        Stepper("Font", value: $settings.fontSize, in: 8...14)
+        Text(SettingsModel.shared.fontSize, format: .number).frame(alignment: .leading)
       }
-      Toggle("Spacing", isOn: $viewModel.settings.newLineBetweenMessages)
+      Toggle("Spacing", isOn: $settings.newLineBetweenMessages)
 
       Spacer()
       HStack {
-        Toggle("Times", isOn: $viewModel.settings.showTimes)
-        Toggle("Pings", isOn: $viewModel.settings.showPings)
-        Toggle("Replies", isOn: $viewModel.settings.showReplies)
-        Toggle("Alerts", isOn: $viewModel.settings.alertOnError)
+        Toggle("Times", isOn: $settings.showTimes)
+        Toggle("Pings", isOn: $settings.showPings)
+        Toggle("Replies", isOn: $settings.showReplies)
+        Toggle("Alerts", isOn: $settings.alertOnError)
           .help("Display a sheet when an Error / Warning occurs")
       }
       
-      .onChange(of: viewModel.settings.showPings) { _, newValue in
-        viewModel.messages.showPings = newValue
-      }
-      .onChange(of: viewModel.settings.showReplies) { _, newValue in
-        viewModel.messages.showReplies = newValue
-      }
+//      .onChange(of: viewModel.settings.showPings) { _, newValue in
+//        viewModel.messages.showPings = newValue
+//      }
+//      .onChange(of: viewModel.settings.showReplies) { _, newValue in
+//        viewModel.messages.showReplies = newValue
+//      }
       
       Spacer()
       Button("Save") {

@@ -20,7 +20,11 @@ public class ViewModel {
   public init() {
     messages = MessagesModel()
     api = ApiModel()
-    settings = SettingsModel()
+//    settings = SettingsModel.shared
+//    messages.filter = settings.messageFilter
+//    messages.text = settings.messageFilterText
+//    messages.showPings = settings.showPings
+//    messages.showReplies = settings.showReplies
   }
   
   // ----------------------------------------------------------------------------
@@ -29,7 +33,6 @@ public class ViewModel {
   // models
   public var messages: MessagesModel!
   public let api: ApiModel!
-  public var settings: SettingsModel!
   
   // transient properties
   public var alertInfo: AlertInfo?
@@ -46,6 +49,7 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
+  private var _settings = SettingsModel.shared
   private var _smartlinkIdToken: String?
   
   private let kDomain             = "https://frtest.auth0.com/"
@@ -55,7 +59,7 @@ public class ViewModel {
   // MARK: - Public action methods
   
   public func clearTextButtonTapped() {
-    settings.commandToSend = ""
+    _settings.commandToSend = ""
   }
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
@@ -66,17 +70,17 @@ public class ViewModel {
   
   public func defaultButtonTapped(_ radioId: String) {
     // set / reset the default
-    if settings.isGui {
-      if settings.defaultGui == radioId {
-        settings.defaultGui = ""
+    if _settings.isGui {
+      if _settings.defaultGui == radioId {
+        _settings.defaultGui = ""
       } else {
-        settings.defaultGui = radioId
+        _settings.defaultGui = radioId
       }
     } else {
-      if settings.defaultNonGui == radioId {
-        settings.defaultNonGui = ""
+      if _settings.defaultNonGui == radioId {
+        _settings.defaultNonGui = ""
       } else {
-        settings.defaultNonGui = radioId
+        _settings.defaultNonGui = radioId
       }
     }
   }
@@ -84,19 +88,18 @@ public class ViewModel {
   public func directButtonChanged(_ enabled: Bool) {
     print("directChanged \(enabled)")
     if enabled {
-      settings.localEnabled = false
-      settings.smartlinkEnabled = false
+      _settings.localEnabled = false
+      _settings.smartlinkEnabled = false
     }
   }
   
   public func guiButtonTapped() {
-    settings.isGui.toggle()
+    _settings.isGui.toggle()
   }
   
   public func localButtonChanged(_ enabled: Bool) {
-    print("localChanged \(enabled)")
     if enabled {
-      settings.directEnabled = false
+      _settings.directEnabled = false
       api.localListenerStart()
     } else {
       api.localListenerStop()
@@ -108,13 +111,12 @@ public class ViewModel {
   }
   
   public func nextStepperTapped() {
-    print("nextTapped")
-    if settings.commandsIndex == settings.commandsArray.count - 1 {
-      settings.commandsIndex = 0
+    if _settings.commandsIndex == _settings.commandsArray.count - 1 {
+      _settings.commandsIndex = 0
     } else {
-      settings.commandsIndex += 1
+      _settings.commandsIndex += 1
     }
-    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
+    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
   }
   
   public func onAppear() {
@@ -122,45 +124,41 @@ public class ViewModel {
       log.debug("ApiExplorer: application started")
       
       // initialize the Messages model
-      messages.filter = settings.messageFilter
-      messages.text = settings.messageFilterText
-      messages.showPings = settings.showPings
-      messages.showReplies = settings.showReplies
+      messages.reFilter()
       
-      // start Smartlink if enabled
-      if settings.smartlinkEnabled {
+      // start Local if enabled
+      if _settings.localEnabled {
+        api.localListenerStart()
+      }
+      
+     // start Smartlink if enabled
+      if _settings.smartlinkEnabled {
         smartlinkLoginOptions()
       }
       
       // make sure we have a Client Id
-      if settings.guiClientId.isEmpty {
-        settings.guiClientId = UUID().uuidString
+      if _settings.guiClientId.isEmpty {
+        _settings.guiClientId = UUID().uuidString
       }
 
       // mark as initialized
       initialized = true
-      if settings.localEnabled {
-        api.localListenerStart()
-      }
     }
   }
   
   public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
-    print("pickerConnectButtonTapped: radio \(radioId), station \(station)")
-    
     api.activeStation = station
     // try to connect to the selected radio / station
     connectionStart(radioId)
   }
   
   public func previousStepperTapped() {
-    print("previousTapped")
-    if settings.commandsIndex == 0 {
-      settings.commandsIndex = settings.commandsArray.count - 1
+    if _settings.commandsIndex == 0 {
+      _settings.commandsIndex = _settings.commandsArray.count - 1
     } else {
-      settings.commandsIndex -= 1
+      _settings.commandsIndex -= 1
     }
-    settings.commandToSend = settings.commandsArray[settings.commandsIndex]
+    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
   }
   
   public func remoteRxAudioCompressedButtonChanged() {
@@ -185,15 +183,15 @@ public class ViewModel {
   }
   
   public func sendButtonTapped() {
-    settings.commandsArray.append(settings.commandToSend)
+    _settings.commandsArray.append(_settings.commandToSend)
     // send command to the radio
-    api.sendTcp(settings.commandToSend)
-    if settings.clearOnSend { clearTextButtonTapped() }
+    api.sendTcp(_settings.commandToSend)
+    if _settings.clearOnSend { clearTextButtonTapped() }
   }
   
   public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
-      settings.directEnabled = false
+      _settings.directEnabled = false
       smartlinkLoginOptions()
       
     } else {
@@ -203,14 +201,19 @@ public class ViewModel {
   }
   
   public func smartlinkCancelButtonTapped() {
-    settings.smartlinkEnabled = false
+    _settings.smartlinkEnabled = false
   }
   
   public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
     Task {
-      let tokens = await api.smartlinkListenerStart( user, password)
-      settings.smartlinkRefreshToken = tokens!.refreshToken
-      _smartlinkIdToken = tokens!.idToken
+      if let tokens = await api.smartlinkListenerStart( user, password) {
+        _settings.smartlinkRefreshToken = tokens.refreshToken
+        _smartlinkIdToken = tokens.idToken
+      } else {
+        alertInfo = AlertInfo("Smartlink login", "FAILED for user: \(user)")
+        _settings.smartlinkEnabled = false
+        showAlert = true
+      }
     }
   }
   
@@ -222,8 +225,8 @@ public class ViewModel {
     if isConnected {
       Task { await connectionStop() }
       
-    } else if settings.useDefaultEnabled {
-      if let selection = settings.isGui ? settings.defaultGui : settings.defaultNonGui {
+    } else if _settings.useDefaultEnabled {
+      if let selection = _settings.isGui ? _settings.defaultGui : _settings.defaultNonGui {
         connectionStart(selection)
       } else {
         showPicker = true
@@ -316,19 +319,19 @@ public class ViewModel {
   // MARK: - Private supporting methods
   
   private func connect(_ activeSelection: ActiveSelection) async {
-    messages.start(settings.clearOnStart)
+    messages.start(_settings.clearOnStart)
     
     // attempt to connect to the selected Radio / Station
     // try to connect
     let connectTask = Task {
       do {
         try await api.connect(selection: activeSelection,
-                              isGui: settings.isGui,
+                              isGui: _settings.isGui,
                               programName: "ApiExplorer",
-                              mtuValue: settings.mtuValue,
-                              guiClientId: UUID(uuidString: settings.guiClientId)!,
-                              lowBandwidthDax: settings.lowBandwidthDax,
-                              lowBandwidthConnect: settings.lowBandwidthConnect,
+                              mtuValue: _settings.mtuValue,
+                              guiClientId: UUID(uuidString: _settings.guiClientId)!,
+                              lowBandwidthDax: _settings.lowBandwidthDax,
+                              lowBandwidthConnect: _settings.lowBandwidthConnect,
                               testDelegate: messages)
         // connection succesful
         return true
@@ -355,7 +358,7 @@ public class ViewModel {
       return
     }
     // handle Multiflex
-    if settings.isGui && api.activeSelection!.radio.guiClients.count > 0 {
+    if _settings.isGui && api.activeSelection!.radio.guiClients.count > 0 {
       showMultiflex = true
     } else {
       Task { await connect(api.activeSelection!) }
@@ -363,7 +366,8 @@ public class ViewModel {
   }
   
   private func connectionStop() async {
-    messages.stop(settings.clearOnStop)
+    api.activeSelection = nil
+    messages.stop(_settings.clearOnStop)
     await api.disconnect()
     isConnected = false
   }
@@ -459,15 +463,15 @@ public class ViewModel {
 
   private func smartlinkLoginOptions() {
     // start smartlink listener
-    if settings.smartlinkLoginRequired {
+    if _settings.smartlinkLoginRequired {
       // LOGIN required
       showSmartlinkLogin = true
       
-    } else if isValid(_smartlinkIdToken) && settings.smartlinkRefreshToken.isEmpty == false {
+    } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
       // use ID Token
       Task {
-        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: settings.smartlinkRefreshToken) {
-          settings.smartlinkRefreshToken = tokens.refreshToken
+        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: _settings.smartlinkRefreshToken) {
+          _settings.smartlinkRefreshToken = tokens.refreshToken
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet
@@ -475,11 +479,11 @@ public class ViewModel {
         }
       }
       
-    } else if settings.smartlinkRefreshToken.isEmpty == false {
+    } else if _settings.smartlinkRefreshToken.isEmpty == false {
       // use Refresh Token
       Task {
-        if let tokens = await api.smartlinkListenerStart(refreshToken: settings.smartlinkRefreshToken) {
-          settings.smartlinkRefreshToken = tokens.refreshToken
+        if let tokens = await api.smartlinkListenerStart(refreshToken: _settings.smartlinkRefreshToken) {
+          _settings.smartlinkRefreshToken = tokens.refreshToken
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet

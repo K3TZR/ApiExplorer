@@ -29,10 +29,10 @@ public struct PickerView: View {
       
       HeaderView()
       
-      if (viewModel.settings.isGui && viewModel.api.radios.count == 0) || (!viewModel.settings.isGui && guiClients.count == 0) {
+      if (SettingsModel.shared.isGui && viewModel.api.radios.count == 0) || (!SettingsModel.shared.isGui && guiClients.count == 0) {
         NothingView()
       }
-      else if viewModel.settings.isGui {
+      else if SettingsModel.shared.isGui {
         GuiView(selectedRadioId: $selectedRadioId)
       }
       else {
@@ -53,13 +53,13 @@ private struct HeaderView: View {
     
     HStack {
       Spacer()
-      Text("Select a \(viewModel.settings.isGui ? "RADIO" : "STATION")")
+      Text("Select a \(SettingsModel.shared.isGui ? "RADIO" : "STATION")")
         .font(.title)
       Spacer()
     }
     
     HStack(spacing: 0) {
-      Text("\(viewModel.settings.isGui ? "Radio" : "Station")")
+      Text("\(SettingsModel.shared.isGui ? "Radio" : "Station")")
         .frame(width: 200, alignment: .leading)
       
       Text("Type")
@@ -68,7 +68,7 @@ private struct HeaderView: View {
       Text("Status")
         .frame(width: 100, alignment: .leading)
       
-      Text("\(viewModel.settings.isGui  ? "Station(s)" : "Radio")")
+      Text("\(SettingsModel.shared.isGui  ? "Station(s)" : "Radio")")
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
     }
     .padding(.leading, 10)
@@ -87,7 +87,7 @@ private struct NothingView: View {
       Spacer()
       HStack {
         Spacer()
-        Text("----------  NO \(viewModel.settings.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
+        Text("----------  NO \(SettingsModel.shared.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
           .foregroundColor(.red)
         Spacer()
       }
@@ -122,7 +122,7 @@ private struct GuiView: View {
             .truncationMode(.middle)
         }
         .font(.title3)
-        .foregroundColor(viewModel.settings.defaultGui == radio.id ? .red : nil)
+        .foregroundColor(SettingsModel.shared.defaultGui == radio.id ? .red : nil)
       }
     }
     .listStyle(.plain)
@@ -157,7 +157,7 @@ private struct NonGuiView: View {
               .truncationMode(.middle)
           }
           .font(.title3)
-          .foregroundColor(viewModel.settings.defaultNonGui == radio.id ? .red : nil)
+          .foregroundColor(SettingsModel.shared.defaultNonGui == radio.id ? .red : nil)
           
           .background(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.3) : Color.clear) // Highlight selection
           .cornerRadius(8)

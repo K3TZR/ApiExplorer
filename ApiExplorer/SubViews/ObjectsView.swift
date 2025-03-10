@@ -25,7 +25,7 @@ public struct ObjectsView: View {
       if viewModel.isConnected {
         RadioClientTesterSplitView()
           .textSelection(.enabled)
-          .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
+          .font(.system(size: CGFloat(SettingsModel.shared.fontSize), weight: .regular, design: .monospaced))
           .padding(.horizontal, 10)
 
       } else {
@@ -46,7 +46,7 @@ private struct ObjectsEmptyView: View {
       Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
       Spacer()
       Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-      if viewModel.settings.isGui == false {
+      if SettingsModel.shared.isGui == false {
         Spacer()
         Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
       }
@@ -54,42 +54,51 @@ private struct ObjectsEmptyView: View {
     }
   }
 }
+
 private struct RadioClientTesterSplitView: View {
   @Environment(ViewModel.self) private var viewModel
 
-  @State private var topHeight: CGFloat = 200  // Initial height for the top view
+  @State private var topHeight: CGFloat = 100  // Initial height for the top view
 
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
   var body: some View {
-#if os(macOS)
-    // Use native `VSplitView` on macOS
-    VSplitView {
-      RadioSubView()
 
-      Divider().frame(height: 2).background(.blue)
-      
-      if let radio = viewModel.api.activeSelection?.radio {
-        GuiClientSubView(radio: radio)
-          .layoutPriority(1)
-      }
-      
-      if viewModel.settings.isGui == false {
-        TesterSubView()
-      }
-    }
-#else
-    // Custom resizable vertical split for iOS
+//#if os(macOS)
+//    // Use native `VSplitView` on macOS
+//    VSplitView {
+//      RadioSubView()
+//        .frame(minHeight: 100)
+//
+//      Divider().frame(height: 2).background(.blue)
+//      
+//      if let radio = viewModel.api.activeSelection?.radio {
+//        GuiClientSubView(radio: radio)
+//          .frame(minHeight: 100)
+//      }
+//      
+//      if viewModel.settings.isGui == false {
+//        TesterSubView()
+//      }
+//    }
+//
+//#else
+    // Custom resizable vertical split
     GeometryReader { geometry in
       VStack(spacing: 0) {
         RadioSubView()
           .frame(height: topHeight)
           .frame(maxWidth: .infinity)
-          .background(Color.blue.opacity(0.2)) // Just for visualization
         
         Divider()
-          .frame(height: 5)
-          .background(Color.gray)
+          .frame(height: 3)
+          .background(Color.blue)
+          .onHover { hovering in
+            NSCursor.resizeUpDown.push()
+            if !hovering {
+              NSCursor.pop()
+            }
+          }
           .gesture(
             DragGesture()
               .onChanged { value in
@@ -100,33 +109,31 @@ private struct RadioClientTesterSplitView: View {
               }
           )
         
-        if let radio = viewModel.apiModel.activeSelection?.radio {
+        if let radio = viewModel.api.activeSelection?.radio {
           GuiClientSubView(radio: radio)
             .frame(maxHeight: .infinity)
             .frame(maxWidth: .infinity)
-            .background(Color.green.opacity(0.2)) // Just for visualization
         }
 
-        if viewModel.settings.isGui == false {
+        if SettingsModel.shared.isGui == false {
           TesterSubView()
-            .frame(maxHeight: .infinity)
+//            .frame(maxHeight: 50)
             .frame(maxWidth: .infinity)
-            .background(Color.green.opacity(0.2)) // Just for visualization
         }
       }
       .frame(maxHeight: .infinity)
     }
-#endif
+//#endif
   }
 }
 
 private struct FilterRadioObjectsView: View {
-  @Environment(ViewModel.self) private var viewModel
+//  @Environment(ViewModel.self) private var viewModel
 
   var body: some View {
-    @Bindable var viewModel = viewModel
+    @Bindable var settings = SettingsModel.shared
     
-    Picker("Show RADIO Objects of type", selection: $viewModel.settings.radioObjectFilter) {
+    Picker("Show RADIO Objects of type", selection: $settings.radioObjectFilter) {
       ForEach(RadioObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }
@@ -137,12 +144,12 @@ private struct FilterRadioObjectsView: View {
 }
 
 private struct FilterStationObjectsView: View {
-  @Environment(ViewModel.self) private var viewModel
+//  @Environment(ViewModel.self) private var viewModel
 
   var body: some View {
-    @Bindable var viewModel = viewModel
+    @Bindable var settings = SettingsModel.shared
 
-    Picker("Show STATION Objects of type", selection: $viewModel.settings.stationObjectFilter) {
+    Picker("Show STATION Objects of type", selection: $settings.stationObjectFilter) {
       ForEach(StationObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }

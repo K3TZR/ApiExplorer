@@ -14,11 +14,12 @@ public struct TopButtonsView: View {
   @Environment(ViewModel.self) private var viewModel
 
   private var startButtonDisabled: Bool {
-    return !(viewModel.settings.directEnabled || viewModel.settings.localEnabled || viewModel.settings.smartlinkEnabled)
+    return !(SettingsModel.shared.directEnabled || SettingsModel.shared.localEnabled || SettingsModel.shared.smartlinkEnabled)
   }
 
   public var body: some View {
     @Bindable var viewModelBinding = viewModel
+    @Bindable var settings = SettingsModel.shared
 
     HStack(spacing: 30) {
       // Connection initiation
@@ -29,21 +30,21 @@ public struct TopButtonsView: View {
       .frame(width: 60, alignment: .leading)
       .disabled(startButtonDisabled)
       
-      Toggle("Gui", isOn: $viewModelBinding.settings.isGui)
+      Toggle("Gui", isOn: $settings.isGui)
         .frame(width: 60, alignment: .leading)
 
       // Connection types
       ControlGroup {
-        Toggle("Direct", isOn: $viewModelBinding.settings.directEnabled)
-          .onChange(of: viewModel.settings.directEnabled) {
+        Toggle("Direct", isOn: $settings.directEnabled)
+          .onChange(of: SettingsModel.shared.directEnabled) {
             viewModel.directButtonChanged($1)
           }
-        Toggle("Local", isOn: $viewModelBinding.settings.localEnabled)
-          .onChange(of: viewModel.settings.localEnabled) {
+        Toggle("Local", isOn: $settings.localEnabled)
+          .onChange(of: SettingsModel.shared.localEnabled) {
             viewModel.localButtonChanged($1)
           }
-        Toggle("Smartlink", isOn: $viewModelBinding.settings.smartlinkEnabled)
-          .onChange(of: viewModel.settings.smartlinkEnabled) {
+        Toggle("Smartlink", isOn: $settings.smartlinkEnabled)
+          .onChange(of: SettingsModel.shared.smartlinkEnabled) {
             viewModel.smartlinkButtonChanged($1)
           }
        }
@@ -52,32 +53,32 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      Picker("Dax", selection: $viewModelBinding.settings.daxSelection) {
+      Picker("Dax", selection: $settings.daxSelection) {
         ForEach(DaxChoice.allCases, id: \.self) {
           Text($0.rawValue.capitalized).tag($0)
         }
       }
       .frame(width: 180)
-      .disabled(viewModel.settings.isGui == false)
+      .disabled(SettingsModel.shared.isGui == false)
 
-      .onChange(of: viewModel.settings.daxSelection) {
+      .onChange(of: SettingsModel.shared.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
       
       Spacer()
       
       HStack(spacing: 10) {
-        Toggle("Rx Audio", isOn: $viewModelBinding.settings.remoteRxAudioEnabled)
-          .disabled(viewModel.settings.isGui == false)
+        Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
+          .disabled(SettingsModel.shared.isGui == false)
         
-          .onChange(of: viewModel.settings.remoteRxAudioEnabled) { _, _ in
+          .onChange(of: SettingsModel.shared.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
-        Toggle("Tx Audio", isOn: $viewModelBinding.settings.remoteTxAudioEnabled)
-          .disabled(viewModel.settings.isGui == false)
+        Toggle("Tx Audio", isOn: $settings.remoteTxAudioEnabled)
+          .disabled(SettingsModel.shared.isGui == false)
 
-          .onChange(of: viewModel.settings.remoteTxAudioEnabled) { _, _ in
+          .onChange(of: SettingsModel.shared.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }

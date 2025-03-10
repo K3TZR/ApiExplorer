@@ -46,6 +46,9 @@ private struct HeadingView: View {
   var body: some View {
 
     GridRow {
+      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+        .frame(width: 110)
+
       Text("METERS")
         .frame(width: 110, alignment: .leading)
 
@@ -76,6 +79,9 @@ private struct DetailView: View {
   var body: some View {
     
     GridRow {
+      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+        .frame(width: 110)
+
       Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
         .frame(width: 110)
 

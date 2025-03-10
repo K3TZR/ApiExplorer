@@ -19,18 +19,19 @@ public struct SmartlinkLoginView: View {
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    
+    @Bindable var settings = SettingsModel.shared
+
     VStack(spacing: 10) {
       Text( "Smartlink Login" ).font( .title2 )
       Divider()
       Grid(alignment: .leading) {
         GridRow {
           Text( "User" ).frame(alignment: .leading)
-          TextField( "", text: $viewModel.settings.smartlinkUser)
+          TextField( "", text: $settings.smartlinkUser)
         }
         GridRow {
           Text( "Password").frame(alignment: .leading)
-         SecureField( "", text: $password)
+         TextField( "", text: $password)
         }
       }
       
@@ -44,10 +45,10 @@ public struct SmartlinkLoginView: View {
         .keyboardShortcut( .cancelAction )
         
         Button( "Log in" ) {
-          viewModel.smartlinkLoginButtonTapped(viewModel.settings.smartlinkUser, password)
+          viewModel.smartlinkLoginButtonTapped(SettingsModel.shared.smartlinkUser, password)
           dismiss() }
         .keyboardShortcut( .defaultAction )
-        .disabled( viewModel.settings.smartlinkUser.isEmpty || password.isEmpty )
+        .disabled( SettingsModel.shared.smartlinkUser.isEmpty || password.isEmpty )
       }
     }
     .frame(width: 300)

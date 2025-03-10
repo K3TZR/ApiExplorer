@@ -79,7 +79,7 @@ struct RadioSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading)
           
-          if showDetails { DetailView(filter: viewModel.settings.radioObjectFilter) }
+          if showDetails { DetailView(filter: SettingsModel.shared.radioObjectFilter) }
         }
       }
     }
