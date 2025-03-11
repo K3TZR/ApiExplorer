@@ -17,54 +17,51 @@ struct GuiClientSubView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-  @State var showSubView = true
+//  @State var showSubView = true
   
   var body: some View {
     
     ForEach(radio.guiClients, id: \.id) { guiClient in
-      ScrollView([.vertical]) {
-        VStack(alignment: .leading, spacing: 0) {
-          Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
-            GridRow {
-              Label("Gui", systemImage: showSubView ? "chevron.down" : "chevron.right")
-                .foregroundColor(.yellow)
-                .font(.title)
-                .frame(width: 110, alignment: .leading)
-                .onTapGesture{ showSubView.toggle() }
-
-              Text("\(guiClient.station)")
-                .foregroundColor(.yellow)
-              
-              Text("Handle")
-              Text(guiClient.handle)
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
-              Text("Program")
-              Text("\(guiClient.program)")
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
-              Text("LocalPtt")
-              Text(guiClient.isLocalPtt ? "Y" : "N")
-                .foregroundColor(guiClient.isLocalPtt ? .green : .red)
-                .gridColumnAlignment(.trailing)
-              
-              Text("ClientId")
-              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-            }
-          }
-          
-          if showSubView {
-            GuiClientDetailView(handle: guiClient.handle.handle!)
+      VStack(alignment: .leading, spacing: 0) {
+        Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+          GridRow {
+            Label("Gui", systemImage: "chevron.right")
+              .foregroundColor(.yellow)
+              .font(.title)
+              .frame(width: 110, alignment: .leading)
+//              .onTapGesture{ showSubView.toggle() }
+            
+            Text("\(guiClient.station)")
+              .foregroundColor(.yellow)
+            
+            Text("Handle")
+            Text(guiClient.handle)
+              .foregroundColor(.secondary)
+              .gridColumnAlignment(.trailing)
+            
+            Text("Program")
+            Text("\(guiClient.program)")
+              .foregroundColor(.secondary)
+              .gridColumnAlignment(.trailing)
+            
+            Text("LocalPtt")
+            Text(guiClient.isLocalPtt ? "Y" : "N")
+              .foregroundColor(guiClient.isLocalPtt ? .green : .red)
+              .gridColumnAlignment(.trailing)
+            
+            Text("ClientId")
+            Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+              .foregroundColor(.secondary)
+              .gridColumnAlignment(.trailing)
           }
         }
-        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+        Divider().background(Color(.gray))
       }
-      .frame(minHeight: 70)
+      .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+          
+      GuiClientDetailView(handle: guiClient.handle.handle!)
     }
+    .frame(minHeight: 50)
   }
 }
 
@@ -72,33 +69,38 @@ private struct GuiClientDetailView: View {
   let handle: UInt32
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
-    VStack(alignment: .leading) {
-      switch SettingsModel.shared.stationObjectFilter {
-        
-      case .all:
-        PanadapterSubView(handle: handle, showMeters: true)
-        
-      case .noMeters:
-        PanadapterSubView(handle: handle, showMeters: false)
-        
-        //      case .amplifiers:        AmplifierSubView()
-        //      case .cwx:               CwxSubView()
-      case .interlock:         InterlockSubView()
-        //      case .memories:          MemorySubView()
-        //      case .meters:            MeterSubView(sliceId: nil, sliceClientHandle: nil, handle: handle)
-        //      case .network:           NetworkSubView()
-        //      case .profiles:          ProfileSubView()
-        //      case .streams:           StreamSubView(handle: handle)
-        //      case .usbCable:          UsbCableSubView()
-        //      case .wan:               WanSubView()
-        //      case .waveforms:         WaveformSubView()
-        //      case .xvtrs:             XvtrSubView()
-      default:                Text("Unknown")
+    ScrollView([.vertical]) {
+      VStack(alignment: .leading) {
+        switch settings.stationObjectFilter {
+          
+        case .all:
+          PanadapterSubView(handle: handle, showMeters: true)
+          
+        case .noMeters:
+          PanadapterSubView(handle: handle, showMeters: false)
+          
+          //      case .amplifiers:        AmplifierSubView()
+          //      case .cwx:               CwxSubView()
+        case .interlock:         InterlockSubView()
+          //      case .memories:          MemorySubView()
+          //      case .meters:            MeterSubView(sliceId: nil, sliceClientHandle: nil, handle: handle)
+          //      case .network:           NetworkSubView()
+          //      case .profiles:          ProfileSubView()
+          //      case .streams:           StreamSubView(handle: handle)
+          //      case .usbCable:          UsbCableSubView()
+          //      case .wan:               WanSubView()
+          //      case .waveforms:         WaveformSubView()
+          //      case .xvtrs:             XvtrSubView()
+        default:                Text("Unknown")
+        }
       }
     }
+//    .border(.green)
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
 

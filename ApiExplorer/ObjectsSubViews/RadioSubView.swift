@@ -15,8 +15,9 @@ import ApiPackage
 struct RadioSubView: View {
   
   @Environment(ViewModel.self) var viewModel
-  
-  @State var showDetails = true
+  @Environment(SettingsModel.self) private var settings
+
+//  @State var showDetails = true
 
   var body: some View {
     
@@ -27,11 +28,11 @@ struct RadioSubView: View {
         VStack(alignment: .leading, spacing: 0) {
           Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
-              Label("Radio", systemImage: showDetails ? "chevron.down" : "chevron.right")
+              Label("Radio", systemImage: "chevron.right")
                 .frame(width: 110, alignment: .leading)
                 .font(.title)
                 .foregroundColor(.green)
-                .onTapGesture{ showDetails.toggle() }
+//                .onTapGesture{ showDetails.toggle() }
                 .gridColumnAlignment(.leading)
               
               Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
@@ -79,7 +80,8 @@ struct RadioSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading)
           
-          if showDetails { DetailView(filter: SettingsModel.shared.radioObjectFilter) }
+//          if showDetails { DetailView(filter: settings.radioObjectFilter) }
+          DetailView(filter: settings.radioObjectFilter)
         }
       }
     }

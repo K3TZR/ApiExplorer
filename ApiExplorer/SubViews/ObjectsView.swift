@@ -13,7 +13,8 @@ import SwiftUI
 public struct ObjectsView: View {
 
   @Environment(ViewModel.self) private var viewModel
-  
+  @Environment(SettingsModel.self) private var settings
+
   public var body: some View {
     
     VStack(alignment: .leading) {
@@ -25,7 +26,7 @@ public struct ObjectsView: View {
       if viewModel.isConnected {
         RadioClientTesterSplitView()
           .textSelection(.enabled)
-          .font(.system(size: CGFloat(SettingsModel.shared.fontSize), weight: .regular, design: .monospaced))
+          .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
           .padding(.horizontal, 10)
 
       } else {
@@ -37,7 +38,7 @@ public struct ObjectsView: View {
   
 private struct ObjectsEmptyView: View {
 
-  @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   var body: some View {
     
@@ -46,7 +47,7 @@ private struct ObjectsEmptyView: View {
       Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
       Spacer()
       Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-      if SettingsModel.shared.isGui == false {
+      if settings.isGui == false {
         Spacer()
         Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
       }
@@ -56,7 +57,9 @@ private struct ObjectsEmptyView: View {
 }
 
 private struct RadioClientTesterSplitView: View {
+  
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   @State private var topHeight: CGFloat = 100  // Initial height for the top view
 
@@ -111,13 +114,13 @@ private struct RadioClientTesterSplitView: View {
         
         if let radio = viewModel.api.activeSelection?.radio {
           GuiClientSubView(radio: radio)
-            .frame(maxHeight: .infinity)
+//            .frame(maxHeight: .infinity)
             .frame(maxWidth: .infinity)
         }
 
-        if SettingsModel.shared.isGui == false {
+        if settings.isGui == false {
           TesterSubView()
-//            .frame(maxHeight: 50)
+            .frame(height: 50)
             .frame(maxWidth: .infinity)
         }
       }
@@ -128,10 +131,11 @@ private struct RadioClientTesterSplitView: View {
 }
 
 private struct FilterRadioObjectsView: View {
-//  @Environment(ViewModel.self) private var viewModel
+ 
+  @Environment(SettingsModel.self) private var settings
 
   var body: some View {
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
     
     Picker("Show RADIO Objects of type", selection: $settings.radioObjectFilter) {
       ForEach(RadioObjectFilter.allCases, id: \.self) {
@@ -144,10 +148,11 @@ private struct FilterRadioObjectsView: View {
 }
 
 private struct FilterStationObjectsView: View {
-//  @Environment(ViewModel.self) private var viewModel
+
+  @Environment(SettingsModel.self) private var settings
 
   var body: some View {
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     Picker("Show STATION Objects of type", selection: $settings.stationObjectFilter) {
       ForEach(StationObjectFilter.allCases, id: \.self) {

@@ -11,11 +11,13 @@ import SwiftUI
 // MARK: - View
 
 public struct SendView: View {
+  
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   public var body: some View {
 //    @Bindable var viewModelBinding = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     HStack {
       Button("Send") { viewModel.sendButtonTapped() }

@@ -13,13 +13,14 @@ import SwiftUI
 public struct SmartlinkLoginView: View {
   
   @Environment(ViewModel.self) var viewModel
+  @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
   
   @State var password = ""
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     VStack(spacing: 10) {
       Text( "Smartlink Login" ).font( .title2 )
@@ -45,10 +46,10 @@ public struct SmartlinkLoginView: View {
         .keyboardShortcut( .cancelAction )
         
         Button( "Log in" ) {
-          viewModel.smartlinkLoginButtonTapped(SettingsModel.shared.smartlinkUser, password)
+          viewModel.smartlinkLoginButtonTapped(settings.smartlinkUser, password)
           dismiss() }
         .keyboardShortcut( .defaultAction )
-        .disabled( SettingsModel.shared.smartlinkUser.isEmpty || password.isEmpty )
+        .disabled( settings.smartlinkUser.isEmpty || password.isEmpty )
       }
     }
     .frame(width: 300)

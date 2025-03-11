@@ -11,15 +11,17 @@ import SwiftUI
 // MARK: - View
 
 public struct TopButtonsView: View {
+  
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   private var startButtonDisabled: Bool {
-    return !(SettingsModel.shared.directEnabled || SettingsModel.shared.localEnabled || SettingsModel.shared.smartlinkEnabled)
+    return !(settings.directEnabled || settings.localEnabled || settings.smartlinkEnabled)
   }
 
   public var body: some View {
     @Bindable var viewModelBinding = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     HStack(spacing: 30) {
       // Connection initiation
@@ -36,15 +38,15 @@ public struct TopButtonsView: View {
       // Connection types
       ControlGroup {
         Toggle("Direct", isOn: $settings.directEnabled)
-          .onChange(of: SettingsModel.shared.directEnabled) {
+          .onChange(of: settings.directEnabled) {
             viewModel.directButtonChanged($1)
           }
         Toggle("Local", isOn: $settings.localEnabled)
-          .onChange(of: SettingsModel.shared.localEnabled) {
+          .onChange(of: settings.localEnabled) {
             viewModel.localButtonChanged($1)
           }
         Toggle("Smartlink", isOn: $settings.smartlinkEnabled)
-          .onChange(of: SettingsModel.shared.smartlinkEnabled) {
+          .onChange(of: settings.smartlinkEnabled) {
             viewModel.smartlinkButtonChanged($1)
           }
        }
@@ -59,9 +61,9 @@ public struct TopButtonsView: View {
         }
       }
       .frame(width: 180)
-      .disabled(SettingsModel.shared.isGui == false)
+      .disabled(settings.isGui == false)
 
-      .onChange(of: SettingsModel.shared.daxSelection) {
+      .onChange(of: settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
       
@@ -69,16 +71,16 @@ public struct TopButtonsView: View {
       
       HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
-          .disabled(SettingsModel.shared.isGui == false)
+          .disabled(settings.isGui == false)
         
-          .onChange(of: SettingsModel.shared.remoteRxAudioEnabled) { _, _ in
+          .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
         Toggle("Tx Audio", isOn: $settings.remoteTxAudioEnabled)
-          .disabled(SettingsModel.shared.isGui == false)
+          .disabled(settings.isGui == false)
 
-          .onChange(of: SettingsModel.shared.remoteTxAudioEnabled) { _, _ in
+          .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }

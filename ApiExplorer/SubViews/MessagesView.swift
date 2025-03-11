@@ -11,7 +11,9 @@ import SwiftUI
 // MARK: - View
 
 struct MessagesView: View {
+
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   @MainActor func textLine( _ text: String) -> AttributedString {
     var attString = AttributedString(text)
@@ -22,8 +24,8 @@ struct MessagesView: View {
     if text.prefix(2) == "S0" { attString.foregroundColor = .systemOrange }                      // S0
     
     // highlight any filterText value
-    if !SettingsModel.shared.messageFilterText.isEmpty {
-      if let range = attString.range(of: SettingsModel.shared.messageFilterText, options: [.caseInsensitive]) {
+    if !settings.messageFilterText.isEmpty {
+      if let range = attString.range(of: settings.messageFilterText, options: [.caseInsensitive]) {
         attString[range].underlineStyle = .single
         attString[range].foregroundColor = .yellow
         //        attString[range].font = NSFont(name: "System", size: 16)
@@ -55,11 +57,11 @@ struct MessagesView: View {
           LazyVStack(alignment: .leading) {
             ForEach(viewModel.messages.filteredMessages.reversed(), id: \.id) { tcpMessage in
               HStack(alignment: .top) {
-                if SettingsModel.shared.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
-                Text(textLine(tcpMessage.text + "\(SettingsModel.shared.newLineBetweenMessages ? "\n" : "")"))
+                if settings.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
+                Text(textLine(tcpMessage.text + "\(settings.newLineBetweenMessages ? "\n" : "")"))
               }
               .textSelection(.enabled)
-              .font(.system(size: CGFloat(SettingsModel.shared.fontSize), weight: .regular, design: .monospaced))
+              .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
             }
           }
         }
@@ -80,11 +82,13 @@ struct MessagesView: View {
 }
 
 private struct FilterView: View {
+
   @Environment(ViewModel.self) private var viewModel
-  
+  @Environment(SettingsModel.self) private var settings
+
   var body: some View {
     @Bindable var viewModelBinding = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
     
     HStack {
       Picker("Show Tcp Messages of type", selection: $settings.messageFilter) {
@@ -95,19 +99,19 @@ private struct FilterView: View {
       .pickerStyle(MenuPickerStyle())
       .frame(width: 300)
       
-      .onChange(of: SettingsModel.shared.messageFilter) { _ , _ in
+      .onChange(of: settings.messageFilter) { _ , _ in
         viewModel.messages.reFilter()
       }
       
       Image(systemName: "x.circle").font(.title2)
         .onTapGesture {
-          SettingsModel.shared.messageFilterText = ""
+          settings.messageFilterText = ""
 //          viewModel.messagesModel.filtersChanged(viewModel.settings.messageFilter, viewModel.settings.messageFilterText)
         }
       
       TextField("filter text", text: $settings.messageFilterText)
         
-        .onChange(of: SettingsModel.shared.messageFilterText) { _, _ in
+        .onChange(of: settings.messageFilterText) { _, _ in
           viewModel.messages.reFilter()
         }
     }

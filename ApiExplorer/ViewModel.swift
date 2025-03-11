@@ -20,19 +20,14 @@ public class ViewModel {
   public init() {
     messages = MessagesModel()
     api = ApiModel()
-//    settings = SettingsModel.shared
-//    messages.filter = settings.messageFilter
-//    messages.text = settings.messageFilterText
-//    messages.showPings = settings.showPings
-//    messages.showReplies = settings.showReplies
   }
   
   // ----------------------------------------------------------------------------
   // MARK: - Public properties
   
   // models
-  public var messages: MessagesModel!
-  public let api: ApiModel!
+  public let messages: MessagesModel
+  public let api: ApiModel
   
   // transient properties
   public var alertInfo: AlertInfo?

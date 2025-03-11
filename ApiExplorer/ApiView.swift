@@ -24,7 +24,9 @@ public enum DaxChoice: String, CaseIterable, Sendable {
 // MARK: - View
 
 struct ApiView: View {      
+  
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
 
   var body: some View {
     @Bindable var viewModel = viewModel
@@ -58,7 +60,7 @@ struct ApiView: View {
     }
     .sheet(isPresented: $viewModel.showMultiflex, onDismiss: {} ) {
       MultiflexView()
-        .environment(viewModel)
+//        .environment(viewModel)
     }
     .sheet(isPresented: $viewModel.showPicker, onDismiss: {} ) {
       PickerView()
@@ -86,7 +88,7 @@ struct ApiView: View {
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
       .receive(on: RunLoop.main)) { note in
-        if SettingsModel.shared.alertOnError {
+        if settings.alertOnError {
           viewModel.alertInfo = note.object! as? AlertInfo
           viewModel.showAlert = true
         }

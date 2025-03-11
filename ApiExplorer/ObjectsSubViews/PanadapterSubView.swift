@@ -49,7 +49,8 @@ struct PanadapterSubView: View {
               if showMeters { SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
             }
           }
-          .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading) // Ensure left alignment
+          .padding(.bottom, 20)
+          .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
         }
       }
     }
@@ -60,7 +61,6 @@ private struct PanadapterDetailView: View {
   var panadapter: Panadapter
   
   var body: some View {
-    Divider().background(Color(.gray))
     
     Grid(alignment: .leading, horizontalSpacing: 10) {
       

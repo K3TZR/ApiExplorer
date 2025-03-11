@@ -39,14 +39,16 @@ struct MessagesDocument: FileDocument {
 // MARK: - View
 
 public struct BottomButtonsView: View {
+
   @Environment(ViewModel.self) private var viewModel
-  
+  @Environment(SettingsModel.self) private var settings
+
   @State private var isSaving: Bool = false
   @State private var document: MessagesDocument?
 
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     HStack {
       Toggle(isOn: $settings.gotoBottom) {
@@ -57,7 +59,7 @@ public struct BottomButtonsView: View {
       
       HStack(spacing: 5) {
         Stepper("Font", value: $settings.fontSize, in: 8...14)
-        Text(SettingsModel.shared.fontSize, format: .number).frame(alignment: .leading)
+        Text(settings.fontSize, format: .number).frame(alignment: .leading)
       }
       Toggle("Spacing", isOn: $settings.newLineBetweenMessages)
 

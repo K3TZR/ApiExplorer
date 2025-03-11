@@ -48,12 +48,14 @@ struct ApiExplorerApp: App {
     WindowGroup("ApiExplorer  (v" + Version().string + ")") {
       ApiView()
         .environment(viewModel)
+        .environment(SettingsModel.shared)
 
     }
 #if os(macOS)
     Settings {
       SettingsView()
         .environment(viewModel)
+        .environment(SettingsModel.shared)
     }
 #endif
 

@@ -16,6 +16,7 @@ import ApiPackage
 public struct DiscoveryView: View {
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
 
   @State var radioSelection: String?
@@ -29,7 +30,7 @@ public struct DiscoveryView: View {
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     VStack(alignment: .center) {
       Text("Discovery").font(.title)
@@ -51,7 +52,7 @@ public struct DiscoveryView: View {
       Divider().frame(height: 2).overlay(.blue)
       
       if let data {
-        switch SettingsModel.shared.discoveryDisplayType  {
+        switch settings.discoveryDisplayType  {
         case .fields:     VitaFieldsView(data: data)
         case .keyValues:  PayloadFieldsView(data: data)
         case .hex:        RawView(data: data)
@@ -67,7 +68,7 @@ public struct DiscoveryView: View {
         }
       }
       Spacer()
-      if SettingsModel.shared.discoveryDisplayType != .hex {
+      if settings.discoveryDisplayType != .hex {
         Divider()
         FooterView()
       }
@@ -244,21 +245,12 @@ private struct RawView: View {
 }
 
 private struct FooterView: View {
-//  let data: Data?
-//  let isSaving: Binding<Bool>
-//  let document: Binding<BroadcastDocument?>
 
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
     HStack {
-//      Button("Save") {
-//        document.wrappedValue = BroadcastDocument(text: viewModel.hexDump(data!))
-//        isSaving.wrappedValue = true
-//      }
-//      .disabled(data == nil)
-      
       Spacer()
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)

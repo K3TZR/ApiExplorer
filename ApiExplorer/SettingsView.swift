@@ -16,11 +16,12 @@ import ApiPackage
 public struct SettingsView: View {
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
 
   public var body: some View {
     @Bindable var viewModelBinding = viewModel
-    @Bindable var settings = SettingsModel.shared
+    @Bindable var settings = settings
 
     VStack(alignment: .center) {
       
@@ -36,12 +37,12 @@ public struct SettingsView: View {
         Toggle("Low BW Connect", isOn: $settings.lowBandwidthDax)
         
         Toggle("Rx Audio Compression", isOn: $settings.remoteRxAudioCompressed)
-          .onChange(of: SettingsModel.shared.remoteRxAudioCompressed) { _, _ in
+          .onChange(of: settings.remoteRxAudioCompressed) { _, _ in
             viewModel.remoteRxAudioCompressedButtonChanged()
           }
         
         Toggle("Tx Audio Compression", isOn: $settings.remoteTxAudioCompressed)
-          .onChange(of: SettingsModel.shared.remoteTxAudioCompressed) { _, _ in
+          .onChange(of: settings.remoteTxAudioCompressed) { _, _ in
             viewModel.remoteTxAudioCompressedButtonChanged()
           }
       }
