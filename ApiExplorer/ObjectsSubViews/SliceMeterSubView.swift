@@ -108,9 +108,9 @@ private struct DetailView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Preview
 
-//#Preview {
-//  MeterSubView()
-//    .environment(ViewModel())
-//
-//    .frame(width: 1250)
-//}
+#Preview {
+  MeterSubView()
+    .environment(ViewModel())
+
+    .frame(width: 1000)
+}

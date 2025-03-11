@@ -89,5 +89,5 @@ struct InterlockSubView: View {
   InterlockSubView()
     .environment(ViewModel())
 
-    .frame(width: 1250)
+    .frame(width: 1000)
 }

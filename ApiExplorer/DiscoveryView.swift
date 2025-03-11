@@ -42,6 +42,7 @@ public struct DiscoveryView: View {
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
         }.frame(width: 250)
+        
         Picker("Display", selection: $settings.discoveryDisplayType) {
           ForEach(DiscoveryDisplayType.allCases, id: \.self) {
             Text($0.rawValue).tag($0)
@@ -76,8 +77,6 @@ public struct DiscoveryView: View {
     .monospaced()
     .padding()
     .frame(height: 600)
-    
-    // Save Dialog
   }
 }
 
@@ -185,35 +184,10 @@ private struct RawView: View {
   let data: Data
   
   @State var isSaving = false
-  @State var document: BroadcastDocument?
+  @State var document: SaveDocument?
 
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
-  struct BroadcastDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.plainText] }
-    
-    var text: String
-    
-    init(text: String = "") {
-        self.text = text
-    }
-
-      // this initializer loads data that has been saved previously
-    init(configuration: ReadConfiguration) throws {
-        if let data = configuration.file.regularFileContents,
-           let string = String(data: data, encoding: .utf8) {
-            text = string
-        } else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-    }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = text.data(using: .utf8) ?? Data()
-        return FileWrapper(regularFileWithContents: data)
-    }
-  }
 
   var body: some View {
     VStack {
@@ -225,7 +199,7 @@ private struct RawView: View {
 
       HStack {
         Button("Save") {
-          document = BroadcastDocument(text: viewModel.hexDump(data))
+          document = SaveDocument(text: viewModel.hexDump(data))
           isSaving = true
         }
         Spacer()
@@ -265,34 +239,4 @@ private struct FooterView: View {
 #Preview("DiscoveryView") {
   DiscoveryView()
     .environment(ViewModel())
-}
-
-// ----------------------------------------------------------------------------
-// MARK: - Save support
-
-import UniformTypeIdentifiers
-
-struct BroadcastDocument: FileDocument {
-  static var readableContentTypes: [UTType] { [.plainText] }
-  
-  var text: String
-  
-  init(text: String = "") {
-      self.text = text
-  }
-
-    // this initializer loads data that has been saved previously
-  init(configuration: ReadConfiguration) throws {
-      if let data = configuration.file.regularFileContents,
-         let string = String(data: data, encoding: .utf8) {
-          text = string
-      } else {
-          throw CocoaError(.fileReadCorruptFile)
-      }
-  }
-  
-  func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-      let data = text.data(using: .utf8) ?? Data()
-      return FileWrapper(regularFileWithContents: data)
-  }
 }

@@ -16,28 +16,26 @@ struct TesterSubView: View {
   
   var body: some View {
     
-    if viewModel.api.activeSelection != nil {
-      Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
-        GridRow {
-          Text("ApiExplorer").foregroundColor(.blue)
-            .frame(width: 110, alignment: .leading)
-            .font(.title)
-          
-            Text("Bound to Station")
-            Text("\(viewModel.api.activeStation ?? "Unknown")")
-              .foregroundColor(.secondary)
-
-          Text("Handle")
-            Text(viewModel.api.connectionHandle?.hex ?? "???")
-              .foregroundColor(.secondary)
-
-          Text("Client Id")
-            Text("\(viewModel.api.boundClientId ?? "???")")
-              .foregroundColor(.secondary)
-        }
+    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+      GridRow {
+        Text("ApiExplorer").foregroundColor(.blue)
+          .frame(width: 110, alignment: .leading)
+          .font(.title)
+        
+        Text("Bound to Station")
+        Text("\(viewModel.api.activeStation ?? "Unknown")")
+          .foregroundColor(.secondary)
+        
+        Text("Handle")
+        Text(viewModel.api.connectionHandle?.hex ?? "???")
+          .foregroundColor(.secondary)
+        
+        Text("Client Id")
+        Text("\(viewModel.api.boundClientId ?? "???")")
+          .foregroundColor(.secondary)
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -45,8 +43,8 @@ struct TesterSubView: View {
 // MARK: - Preview
 
 #Preview {
-  TesterSubView()    
+  TesterSubView()
     .environment(ViewModel())
   
-    .frame(minWidth: 1250)
+    .frame(minWidth: 1000)
 }

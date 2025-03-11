@@ -19,21 +19,21 @@ public struct NetworkSubView: View {
   
   public var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
-      GridRow {
-        Text("NETWORK")
-          .frame(width: 110, alignment: .leading)
-        
-        Text("Stream")
-        Text("Packets")
-        Text("Errors")
-        Text("Error PerCent")
-        Spacer()
+    VStack(alignment: .leading) {
+      Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+        GridRow {
+          Text("NETWORK")
+            .frame(width: 110, alignment: .leading)
+          
+          Text("Stream")
+          Text("Packets")
+          Text("Errors")
+          Text("Error PerCent")
+        }
+        DetailView(streamModel: viewModel.api.streamModel!)
       }
-      
-      DetailView(streamModel: viewModel.api.streamModel!)
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
@@ -108,8 +108,7 @@ private struct DetailView: View {
 
 #Preview {
   NetworkSubView()
-  
     .environment(ViewModel())
 
-    .frame(minWidth: 1250)
+    .frame(minWidth: 1000)
 }

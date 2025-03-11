@@ -493,3 +493,33 @@ public class ViewModel {
     }
   }
 }
+
+// ----------------------------------------------------------------------------
+// MARK: - Save support
+
+import UniformTypeIdentifiers
+
+public struct SaveDocument: FileDocument {
+  public static var readableContentTypes: [UTType] { [.plainText] }
+  
+  var text: String
+  
+  public init(text: String = "") {
+      self.text = text
+  }
+
+    // this initializer loads data that has been saved previously
+  public init(configuration: ReadConfiguration) throws {
+      if let data = configuration.file.regularFileContents,
+         let string = String(data: data, encoding: .utf8) {
+          text = string
+      } else {
+          throw CocoaError(.fileReadCorruptFile)
+      }
+  }
+  
+  public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+      let data = text.data(using: .utf8) ?? Data()
+      return FileWrapper(regularFileWithContents: data)
+  }
+}

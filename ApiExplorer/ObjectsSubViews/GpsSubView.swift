@@ -57,7 +57,7 @@ private struct HeadingView: View {
   var body: some View {
     GridRow {
       Text("GPS")
-        .frame(width: 110)
+        .frame(width: 110, alignment: .leading)
 
       Text("Altitude")
       Text("Frequency Error")
@@ -79,5 +79,5 @@ private struct HeadingView: View {
   GpsSubView()
     .environment(ViewModel())
 
-    .frame(width: 1250)
+    .frame(width: 1000)
 }

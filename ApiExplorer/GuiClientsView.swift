@@ -22,6 +22,7 @@ public struct GuiClientsView: View {
   }
   
   public var body: some View {
+    
     VStack(alignment: .leading) {
       HeaderView()
       

@@ -83,7 +83,6 @@ private struct DetailView: View {
         .gridColumnAlignment(.leading)
     }
     .foregroundColor(.secondary)
-
   }
 }
 
@@ -94,5 +93,5 @@ private struct DetailView: View {
   MeterSubView()
     .environment(ViewModel())
 
-    .frame(width: 1250)
+    .frame(width: 1000)
 }

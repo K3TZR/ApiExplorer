@@ -17,8 +17,10 @@ struct EqualizerSubView: View {
   @Environment(ViewModel.self) private var viewModel
 
   var body: some View {
+    
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
+      
       ForEach(viewModel.api.equalizers) { eq in
         GridRow {
           Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
@@ -46,6 +48,7 @@ struct EqualizerSubView: View {
 private struct HeadingView: View {
 
   var body: some View {
+    
     GridRow {
       Text("EQUALIZERS")
         .frame(width: 110, alignment: .leading)
@@ -72,5 +75,5 @@ private struct HeadingView: View {
   EqualizerSubView()
     .environment(ViewModel())
   
-    .frame(minWidth: 1250)
+    .frame(minWidth: 1000)
 }

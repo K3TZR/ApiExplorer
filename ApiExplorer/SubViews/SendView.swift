@@ -16,7 +16,6 @@ public struct SendView: View {
   @Environment(SettingsModel.self) private var settings
 
   public var body: some View {
-//    @Bindable var viewModelBinding = viewModel
     @Bindable var settings = settings
 
     HStack {
@@ -54,9 +53,6 @@ public struct SendView: View {
 
 #Preview {
   SendView()
-  
     .environment(ViewModel())
-  
-    .frame(minWidth: 1250, maxWidth: .infinity)
+    .environment(SettingsModel.shared)
 }
-

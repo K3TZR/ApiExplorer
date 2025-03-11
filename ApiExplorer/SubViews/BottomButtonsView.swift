@@ -10,31 +10,6 @@ import UniformTypeIdentifiers
 
 import ApiPackage
 
-struct MessagesDocument: FileDocument {
-  static var readableContentTypes: [UTType] { [.plainText] }
-  
-  var text: String
-  
-  init(text: String = "") {
-      self.text = text
-  }
-
-    // this initializer loads data that has been saved previously
-  init(configuration: ReadConfiguration) throws {
-      if let data = configuration.file.regularFileContents,
-         let string = String(data: data, encoding: .utf8) {
-          text = string
-      } else {
-          throw CocoaError(.fileReadCorruptFile)
-      }
-  }
-  
-  func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-      let data = text.data(using: .utf8) ?? Data()
-      return FileWrapper(regularFileWithContents: data)
-  }
-}
-
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -44,7 +19,7 @@ public struct BottomButtonsView: View {
   @Environment(SettingsModel.self) private var settings
 
   @State private var isSaving: Bool = false
-  @State private var document: MessagesDocument?
+  @State private var document: SaveDocument?
 
   public var body: some View {
     @Bindable var viewModel = viewModel
@@ -72,16 +47,10 @@ public struct BottomButtonsView: View {
           .help("Display a sheet when an Error / Warning occurs")
       }
       
-//      .onChange(of: viewModel.settings.showPings) { _, newValue in
-//        viewModel.messages.showPings = newValue
-//      }
-//      .onChange(of: viewModel.settings.showReplies) { _, newValue in
-//        viewModel.messages.showReplies = newValue
-//      }
-      
       Spacer()
+
       Button("Save") {
-        document = MessagesDocument(text: viewModel.messages.messagesText())
+        document = SaveDocument(text: viewModel.messages.messagesText())
         isSaving = true
       }
       
@@ -109,6 +78,5 @@ public struct BottomButtonsView: View {
 #Preview {
   BottomButtonsView()
     .environment(ViewModel())
-
-  .frame(minWidth: 1250, maxWidth: .infinity)
+    .environment(SettingsModel.shared)
 }

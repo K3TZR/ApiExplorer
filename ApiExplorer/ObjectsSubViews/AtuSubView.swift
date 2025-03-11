@@ -71,5 +71,5 @@ struct AtuSubView: View {
   AtuSubView()  
     .environment(ViewModel())
   
-    .frame(width: 1250)
+    .frame(width: 1000)
 }

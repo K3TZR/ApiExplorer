@@ -21,10 +21,14 @@ struct PanadapterSubView: View {
   var body: some View {
     
     if viewModel.api.panadapters.count == 0 {
-      HStack(spacing: 20) {
-        Text("PANADAPTER").frame(width: 110, alignment: .leading)
-        Text("----- NONE PRESENT -----").foregroundColor(.red)
+      VStack(alignment: .leading) {
+        HStack(spacing: 20) {
+          Text("PANADAPTER").frame(width: 110, alignment: .leading)
+          Text("----- NONE PRESENT -----").foregroundColor(.red)
+        }
       }
+      .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+
       
     } else {
       ForEach(viewModel.api.panadapters, id: \.id) { panadapter in
@@ -204,5 +208,5 @@ private struct SliceDetailView: View {
   PanadapterSubView(handle: 1, showMeters: true)
     .environment(ViewModel())
   
-    .frame(minWidth: 1250)
+    .frame(minWidth: 1000)
 }

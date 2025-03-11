@@ -10,16 +10,6 @@ import SwiftUI
 
 import ApiPackage
 
-public enum DaxChoice: String, CaseIterable, Sendable {
-  case none
-  case mic
-  case rx0
-  case rx1
-  case rx2
-  case rx3
-}
-
-
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -31,6 +21,7 @@ struct ApiView: View {
   var body: some View {
     @Bindable var viewModel = viewModel
 
+    // primary view
     VStack(alignment: .leading, spacing: 10) {
       TopButtonsView()
 
@@ -40,8 +31,8 @@ struct ApiView: View {
             
       ObjectsMessagesSplitView()
       
-      Spacer()
       Divider().background(Color(.gray))
+      
       BottomButtonsView()
     }
     .padding(10)
@@ -52,6 +43,9 @@ struct ApiView: View {
     }
 
     // Sheets
+//    .sheet(isPresented: $viewModel.showDirect, onDismiss: {} ) {
+//      DirectView()
+//    }
     .sheet(isPresented: $viewModel.showDiscovery, onDismiss: {} ) {
       DiscoveryView()
     }
@@ -60,12 +54,9 @@ struct ApiView: View {
     }
     .sheet(isPresented: $viewModel.showMultiflex, onDismiss: {} ) {
       MultiflexView()
-//        .environment(viewModel)
     }
     .sheet(isPresented: $viewModel.showPicker, onDismiss: {} ) {
       PickerView()
-        .frame(width: 600, height: 300)
-        .padding(10)
     }
     .sheet(isPresented: $viewModel.showSmartlinkLogin, onDismiss: viewModel.smartlinkLoginDidDismiss) {
       SmartlinkLoginView()
@@ -93,41 +84,34 @@ struct ApiView: View {
           viewModel.showAlert = true
         }
     }
-
-//      .sheet(item: $store.scope(state: \.destination?.directItem, action: \.destination.directItem))
-//    { store in DirectView(store: store) }
-//
-//    .sheet(item: $store.scope(state: \.destination?.loginItem, action: \.destination.loginItem))
-//    { store in LoginView(store: store) }
-    
-//    .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   }
 }
+
+// ----------------------------------------------------------------------------
+// MARK: - Preview
+
+#Preview {
+  ApiView()
+    .environment(ViewModel())
+  .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+  .padding()
+}
+
+// ----------------------------------------------------------------------------
+// MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
   @State private var topHeight: CGFloat = 300  // Initial height for the top view
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
   var body: some View {
-
-//#if os(macOS)
-//    // Use native `VSplitView` on macOS
-//    VSplitView {
-//      ObjectsView()
-//        .frame(minHeight: 200)
-//      
-//      MessagesView()
-//        .frame(minHeight: 200)
-//    }
-//
-//#else
-//    // Custom resizable vertical split for iOS
+    
+    // Custom resizable vertical split, works for both macOS and iOS
     GeometryReader { geometry in
       VStack(spacing: 0) {
         ObjectsView()
           .frame(height: topHeight)
           .frame(maxWidth: .infinity)
-//          .background(Color.blue.opacity(0.2)) // Just for visualization
         
         Divider()
           .frame(height: 3)
@@ -151,21 +135,8 @@ struct ObjectsMessagesSplitView: View {
         MessagesView()
           .frame(maxHeight: .infinity)
           .frame(maxWidth: .infinity)
-//          .background(Color.green.opacity(0.2)) // Just for visualization
       }
       .frame(maxHeight: .infinity)
     }
-//#endif
   }
-}
-
-// ----------------------------------------------------------------------------
-// MARK: - Preview
-
-#Preview {
-  ApiView()
-    .environment(ViewModel())
-    
-  .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
-  .padding()
 }

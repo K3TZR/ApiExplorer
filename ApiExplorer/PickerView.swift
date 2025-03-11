@@ -26,6 +26,7 @@ public struct PickerView: View {
   }
   
   public var body: some View {
+    
     VStack(alignment: .leading) {
       
       HeaderView()
@@ -42,6 +43,8 @@ public struct PickerView: View {
       
       FooterView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
     }
+    .frame(width: 600, height: 200)
+    .padding(10)
   }
 }
 
@@ -85,6 +88,7 @@ private struct NothingView: View {
   @Environment(SettingsModel.self) private var settings
 
   var body: some View {
+    
     VStack {
       Spacer()
       HStack {
@@ -231,6 +235,5 @@ private struct FooterView: View {
 
 #Preview("Picker") {
   PickerView()
-  
     .environment(ViewModel())
 }

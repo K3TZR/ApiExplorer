@@ -67,26 +67,7 @@ private struct RadioClientTesterSplitView: View {
   
   var body: some View {
 
-//#if os(macOS)
-//    // Use native `VSplitView` on macOS
-//    VSplitView {
-//      RadioSubView()
-//        .frame(minHeight: 100)
-//
-//      Divider().frame(height: 2).background(.blue)
-//      
-//      if let radio = viewModel.api.activeSelection?.radio {
-//        GuiClientSubView(radio: radio)
-//          .frame(minHeight: 100)
-//      }
-//      
-//      if viewModel.settings.isGui == false {
-//        TesterSubView()
-//      }
-//    }
-//
-//#else
-    // Custom resizable vertical split
+    // Custom resizable vertical split, works for macOS and iOS
     GeometryReader { geometry in
       VStack(spacing: 0) {
         RadioSubView()
@@ -114,7 +95,6 @@ private struct RadioClientTesterSplitView: View {
         
         if let radio = viewModel.api.activeSelection?.radio {
           GuiClientSubView(radio: radio)
-//            .frame(maxHeight: .infinity)
             .frame(maxWidth: .infinity)
         }
 
@@ -126,7 +106,6 @@ private struct RadioClientTesterSplitView: View {
       }
       .frame(maxHeight: .infinity)
     }
-//#endif
   }
 }
 
@@ -170,10 +149,11 @@ private struct FilterStationObjectsView: View {
 #Preview {
   ObjectsView()
     .environment(ViewModel())
-
-  .frame(minWidth: 1250, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
-  .padding()
+    .environment(SettingsModel.shared)
 }
+
+// ----------------------------------------------------------------------------
+// MARK: - Structs & Enums
 
 public enum RadioObjectFilter: String, CaseIterable, Sendable {
   case all

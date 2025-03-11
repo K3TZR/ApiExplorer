@@ -16,12 +16,13 @@ public struct NotImplementedView: View {
   @Environment(\.dismiss) var dismiss
   
   public var body: some View {
+    
     VStack(spacing: 20) {
       Spacer()
       Text("Not Implemented (yet)").font(.title)
       Spacer()
       
-      Divider().background(Color.blue)
+      Divider()
       
       HStack {
         Spacer()
@@ -40,8 +41,6 @@ public struct NotImplementedView: View {
 // MARK: - Preview(s)
 
 #Preview() {
-
   NotImplementedView()
-
     .environment(ViewModel())
 }

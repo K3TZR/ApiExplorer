@@ -41,5 +41,5 @@ struct ListsView: View {
   ListsView()
     .environment(ViewModel())
   
-    .frame(width: 1250)
+    .frame(width: 1000)
 }

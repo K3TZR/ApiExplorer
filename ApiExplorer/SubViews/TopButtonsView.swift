@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import ApiPackage
+
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -20,7 +22,6 @@ public struct TopButtonsView: View {
   }
 
   public var body: some View {
-    @Bindable var viewModelBinding = viewModel
     @Bindable var settings = settings
 
     HStack(spacing: 30) {
@@ -62,7 +63,6 @@ public struct TopButtonsView: View {
       }
       .frame(width: 180)
       .disabled(settings.isGui == false)
-
       .onChange(of: settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
@@ -72,20 +72,17 @@ public struct TopButtonsView: View {
       HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
           .disabled(settings.isGui == false)
-        
           .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
         Toggle("Tx Audio", isOn: $settings.remoteTxAudioEnabled)
           .disabled(settings.isGui == false)
-
           .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }
       .frame(width: 150)
-
     }
     .toggleStyle(.button)
   }
@@ -95,9 +92,7 @@ public struct TopButtonsView: View {
 // MARK: - Preview
 
 #Preview {
-  Grid(alignment: .leading, horizontalSpacing: 20) {
-    TopButtonsView()
-      .environment(ViewModel())
-  }
-  .frame(minWidth: 1250, maxWidth: .infinity)
+  TopButtonsView()
+    .environment(ViewModel())
+    .environment(SettingsModel.shared)
 }

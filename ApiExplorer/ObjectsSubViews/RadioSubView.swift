@@ -17,8 +17,6 @@ struct RadioSubView: View {
   @Environment(ViewModel.self) var viewModel
   @Environment(SettingsModel.self) private var settings
 
-//  @State var showDetails = true
-
   var body: some View {
     
     if viewModel.api.activeSelection != nil {
@@ -32,7 +30,6 @@ struct RadioSubView: View {
                 .frame(width: 110, alignment: .leading)
                 .font(.title)
                 .foregroundColor(.green)
-//                .onTapGesture{ showDetails.toggle() }
                 .gridColumnAlignment(.leading)
               
               Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
@@ -80,7 +77,6 @@ struct RadioSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading)
           
-//          if showDetails { DetailView(filter: settings.radioObjectFilter) }
           DetailView(filter: settings.radioObjectFilter)
         }
       }
@@ -130,6 +126,7 @@ private struct DetailView: View {
 #Preview {
   RadioSubView()
     .environment(ViewModel())
+    .environment(SettingsModel.shared)
   
-    .frame(minWidth: 1250)
+    .frame(minWidth: 1000)
 }

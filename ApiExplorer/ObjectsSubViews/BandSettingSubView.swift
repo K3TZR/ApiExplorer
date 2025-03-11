@@ -41,6 +41,7 @@ struct BandSettingSubView: View {
 
       } else {
         GridRow {
+          Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
           Text("----- NONE PRESENT -----").foregroundColor(.red)
         }
       }

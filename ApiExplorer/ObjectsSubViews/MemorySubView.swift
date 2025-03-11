@@ -22,8 +22,10 @@ struct MemorySubView: View {
       HeadingView()
       if viewModel.api.memories.count == 0 {
         GridRow {
+          Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
           Text("----- NONE PRESENT -----").foregroundColor(.red)
         }
+        
       } else {
         ForEach(viewModel.api.memories) { memory in
           GridRow {

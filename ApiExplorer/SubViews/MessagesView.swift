@@ -51,8 +51,8 @@ struct MessagesView: View {
           }
           Spacer()
         }
-      }
-      else {
+        
+      } else {
         ScrollView([.vertical]) {
           LazyVStack(alignment: .leading) {
             ForEach(viewModel.messages.filteredMessages.reversed(), id: \.id) { tcpMessage in
@@ -67,25 +67,23 @@ struct MessagesView: View {
         }
         .scrollPosition(id: $id)
         
-        //          .onChange(of: settings.gotoBottom) {
-        //            if $1 {
-        //              self.id = viewModel.messages.filteredMessages.first?.id
-        //            } else {
-        //              self.id = viewModel.messages.filteredMessages.last?.id
-        //            }
-        //          }
+        .onChange(of: settings.gotoBottom) {
+          if $1 {
+            self.id = viewModel.messages.filteredMessages.first?.id
+          } else {
+            self.id = viewModel.messages.filteredMessages.last?.id
+          }
+        }
       }
-      
     }
-//    .frame(minWidth: 1250, maxWidth: .infinity)
   }
 }
 
 private struct FilterView: View {
-
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   var body: some View {
     @Bindable var viewModelBinding = viewModel
     @Bindable var settings = settings
@@ -98,24 +96,20 @@ private struct FilterView: View {
       }
       .pickerStyle(MenuPickerStyle())
       .frame(width: 300)
-      
-      .onChange(of: settings.messageFilter) { _ , _ in
+      .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
       }
       
       Image(systemName: "x.circle").font(.title2)
         .onTapGesture {
           settings.messageFilterText = ""
-//          viewModel.messagesModel.filtersChanged(viewModel.settings.messageFilter, viewModel.settings.messageFilterText)
         }
       
       TextField("filter text", text: $settings.messageFilterText)
-        
-        .onChange(of: settings.messageFilterText) { _, _ in
+        .onChange(of: settings.messageFilterText) {
           viewModel.messages.reFilter()
         }
     }
-    
   }
 }
 
@@ -125,6 +119,5 @@ private struct FilterView: View {
 #Preview {
   MessagesView()
     .environment(ViewModel())
-  
-    .frame(minWidth: 1250, maxWidth: .infinity)
+    .environment(SettingsModel.shared)
 }

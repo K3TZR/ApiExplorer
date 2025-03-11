@@ -17,8 +17,6 @@ struct GuiClientSubView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-//  @State var showSubView = true
-  
   var body: some View {
     
     ForEach(radio.guiClients, id: \.id) { guiClient in
@@ -29,7 +27,6 @@ struct GuiClientSubView: View {
               .foregroundColor(.yellow)
               .font(.title)
               .frame(width: 110, alignment: .leading)
-//              .onTapGesture{ showSubView.toggle() }
             
             Text("\(guiClient.station)")
               .foregroundColor(.yellow)
@@ -99,7 +96,6 @@ private struct GuiClientDetailView: View {
         }
       }
     }
-//    .border(.green)
     .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
   }
 }
