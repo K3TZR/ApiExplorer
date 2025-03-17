@@ -31,12 +31,12 @@ public struct SendView: View {
           }
           .help("Clear the command field")
         
-        Stepper("", onIncrement: {
-          viewModel.previousStepperTapped()
-        }, onDecrement: {
-          viewModel.nextStepperTapped()
-        })
-        .help("Load previously sent commands")
+//        Stepper("", onIncrement: {
+//          viewModel.previousStepperTapped()
+//        }, onDecrement: {
+//          viewModel.nextStepperTapped()
+//        })
+//        .help("Load previously sent commands")
         
         TextField("Command to send", text: $settings.commandToSend)
       }
@@ -44,6 +44,12 @@ public struct SendView: View {
       Toggle("Clear on Send", isOn: $settings.clearOnSend)
         .toggleStyle(.button)
         .help("Clear the field after sending a command")
+      
+      #if os(iOS)
+      Button("Discovery") { viewModel.activeSheet = .discovery }
+      Button("Gui Clients") { viewModel.activeSheet = .guiClients }
+      Button("Settings") { viewModel.activeSheet = .settings }
+      #endif
     }
   }
 }
@@ -55,4 +61,6 @@ public struct SendView: View {
   SendView()
     .environment(ViewModel())
     .environment(SettingsModel.shared)
+  
+    .frame(width: 1000)
 }

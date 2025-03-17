@@ -5,6 +5,7 @@
 //  Created by Douglas Adams on 10/6/24.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
 
@@ -35,12 +36,22 @@ public class ViewModel {
   public var isConnected: Bool = false
   public var selection: String?
   public var showAlert: Bool = false
-  public var showDiscovery: Bool = false
-  public var showGuiClients: Bool = false
-  public var showMultiflex: Bool = false
-  public var showPicker: Bool = false
-  public var showSmartlinkLogin: Bool = false
-    
+//  public var showDiscovery: Bool = false
+//  public var showGuiClients: Bool = false
+//  public var showMultiflex: Bool = false
+//  public var showPicker: Bool = false
+//  public var showSmartlinkLogin: Bool = false
+
+  #if os(iOS)
+  public var showSettings: Bool = false
+  #endif
+
+  
+  
+  public var activeSheet: ActiveSheet?
+  
+  
+  
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
@@ -88,6 +99,17 @@ public class ViewModel {
     }
   }
   
+  public func fontFieldTapped() {
+    var currentSize = _settings.fontSize
+    currentSize += 1
+//    if currentSize > 14 {
+//      _settings.fontSize = 8
+//    } else {
+//      _settings.fontSize = currentSize
+//    }
+    _settings.fontSize = currentSize.bracket(8, 14)
+  }
+  
   public func guiButtonTapped() {
     _settings.isGui.toggle()
   }
@@ -101,18 +123,24 @@ public class ViewModel {
     }
   }
   
-  public func multiflexConnectButtonTapped() {
+  public func multiflexCancelButtonTapped() {
+    activeSheet = nil
+  }
+
+    public func multiflexConnectButtonTapped(_ disconnectHandle: String?) {
+    activeSheet = nil
+    api.activeSelection?.disconnectHandle = disconnectHandle
     Task { await connect(api.activeSelection!) }
   }
   
-  public func nextStepperTapped() {
-    if _settings.commandsIndex == _settings.commandsArray.count - 1 {
-      _settings.commandsIndex = 0
-    } else {
-      _settings.commandsIndex += 1
-    }
-    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
-  }
+//  public func nextStepperTapped() {
+//    if _settings.commandsIndex == _settings.commandsArray.count - 1 {
+//      _settings.commandsIndex = 0
+//    } else {
+//      _settings.commandsIndex += 1
+//    }
+//    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
+//  }
   
   public func onAppear() {
     if initialized == false {
@@ -141,20 +169,41 @@ public class ViewModel {
     }
   }
   
+//  public func onDismissSheet() {
+//    activeSheet = nil
+//    switch activeSheet {
+//    case .discovery:
+//      <#code#>
+//    case .guiClients:
+//      <#code#>
+//    case .multiflex:
+//      <#code#>
+//    case .picker:
+//      <#code#>
+//    case .smartlinkLogin:
+//      <#code#>
+//    case .settings:
+//      <#code#>
+//    case nil:
+//      break
+//    }
+//  }
+  
   public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
+    activeSheet = nil
     api.activeStation = station
     // try to connect to the selected radio / station
     connectionStart(radioId)
   }
   
-  public func previousStepperTapped() {
-    if _settings.commandsIndex == 0 {
-      _settings.commandsIndex = _settings.commandsArray.count - 1
-    } else {
-      _settings.commandsIndex -= 1
-    }
-    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
-  }
+//  public func previousStepperTapped() {
+//    if _settings.commandsIndex == 0 {
+//      _settings.commandsIndex = _settings.commandsArray.count - 1
+//    } else {
+//      _settings.commandsIndex -= 1
+//    }
+//    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
+//  }
   
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
@@ -184,6 +233,10 @@ public class ViewModel {
     if _settings.clearOnSend { clearTextButtonTapped() }
   }
   
+  public func settingsDidDismiss() {
+    // no action required
+  }
+  
   public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
       _settings.directEnabled = false
@@ -196,10 +249,12 @@ public class ViewModel {
   }
   
   public func smartlinkCancelButtonTapped() {
+    activeSheet = nil
     _settings.smartlinkEnabled = false
   }
   
   public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
+    activeSheet = nil
     Task {
       if let tokens = await api.smartlinkListenerStart( user, password) {
         _settings.smartlinkRefreshToken = tokens.refreshToken
@@ -224,11 +279,13 @@ public class ViewModel {
       if let selection = _settings.isGui ? _settings.defaultGui : _settings.defaultNonGui {
         connectionStart(selection)
       } else {
-        showPicker = true
+//        showPicker = true
+        activeSheet = .picker
       }
       
     } else {
-      showPicker = true
+      //        showPicker = true
+      activeSheet = .picker
     }
   }
   
@@ -354,9 +411,13 @@ public class ViewModel {
     }
     // handle Multiflex
     if _settings.isGui && api.activeSelection!.radio.guiClients.count > 0 {
-      showMultiflex = true
+//      showMultiflex = true
+      activeSheet = .multiflex
+      
     } else {
-      Task { await connect(api.activeSelection!) }
+      Task {
+        await connect(api.activeSelection!)
+      }
     }
   }
   
@@ -460,7 +521,8 @@ public class ViewModel {
     // start smartlink listener
     if _settings.smartlinkLoginRequired {
       // LOGIN required
-      showSmartlinkLogin = true
+//      showSmartlinkLogin = true
+      activeSheet = .smartlinkLogin
       
     } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
       // use ID Token
@@ -470,7 +532,8 @@ public class ViewModel {
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet
-          showSmartlinkLogin = true
+          //      showSmartlinkLogin = true
+          activeSheet = .smartlinkLogin
         }
       }
       
@@ -482,14 +545,16 @@ public class ViewModel {
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet
-          showSmartlinkLogin = true
+          //      showSmartlinkLogin = true
+          activeSheet = .smartlinkLogin
         }
       }
       
     } else {
       // IdToken and/or refreshToken failure
       // show LOGIN sheet
-      showSmartlinkLogin = true
+      //      showSmartlinkLogin = true
+      activeSheet = .smartlinkLogin
     }
   }
 }

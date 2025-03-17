@@ -10,6 +10,21 @@ import SwiftUI
 
 import ApiPackage
 
+
+
+
+public enum ActiveSheet: Identifiable {
+  case discovery, guiClients, multiflex, picker, smartlinkLogin, settings
+  
+  public var id: Int { hashValue }
+}
+
+
+
+
+
+
+
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -35,31 +50,34 @@ struct ApiView: View {
       
       BottomButtonsView()
     }
+    .frame(maxWidth: .infinity, alignment: .leading) // <- This makes VStack take full width
     .padding(10)
     
     // initialize
     .onAppear {
       viewModel.onAppear()
     }
-
+    
     // Sheets
-//    .sheet(isPresented: $viewModel.showDirect, onDismiss: {} ) {
-//      DirectView()
-//    }
-    .sheet(isPresented: $viewModel.showDiscovery, onDismiss: {} ) {
-      DiscoveryView()
-    }
-    .sheet(isPresented: $viewModel.showGuiClients, onDismiss: {} ) {
-      GuiClientsView()
-    }
-    .sheet(isPresented: $viewModel.showMultiflex, onDismiss: {} ) {
-      MultiflexView()
-    }
-    .sheet(isPresented: $viewModel.showPicker, onDismiss: {} ) {
-      PickerView()
-    }
-    .sheet(isPresented: $viewModel.showSmartlinkLogin, onDismiss: viewModel.smartlinkLoginDidDismiss) {
-      SmartlinkLoginView()
+    .sheet(item: $viewModel.activeSheet) { sheet in
+      switch sheet {
+      case .discovery:
+        DiscoveryView()
+          .frame(height: 600)
+      case .guiClients:
+        GuiClientsView()
+          .frame(height: 300)
+      case .multiflex:
+        MultiflexView()
+          .frame(height: 200)
+      case .picker:
+        PickerView()
+          .frame(height: 300)
+      case .smartlinkLogin:
+        SmartlinkLoginView()
+      case .settings:
+        SettingsView()
+      }
     }
 
     // Alerts
@@ -70,11 +88,24 @@ struct ApiView: View {
     }
 
     // Toolbar
+#if os(macOS)
     .toolbar {
-      Button("Discovery") { viewModel.showDiscovery = true }
-      Button("Gui Clients") { viewModel.showGuiClients = true }
-      SettingsLink{ Label( "Settings", systemImage: "gearshape") }
+      if let selection = viewModel.api.activeSelection, selection.radio.guiClients.count > 0 {
+        Text("MultiFlex")
+          .foregroundColor(.red)
+      }
+      Button("Discovery") {
+        viewModel.activeSheet = .discovery
+      }
+      Button("Gui Clients") {
+        viewModel.activeSheet = .guiClients
+      }
+      Label( "Settings", systemImage: "gearshape")
+        .onTapGesture {
+          viewModel.activeSheet = .settings
+        }
     }
+#endif
 
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
@@ -93,7 +124,9 @@ struct ApiView: View {
 #Preview {
   ApiView()
     .environment(ViewModel())
-  .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
+    .environment(SettingsModel.shared)
+  
+    .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   .padding()
 }
 
@@ -116,12 +149,14 @@ struct ObjectsMessagesSplitView: View {
         Divider()
           .frame(height: 3)
           .background(Color.blue)
+#if os(macOS)
           .onHover { hovering in
             NSCursor.resizeUpDown.push()
             if !hovering {
               NSCursor.pop()
             }
           }
+#endif
           .gesture(
             DragGesture()
               .onChanged { value in

@@ -43,7 +43,6 @@ public struct PickerView: View {
       
       FooterView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
     }
-    .frame(width: 600, height: 200)
     .padding(10)
   }
 }
@@ -176,7 +175,6 @@ private struct NonGuiView: View {
         }
       }
       .listStyle(.plain)
-      .frame(maxWidth: .infinity, maxHeight: .infinity) // Forces it to take full space
     }
   }
 }
@@ -222,7 +220,7 @@ private struct FooterView: View {
       
       Button("Connect") {
         viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue!, selectedStation.wrappedValue)
-        dismiss()
+//        dismiss()
       }
       .keyboardShortcut(.defaultAction)
       .disabled(selectedRadioId.wrappedValue == nil)

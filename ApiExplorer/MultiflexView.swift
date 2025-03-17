@@ -15,10 +15,10 @@ import ApiPackage
 public struct MultiflexView: View {
   
   @Environment(ViewModel.self) var viewModel
-  @Environment(\.dismiss) var dismiss
+//  @Environment(\.dismiss) var dismiss
   
   private var guiClients: [GuiClient] {
-    return viewModel.api.radios
+    return viewModel.api.radios.filter { $0 == viewModel.api.activeSelection?.radio }
       .flatMap(\.guiClients)
   }
 
@@ -30,17 +30,16 @@ public struct MultiflexView: View {
       
       if guiClients.count == 1 {
         Button("MultiFlex connect") {
-          viewModel.multiflexConnectButtonTapped()
-          dismiss()
+          viewModel.multiflexConnectButtonTapped(nil)
+//          dismiss()
         }
         .keyboardShortcut(.defaultAction)
         .frame(width: 150) }
       
       ForEach(guiClients) { guiClient in
         Button("Close " + guiClient.station) {
-          viewModel.api.activeSelection?.disconnectHandle = guiClient.handle
-          viewModel.multiflexConnectButtonTapped()
-          dismiss()
+          viewModel.multiflexConnectButtonTapped(guiClient.handle)
+//          dismiss()
         }
         .frame(width: 150)
       }
@@ -48,11 +47,11 @@ public struct MultiflexView: View {
       Divider().background(Color.blue)
       
       Button("Cancel") {
-        dismiss()
+        viewModel.multiflexCancelButtonTapped()
+//        dismiss()
       }
       .keyboardShortcut(.cancelAction)
     }
-    .frame(width: 250)
     .padding(10)
   }
 }

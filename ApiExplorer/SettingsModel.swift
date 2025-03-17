@@ -30,7 +30,7 @@ public class SettingsModel {
     defaultGui = _settings.string(forKey: "defaultGui")
     defaultNonGui = _settings.string(forKey: "defaultNonGui")
     directEnabled = _settings.bool(forKey: "directEnabled")
-    discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: "discoveryDisplayType") ?? "fields") ?? .fields
+    discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: "discoveryDisplayType") ?? "fields") ?? .vitaFields
     fontSize = _settings.integer(forKey: "fontSize")
     gotoBottom = _settings.bool(forKey: "gotoBottom")
     guiClientId = _settings.string(forKey: "guiClientId") ?? ""
@@ -60,6 +60,7 @@ public class SettingsModel {
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
 
     if fontSize < 12 || fontSize > 18 { fontSize = 12 }
+    if mtuValue == 0 { mtuValue = 1250 }
   }
 
   // ----------------------------------------------------------------------------

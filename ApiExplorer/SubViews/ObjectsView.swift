@@ -77,12 +77,14 @@ private struct RadioClientTesterSplitView: View {
         Divider()
           .frame(height: 3)
           .background(Color.blue)
+        #if macOS
           .onHover { hovering in
             NSCursor.resizeUpDown.push()
             if !hovering {
               NSCursor.pop()
             }
           }
+        #endif
           .gesture(
             DragGesture()
               .onChanged { value in

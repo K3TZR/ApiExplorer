@@ -58,7 +58,6 @@ struct ApiExplorerApp: App {
         .environment(SettingsModel.shared)
     }
 #endif
-
   }
 }
 

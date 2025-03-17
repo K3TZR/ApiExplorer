@@ -35,16 +35,21 @@ public struct GuiClientsView: View {
             .foregroundColor(.red)
           Spacer()
         }
-        .frame(minHeight: 150)
+//        .frame(minHeight: 150)
         
       } else {
         // ----- List of Gui Clients -----
         List() {
           ForEach(guiClients, id: \.id) { guiClient in
             VStack(alignment: .leading) {
-              HStack(spacing: 0) {
+              HStack(spacing: 5) {
                 Group {
-                  Text(guiClient.station).border(.red)
+                  Text(guiClient.station)
+                    .truncationMode(.tail)
+                    .lineLimit(1)   // This is critical
+                    .clipped()
+                    .help(guiClient.station)
+
                   Text(guiClient.handle)
                   Text(guiClient.program)
                   Text(guiClient.ip)
@@ -58,7 +63,7 @@ public struct GuiClientsView: View {
           }
         }
         .listStyle(.plain)
-        .frame(minHeight: 150)
+//        .frame(minHeight: 150)
       }
       Divider()
       FooterView()
@@ -73,9 +78,9 @@ private struct HeaderView: View {
     VStack {
       Text("Gui Clients").font(.title)
       
-      HStack(spacing: 0) {
+      HStack(spacing: 5) {
         Group {
-          Text("Station").border(.red)
+          Text("Station")
           Text("Handle")
           Text("Program")
           Text("Ip")

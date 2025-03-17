@@ -24,7 +24,7 @@ public struct TopButtonsView: View {
   public var body: some View {
     @Bindable var settings = settings
 
-    HStack(spacing: 30) {
+    HStack(spacing: 0) {
       // Connection initiation
       Button(viewModel.isConnected ? "Stop" : "Start") {
         viewModel.startButtonTapped()
@@ -33,25 +33,27 @@ public struct TopButtonsView: View {
       .frame(width: 60, alignment: .leading)
       .disabled(startButtonDisabled)
       
-      Toggle("Gui", isOn: $settings.isGui)
-        .frame(width: 60, alignment: .leading)
+      ToggleX(title: "Gui", isOn: $settings.isGui, width: 50)
+//        .frame(width: 60, alignment: .leading)
 
+      Spacer()
+      
       // Connection types
-      ControlGroup {
-        Toggle("Direct", isOn: $settings.directEnabled)
+      HStack(spacing: 5) {
+        ToggleX(title: "Direct", isOn: $settings.directEnabled, width: 70)
           .onChange(of: settings.directEnabled) {
             viewModel.directButtonChanged($1)
           }
-        Toggle("Local", isOn: $settings.localEnabled)
+        ToggleX(title: "Local", isOn: $settings.localEnabled, width: 70)
           .onChange(of: settings.localEnabled) {
             viewModel.localButtonChanged($1)
           }
-        Toggle("Smartlink", isOn: $settings.smartlinkEnabled)
+        ToggleX(title: "Smartlink", isOn: $settings.smartlinkEnabled, width: 90)
           .onChange(of: settings.smartlinkEnabled) {
             viewModel.smartlinkButtonChanged($1)
           }
-       }
-      .frame(width: 180)
+      }
+//      .frame(width: 180)
       .disabled(viewModel.isConnected)
       
       Spacer()
@@ -70,21 +72,20 @@ public struct TopButtonsView: View {
       Spacer()
       
       HStack(spacing: 10) {
-        Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
+        ToggleX(title: "Rx Audio", isOn: $settings.remoteRxAudioEnabled, width: 80)
           .disabled(settings.isGui == false)
           .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
-        Toggle("Tx Audio", isOn: $settings.remoteTxAudioEnabled)
+        ToggleX(title: "Tx Audio", isOn: $settings.remoteTxAudioEnabled, width: 80)
           .disabled(settings.isGui == false)
           .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }
-      .frame(width: 150)
     }
-    .toggleStyle(.button)
+//    .toggleStyle(.button)
   }
 }
 
@@ -95,4 +96,6 @@ public struct TopButtonsView: View {
   TopButtonsView()
     .environment(ViewModel())
     .environment(SettingsModel.shared)
+  
+    .frame(width: 1000)
 }

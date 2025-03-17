@@ -23,13 +23,14 @@ struct GuiClientSubView: View {
       VStack(alignment: .leading, spacing: 0) {
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {
-            Label("Gui", systemImage: "chevron.right")
+            Text(guiClient.station)
               .foregroundColor(.yellow)
               .font(.title)
               .frame(width: 110, alignment: .leading)
-            
-            Text("\(guiClient.station)")
-              .foregroundColor(.yellow)
+              .truncationMode(.tail)
+              .lineLimit(1)   // This is critical
+              .clipped()
+              .help(guiClient.station)
             
             Text("Handle")
             Text(guiClient.handle)

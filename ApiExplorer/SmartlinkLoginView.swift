@@ -14,7 +14,7 @@ public struct SmartlinkLoginView: View {
   
   @Environment(ViewModel.self) var viewModel
   @Environment(SettingsModel.self) private var settings
-  @Environment(\.dismiss) var dismiss
+//  @Environment(\.dismiss) var dismiss
   
   @State var password = ""
   
@@ -41,13 +41,12 @@ public struct SmartlinkLoginView: View {
       HStack( spacing: 60 ) {
         Button( "Cancel" ) {
           viewModel.smartlinkCancelButtonTapped()
-          dismiss()
         }
         .keyboardShortcut( .cancelAction )
         
         Button( "Log in" ) {
           viewModel.smartlinkLoginButtonTapped(settings.smartlinkUser, password)
-          dismiss() }
+        }
         .keyboardShortcut( .defaultAction )
         .disabled( settings.smartlinkUser.isEmpty || password.isEmpty )
       }

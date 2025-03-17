@@ -31,52 +31,53 @@ public struct DiscoveryView: View {
   public var body: some View {
     @Bindable var viewModel = viewModel
     @Bindable var settings = settings
-
+    
     VStack(alignment: .center) {
       Text("Discovery").font(.title)
       
       HStack {
+        Picker("Display", selection: $settings.discoveryDisplayType) {
+          ForEach(DiscoveryDisplayType.allCases, id: \.self) {
+            Text($0.rawValue).tag($0)
+          }
+        }.frame(width: 250)
+
         Picker("Choose a Radio", selection: $radioSelection) {
           Text("Select a Radio").tag(nil as String?)
           ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
           }
         }.frame(width: 250)
-        
-        Picker("Display", selection: $settings.discoveryDisplayType) {
-          ForEach(DiscoveryDisplayType.allCases, id: \.self) {
-            Text($0.rawValue).tag($0)
-          }
-        }.frame(width: 250)
       }
       
       Divider().frame(height: 2).overlay(.blue)
       
-      if let data {
-        switch settings.discoveryDisplayType  {
-        case .fields:     VitaFieldsView(data: data)
-        case .keyValues:  PayloadFieldsView(data: data)
-        case .hex:        RawView(data: data)
+      switch settings.discoveryDisplayType  {
+      case .vitaFields, .payloadKeyValues, .vitaHex:
+        if let data {
+          if settings.discoveryDisplayType == .vitaFields { VitaFieldsView(data: data)}
+          if settings.discoveryDisplayType == .payloadKeyValues { PayloadFieldsView(data: data)}
+          if settings.discoveryDisplayType == .vitaHex { RawView(data: data)}
+        } else {
+          VStack {
+            Spacer()
+            Text("Did you choose a Radio?")
+            Spacer()
+            Button("Close") { dismiss() }
+              .keyboardShortcut(.defaultAction)
+          }
         }
-        
-      } else {
-        VStack {
-          Spacer()
-          Text("Did you choose a Radio?")
-          Spacer()
-          Button("Close") { dismiss() }
-            .keyboardShortcut(.defaultAction)
-        }
+      case .packetLastSeen: PacketView()
       }
       Spacer()
-      if settings.discoveryDisplayType != .hex {
+      if settings.discoveryDisplayType != .vitaHex {
         Divider()
         FooterView()
       }
     }
     .monospaced()
     .padding()
-    .frame(height: 600)
+//    .frame(height: 600)
   }
 }
 
@@ -215,6 +216,31 @@ private struct RawView: View {
           log.warning("ApiExplorer: Broadcast Export failed, \(error)")
         }
       }
+  }
+}
+
+private struct PacketView: View {
+  
+  @Environment(ViewModel.self) private var viewModel
+  
+  func formatMinutesAndSeconds(from date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "mm:ss"
+    return formatter.string(from: date)
+  }
+  
+  var body: some View {
+    
+    List() {
+      Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 10) {
+        ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
+          GridRow {
+            Text(radio.packet.nickname)
+            Text(formatMinutesAndSeconds(from: radio.lastSeen))
+          }
+        }
+      }
+    }
   }
 }
 

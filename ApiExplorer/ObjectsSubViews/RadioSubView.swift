@@ -26,42 +26,48 @@ struct RadioSubView: View {
         VStack(alignment: .leading, spacing: 0) {
           Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
             GridRow {
-              Label("Radio", systemImage: "chevron.right")
+              Text(radio.packet.nickname)
                 .frame(width: 110, alignment: .leading)
                 .font(.title)
                 .foregroundColor(.green)
                 .gridColumnAlignment(.leading)
+                .truncationMode(.tail)
+                .lineLimit(1)   // This is critical
+                .clipped()
+                .help(radio.packet.nickname)
               
-              Text(radio.packet.source.rawValue.uppercased()).foregroundColor(.green)
+              Text(radio.packet.source.rawValue
+                .uppercased())
+                .foregroundColor(.secondary)
               
               Text("ip")
               Text(radio.packet.publicIp)
-                .foregroundColor(.green)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("FW")
               Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")")
-                .foregroundColor(radio.alpha ? .red : .green)
+                .foregroundColor(radio.alpha ? .red : .secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("Model")
               Text(radio.packet.model)
-                .foregroundColor(.green)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("Serial")
               Text(radio.packet.serial)
-                .foregroundColor(.green)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("HW")
               Text(viewModel.api.hardwareVersion ?? "")
-                .foregroundColor(.green)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("Uptime")
               Text("\(radio.uptime) (seconds)")
-                .foregroundColor(.green)
+                .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
               
               Text("TNF's Enabled")
