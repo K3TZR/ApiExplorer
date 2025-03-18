@@ -5,7 +5,6 @@
 //  Created by Douglas Adams on 10/6/24.
 //
 
-import AppKit
 import Foundation
 import SwiftUI
 
@@ -31,27 +30,16 @@ public class ViewModel {
   public let api: ApiModel
   
   // transient properties
+  public var activeSheet: ActiveSheet?
   public var alertInfo: AlertInfo?
   public var initialized: Bool = false
   public var isConnected: Bool = false
   public var selection: String?
   public var showAlert: Bool = false
-//  public var showDiscovery: Bool = false
-//  public var showGuiClients: Bool = false
-//  public var showMultiflex: Bool = false
-//  public var showPicker: Bool = false
-//  public var showSmartlinkLogin: Bool = false
-
   #if os(iOS)
   public var showSettings: Bool = false
   #endif
 
-  
-  
-  public var activeSheet: ActiveSheet?
-  
-  
-  
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
@@ -69,7 +57,6 @@ public class ViewModel {
   }
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
-    print("daxSelectionChanged")
     alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
     showAlert = true
   }
@@ -92,7 +79,6 @@ public class ViewModel {
   }
   
   public func directButtonChanged(_ enabled: Bool) {
-    print("directChanged \(enabled)")
     if enabled {
       _settings.localEnabled = false
       _settings.smartlinkEnabled = false
@@ -102,11 +88,6 @@ public class ViewModel {
   public func fontFieldTapped() {
     var currentSize = _settings.fontSize
     currentSize += 1
-//    if currentSize > 14 {
-//      _settings.fontSize = 8
-//    } else {
-//      _settings.fontSize = currentSize
-//    }
     _settings.fontSize = currentSize.bracket(8, 14)
   }
   
@@ -133,18 +114,9 @@ public class ViewModel {
     Task { await connect(api.activeSelection!) }
   }
   
-//  public func nextStepperTapped() {
-//    if _settings.commandsIndex == _settings.commandsArray.count - 1 {
-//      _settings.commandsIndex = 0
-//    } else {
-//      _settings.commandsIndex += 1
-//    }
-//    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
-//  }
-  
   public func onAppear() {
     if initialized == false {
-      log.debug("ApiExplorer: application started")
+      log?.debug("ApiExplorer: application started")
       
       // initialize the Messages model
       messages.reFilter()
@@ -168,42 +140,13 @@ public class ViewModel {
       initialized = true
     }
   }
-  
-//  public func onDismissSheet() {
-//    activeSheet = nil
-//    switch activeSheet {
-//    case .discovery:
-//      <#code#>
-//    case .guiClients:
-//      <#code#>
-//    case .multiflex:
-//      <#code#>
-//    case .picker:
-//      <#code#>
-//    case .smartlinkLogin:
-//      <#code#>
-//    case .settings:
-//      <#code#>
-//    case nil:
-//      break
-//    }
-//  }
-  
+    
   public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
     activeSheet = nil
     api.activeStation = station
     // try to connect to the selected radio / station
     connectionStart(radioId)
   }
-  
-//  public func previousStepperTapped() {
-//    if _settings.commandsIndex == 0 {
-//      _settings.commandsIndex = _settings.commandsArray.count - 1
-//    } else {
-//      _settings.commandsIndex -= 1
-//    }
-//    _settings.commandToSend = _settings.commandsArray[_settings.commandsIndex]
-//  }
   
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
@@ -216,7 +159,6 @@ public class ViewModel {
   }
   
   public func remoteTxAudioEnabledButtonChanged() {
-    print("remoteTxAudioEnabledChanged")
     alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
     showAlert = true
   }
@@ -279,12 +221,10 @@ public class ViewModel {
       if let selection = _settings.isGui ? _settings.defaultGui : _settings.defaultNonGui {
         connectionStart(selection)
       } else {
-//        showPicker = true
         activeSheet = .picker
       }
       
     } else {
-      //        showPicker = true
       activeSheet = .picker
     }
   }
@@ -395,9 +335,9 @@ public class ViewModel {
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log.info("ApiExplorer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
+      log?.info("ApiExplorer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
     } else {
-      log.error("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
+      log?.error("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
     }
   }
   
@@ -406,12 +346,11 @@ public class ViewModel {
     if let radio = api.radios.first(where: {$0.id == radioId}) {
       api.activeSelection = ActiveSelection((radio, nil))
     } else {
-      log.error("ApiExplorer: Radio not found for ID \(radioId)")
+      log?.error("ApiExplorer: Radio not found for ID \(radioId)")
       return
     }
     // handle Multiflex
     if _settings.isGui && api.activeSelection!.radio.guiClients.count > 0 {
-//      showMultiflex = true
       activeSheet = .multiflex
       
     } else {
@@ -521,7 +460,6 @@ public class ViewModel {
     // start smartlink listener
     if _settings.smartlinkLoginRequired {
       // LOGIN required
-//      showSmartlinkLogin = true
       activeSheet = .smartlinkLogin
       
     } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
@@ -532,7 +470,6 @@ public class ViewModel {
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet
-          //      showSmartlinkLogin = true
           activeSheet = .smartlinkLogin
         }
       }
@@ -545,7 +482,6 @@ public class ViewModel {
           _smartlinkIdToken = tokens.idToken
         } else {
           // show LOGIN sheet
-          //      showSmartlinkLogin = true
           activeSheet = .smartlinkLogin
         }
       }
@@ -553,7 +489,6 @@ public class ViewModel {
     } else {
       // IdToken and/or refreshToken failure
       // show LOGIN sheet
-      //      showSmartlinkLogin = true
       activeSheet = .smartlinkLogin
     }
   }

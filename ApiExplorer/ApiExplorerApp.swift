@@ -67,33 +67,55 @@ struct ApiExplorerApp: App {
 #if os(macOS)
 import AppKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApplication.shared.windows.forEach { $0.tabbingMode = .disallowed }
-        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows": false])
-    }
-
-    func applicationWillTerminate(_ notification: Notification) {
-        print("ApiExplorer (macOS): application terminated")
-    }
-
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
-    }
+  func applicationDidFinishLaunching(_ notification: Notification) {
+    NSApplication.shared.windows.forEach { $0.tabbingMode = .disallowed }
+    UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows": false])
+  }
+  
+  func applicationWillFinishLaunching(_ notification: Notification) {
+    // setup logging
+    log = Logger(subsystem: "net.k3tzr.ApiExplorer", category: "Application")
+  }
+  
+  func applicationWillTerminate(_ notification: Notification) {
+    log?.info("ApiExplorer (macOS): application terminated")
+  }
+  
+  func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+    true
+  }
 }
 
 #else
 import UIKit
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        print("ApiExplorer (iOS): application launched")
-        return true
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        print("ApiExplorer (iOS): application terminated")
-    }
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    return true
+  }
+  
+  func applicationWillTerminate(_ application: UIApplication) {
+    log?.info("ApiExplorer (iOS): application terminated")
+  }
 }
 #endif
+
+// ----------------------------------------------------------------------------
+// MARK: - Logger Extension
+
+extension Logger {
+  public func warningExt(_ message: String) {
+    ApiPackage.log?.warning("\(message)")
+    NotificationCenter.default.post(name: Notification.Name.logAlert, object: AlertInfo("ERROR logged", message))
+  }
+  public func errorExt(_ message: String) {
+    ApiPackage.log?.error("\(message)")
+    NotificationCenter.default.post(name: Notification.Name.logAlert, object: AlertInfo("ERROR logged", message))
+  }
+}
+
+extension Notification.Name {
+  public static let logAlert = Notification.Name("LogAlert")
+}

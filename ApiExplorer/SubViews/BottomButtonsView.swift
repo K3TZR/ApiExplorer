@@ -73,9 +73,9 @@ public struct BottomButtonsView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.log") { result in
       switch result {
       case .success(let url):
-        log.info("ApiExplorer: Log Exported to \(url)")
+        log?.info("ApiExplorer: Log Exported to \(url)")
       case .failure(let error):
-        log.warning("ApiExplorer: Log Export failed, \(error)")
+        log?.warning("ApiExplorer: Log Export failed, \(error)")
       }
     }
   }

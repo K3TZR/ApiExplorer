@@ -211,9 +211,9 @@ private struct RawView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
         switch result {
         case .success(let url):
-          log.info("ApiExplorer: Broadcast Exported to \(url)")
+          log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
         case .failure(let error):
-          log.warning("ApiExplorer: Broadcast Export failed, \(error)")
+          log?.warning("ApiExplorer: Broadcast Export failed, \(error)")
         }
       }
   }
@@ -237,6 +237,8 @@ private struct PacketView: View {
           GridRow {
             Text(radio.packet.nickname)
             Text(formatMinutesAndSeconds(from: radio.lastSeen))
+            Text(String(format: "%3d", Int(radio.lastSeen.timeIntervalSince(Date()))))
+              .foregroundColor( Int(radio.lastSeen.timeIntervalSince(Date())) > 5 ? .red : .red)
           }
         }
       }
