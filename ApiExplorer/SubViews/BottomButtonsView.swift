@@ -75,7 +75,7 @@ public struct BottomButtonsView: View {
       case .success(let url):
         log?.info("ApiExplorer: Log Exported to \(url)")
       case .failure(let error):
-        log?.warning("ApiExplorer: Log Export failed, \(error)")
+        log?.warningExt("ApiExplorer: Log Export failed, \(error)")
       }
     }
   }

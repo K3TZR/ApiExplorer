@@ -330,6 +330,7 @@ public class ViewModel {
         
       } catch {
         // connection attempt failed
+        log?.errorExt("\(error.localizedDescription)")
         return false
       }
     }
@@ -337,7 +338,7 @@ public class ViewModel {
     if isConnected {
       log?.info("ApiExplorer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
     } else {
-      log?.error("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
+      log?.errorExt("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
     }
   }
   
@@ -346,7 +347,7 @@ public class ViewModel {
     if let radio = api.radios.first(where: {$0.id == radioId}) {
       api.activeSelection = ActiveSelection((radio, nil))
     } else {
-      log?.error("ApiExplorer: Radio not found for ID \(radioId)")
+      log?.errorExt("ApiExplorer: Radio not found for ID \(radioId)")
       return
     }
     // handle Multiflex

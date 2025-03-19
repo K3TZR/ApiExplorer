@@ -213,7 +213,7 @@ private struct RawView: View {
         case .success(let url):
           log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
         case .failure(let error):
-          log?.warning("ApiExplorer: Broadcast Export failed, \(error)")
+          log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
         }
       }
   }

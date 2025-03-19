@@ -101,21 +101,3 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
   }
 }
 #endif
-
-// ----------------------------------------------------------------------------
-// MARK: - Logger Extension
-
-extension Logger {
-  public func warningExt(_ message: String) {
-    ApiPackage.log?.warning("\(message)")
-    NotificationCenter.default.post(name: Notification.Name.logAlert, object: AlertInfo("ERROR logged", message))
-  }
-  public func errorExt(_ message: String) {
-    ApiPackage.log?.error("\(message)")
-    NotificationCenter.default.post(name: Notification.Name.logAlert, object: AlertInfo("ERROR logged", message))
-  }
-}
-
-extension Notification.Name {
-  public static let logAlert = Notification.Name("LogAlert")
-}
