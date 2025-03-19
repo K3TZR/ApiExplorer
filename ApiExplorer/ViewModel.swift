@@ -330,6 +330,7 @@ public class ViewModel {
         
       } catch {
         // connection attempt failed
+        await api.disconnect()
         log?.errorExt("\(error.localizedDescription)")
         return false
       }
