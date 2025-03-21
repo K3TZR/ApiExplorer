@@ -26,6 +26,8 @@ public struct SettingsView: View {
     VStack(alignment: .center) {
       
       VStack(alignment: .leading) {
+        TextField(settings.stationName, text: $settings.stationName)
+        
         Toggle("Require Smartlink Login", isOn: $settings.smartlinkLoginRequired)
         
         Toggle("Use saved Defaults", isOn: $settings.useDefaultEnabled)

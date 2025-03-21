@@ -61,7 +61,7 @@ private struct RadioClientTesterSplitView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
 
-  @State private var topHeight: CGFloat = 100  // Initial height for the top view
+  @State private var topHeight: CGFloat = 200  // Initial height for the top view
 
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
@@ -77,7 +77,7 @@ private struct RadioClientTesterSplitView: View {
         Divider()
           .frame(height: 3)
           .background(Color.blue)
-        #if macOS
+        #if os(macOS)
           .onHover { hovering in
             NSCursor.resizeUpDown.push()
             if !hovering {

@@ -19,14 +19,14 @@ struct GuiClientSubView: View {
   
   var body: some View {
     
-    ForEach(radio.guiClients, id: \.id) { guiClient in
+    ForEach(Array(radio.guiClients), id: \.id) { guiClient in
       VStack(alignment: .leading, spacing: 0) {
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {
             Text(guiClient.station)
               .foregroundColor(.yellow)
               .font(.title)
-              .frame(width: 110, alignment: .leading)
+              .frame(width: 200, alignment: .leading)
               .truncationMode(.tail)
               .lineLimit(1)   // This is critical
               .clipped()
@@ -105,7 +105,7 @@ private struct GuiClientDetailView: View {
 // MARK: - Preview
 
 #Preview {
-  GuiClientSubView(radio: Radio(Packet(.local, "".keyValuesArray()), [GuiClient](), nil))
+  GuiClientSubView(radio: Radio(Packet(.local, "".keyValuesArray()), Set<GuiClient>(), nil))
     .environment(ViewModel())
   
     .frame(width: 1250)

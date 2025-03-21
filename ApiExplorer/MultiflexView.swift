@@ -15,7 +15,6 @@ import ApiPackage
 public struct MultiflexView: View {
   
   @Environment(ViewModel.self) var viewModel
-//  @Environment(\.dismiss) var dismiss
   
   private var guiClients: [GuiClient] {
     return viewModel.api.radios.filter { $0 == viewModel.api.activeSelection?.radio }
@@ -26,29 +25,33 @@ public struct MultiflexView: View {
     
     VStack(spacing: 20) {
       Text("Multiflex").font(.title)
-      Divider().background(Color.blue)
+      Divider()
       
       if guiClients.count == 1 {
         Button("MultiFlex connect") {
           viewModel.multiflexConnectButtonTapped(nil)
-//          dismiss()
         }
         .keyboardShortcut(.defaultAction)
-        .frame(width: 150) }
-      
-      ForEach(guiClients) { guiClient in
-        Button("Close " + guiClient.station) {
-          viewModel.multiflexConnectButtonTapped(guiClient.handle)
-//          dismiss()
+        .frame(width: 150)
+        
+        Button("Close " + guiClients[0].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
         }
         .frame(width: 150)
+        
+      } else if guiClients.count == 2 {
+        Button("Close " + guiClients[0].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
+        }
+        Button("Close " + guiClients[1].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[1].handle)
+        }
       }
-      
-      Divider().background(Color.blue)
+    
+      Divider()
       
       Button("Cancel") {
         viewModel.multiflexCancelButtonTapped()
-//        dismiss()
       }
       .keyboardShortcut(.cancelAction)
     }

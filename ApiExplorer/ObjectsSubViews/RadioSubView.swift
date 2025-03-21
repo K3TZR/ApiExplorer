@@ -21,70 +21,84 @@ struct RadioSubView: View {
     
     if viewModel.api.activeSelection != nil {
       let radio = viewModel.api.activeSelection!.radio
-      
-      ScrollView([.vertical]) {
-        VStack(alignment: .leading, spacing: 0) {
-          Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
-            GridRow {
-              Text(radio.packet.nickname)
-                .frame(width: 110, alignment: .leading)
-                .font(.title)
-                .foregroundColor(.green)
-                .gridColumnAlignment(.leading)
-                .truncationMode(.tail)
-                .lineLimit(1)   // This is critical
-                .clipped()
-                .help(radio.packet.nickname)
-              
+      VStack(alignment: .leading, spacing: 0) {
+        Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+          GridRow {
+            Text(radio.packet.nickname)
+              .frame(width: 200, alignment: .leading)
+              .font(.title)
+              .foregroundColor(.green)
+              .gridColumnAlignment(.leading)
+              .truncationMode(.tail)
+              .lineLimit(1)   // This is critical
+              .clipped()
+              .help(radio.packet.nickname)
+            
+            HStack(spacing: 5) {
+              Text("Source")
               Text(radio.packet.source.rawValue
                 .uppercased())
-                .foregroundColor(.secondary)
-              
+              .foregroundColor(.secondary)
+            }
+            
+            HStack(spacing: 5) {
               Text("ip")
               Text(radio.packet.publicIp)
                 .foregroundColor(.secondary)
                 .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("FW")
               Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")")
                 .foregroundColor(radio.alpha ? .red : .secondary)
-                .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("Model")
               Text(radio.packet.model)
                 .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("Serial")
               Text(radio.packet.serial)
                 .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
+            }
+          }
+          
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]).border(.red)
+            
+            HStack(spacing: 5) {
               Text("HW")
               Text(viewModel.api.hardwareVersion ?? "")
                 .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("Uptime")
               Text("\(radio.uptime) (seconds)")
                 .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("TNF's Enabled")
               Text("\(radio.tnfsEnabled ? "Y" : "N")")
                 .foregroundColor(radio.tnfsEnabled ? .green : .red)
-                .gridColumnAlignment(.trailing)
-              
+            }
+            
+            HStack(spacing: 5) {
               Text("MF Enabled")
               Text("\(radio.multiflexEnabled ? "Y" : "N")")
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
-                .gridColumnAlignment(.trailing)
             }
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
-          
-          DetailView(filter: settings.radioObjectFilter)
+          Divider()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        
+        DetailView(filter: settings.radioObjectFilter)
       }
     }
   }
@@ -97,30 +111,32 @@ private struct DetailView: View {
   
   var body: some View {
     
-    VStack(alignment: .leading) {
-      switch filter {
-      case .all:
-        AtuSubView()
-        BandSettingSubView()
-        EqualizerSubView()
-        GpsSubView()
-        InterlockSubView()
-        MemorySubView()
-        MeterSubView()
-        ListsView()
-        TnfSubView()
-        TransmitSubView()
-      case .atu:          AtuSubView()
-      case .bandSettings: BandSettingSubView()
-      case .equalizers:   EqualizerSubView()
-      case .gps:          GpsSubView()
-      case .interlocks:   InterlockSubView()
-      case .lists:        ListsView()
-      case .memories:     MemorySubView()
-      case .network:      NetworkSubView()
-      case .meters:       MeterSubView()
-      case .tnf:          TnfSubView()
-      case .transmit:     TransmitSubView()
+    ScrollView([.vertical]) {
+      VStack(alignment: .leading) {
+        switch filter {
+        case .all:
+          AtuSubView()
+          BandSettingSubView()
+          EqualizerSubView()
+          GpsSubView()
+          InterlockSubView()
+          MemorySubView()
+          MeterSubView()
+          ListsView()
+          TnfSubView()
+          TransmitSubView()
+        case .atu:          AtuSubView()
+        case .bandSettings: BandSettingSubView()
+        case .equalizers:   EqualizerSubView()
+        case .gps:          GpsSubView()
+        case .interlocks:   InterlockSubView()
+        case .lists:        ListsView()
+        case .memories:     MemorySubView()
+        case .network:      NetworkSubView()
+        case .meters:       MeterSubView()
+        case .tnf:          TnfSubView()
+        case .transmit:     TransmitSubView()
+        }
       }
     }
   }

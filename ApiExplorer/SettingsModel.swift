@@ -56,6 +56,7 @@ public class SettingsModel {
     smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
     smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken") ?? ""
     smartlinkUser = _settings.string(forKey: "smartlinkUser") ?? ""
+    stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
 
@@ -103,6 +104,7 @@ public class SettingsModel {
   public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
   public var smartlinkRefreshToken: String { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
   public var smartlinkUser: String { didSet { _settings.set(smartlinkUser, forKey: "smartlinkUser") }}
+  public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
   public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
   public var useDefaultEnabled: Bool { didSet { _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled") }}
     
@@ -153,6 +155,7 @@ public class SettingsModel {
     _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
     _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken")
     _settings.set(smartlinkUser, forKey: "smartlinkUser")
+    _settings.set(stationName, forKey: "stationName")
     _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter")
     _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled")
   }

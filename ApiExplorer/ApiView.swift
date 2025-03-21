@@ -66,7 +66,7 @@ struct ApiView: View {
           .frame(height: 600)
       case .guiClients:
         GuiClientsView()
-          .frame(height: 300)
+          .frame(width: 1000)
       case .multiflex:
         MultiflexView()
           .frame(height: 200)
@@ -134,8 +134,8 @@ struct ApiView: View {
 // MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
-  @State private var topHeight: CGFloat = 300  // Initial height for the top view
-  let minHeight: CGFloat = 100                 // Minimum height for sections
+  @State private var topHeight: CGFloat = 600  // Initial height for the top view
+  let minHeight: CGFloat = 200                 // Minimum height for sections
   
   var body: some View {
     

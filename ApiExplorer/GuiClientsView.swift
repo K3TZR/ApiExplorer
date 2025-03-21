@@ -23,74 +23,73 @@ public struct GuiClientsView: View {
   
   public var body: some View {
     
-    VStack(alignment: .leading) {
-      HeaderView()
+    VStack(alignment: .center) {
       
-      Divider()
+      Text("Gui Clients").font(.title)
       
-      if guiClients.count == 0 {
-        HStack {
-          Spacer()
-          Text("----------  NO Gui Clients FOUND  ----------")
-            .foregroundColor(.red)
-          Spacer()
-        }
-//        .frame(minHeight: 150)
+      Grid (alignment: .leading, horizontalSpacing: 0, verticalSpacing: 10) {
+        HeaderView()
         
-      } else {
-        // ----- List of Gui Clients -----
-        List() {
+        Divider()
+        
+        if guiClients.count == 0 {
+          HStack {
+            Spacer()
+            Text("----------  NO Gui Clients FOUND  ----------")
+              .foregroundColor(.red)
+            Spacer()
+          }
+          //        .frame(minHeight: 150)
+          
+        } else {
+          // ----- List of Gui Clients -----
           ForEach(guiClients, id: \.id) { guiClient in
-            VStack(alignment: .leading) {
-              HStack(spacing: 5) {
-                Group {
-                  Text(guiClient.station)
-                    .truncationMode(.tail)
-                    .lineLimit(1)   // This is critical
-                    .clipped()
-                    .help(guiClient.station)
-
-                  Text(guiClient.handle)
-                  Text(guiClient.program)
-                  Text(guiClient.ip)
-                  Text(guiClient.host)
-                }
-                .font(.title3)
-                .frame(minWidth: 140, alignment: .leading)
-              }
-              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+            GridRow {
+              Text(guiClient.station)
+                .truncationMode(.tail)
+                .lineLimit(1)   // This is critical
+                .clipped()
+                .help(guiClient.station)
+              
+              Text(guiClient.handle)
+              Text(guiClient.program)
+                .truncationMode(.tail)
+                .lineLimit(1)   // This is critical
+                .clipped()
+                .help(guiClient.program)
+              
+              Text(guiClient.ip)
+              Text(guiClient.host)
+              Text(guiClient.clientId?.uuidString ?? "Unknown")
             }
+            .padding(.horizontal, 10)
+
           }
         }
-        .listStyle(.plain)
-//        .frame(minHeight: 150)
       }
+      Spacer()
       Divider()
       FooterView()
     }
-    .padding(10)
   }
 }
 
 private struct HeaderView: View {
   
   var body: some View {
-    VStack {
-      Text("Gui Clients").font(.title)
-      
-      HStack(spacing: 5) {
-        Group {
-          Text("Station")
-          Text("Handle")
-          Text("Program")
-          Text("Ip")
-          Text("Host")
-        }
-        .font(.title3)
-        .frame(width: 140, alignment: .leading)
-      }
-      .padding(.leading, 10)
+    
+    GridRow {
+      Text("Station")
+      Text("Handle")
+      Text("Program")
+      Text("Ip")
+      Text("Host")
+      Text("Client Id")
+        .frame(width: 150, alignment: .leading)
     }
+    .frame(width: 100, alignment: .leading)
+    .font(.title3)
+    .padding(.leading, 10)
   }
 }
 
@@ -104,6 +103,8 @@ private struct FooterView: View {
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
+    .padding(.trailing, 10)
+    .padding(.bottom, 10)
   }
 }
 
