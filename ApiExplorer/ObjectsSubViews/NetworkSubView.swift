@@ -14,7 +14,7 @@ import ApiPackage
 // MARK: - View
 
 public struct NetworkSubView: View {
-  
+
   @Environment(ViewModel.self) private var viewModel
   
   public var body: some View {

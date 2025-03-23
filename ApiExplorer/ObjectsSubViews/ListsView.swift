@@ -10,12 +10,13 @@ import SwiftUI
 import ApiPackage
 
 struct ListsView: View {
-  
+  let radio: Radio?
+
   @Environment(ViewModel.self) var viewModel
 
   var body: some View {
    
-    if let radio = viewModel.api.activeSelection?.radio {
+    if let radio {
       Grid(alignment: .leading, horizontalSpacing: 10) {
         GridRow {
           Text("LISTS")
@@ -38,7 +39,7 @@ struct ListsView: View {
 }
 
 #Preview {
-  ListsView()
+  ListsView(radio: nil)
     .environment(ViewModel())
   
     .frame(width: 1000)

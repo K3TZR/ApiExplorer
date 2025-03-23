@@ -42,15 +42,19 @@ public struct DiscoveryView: View {
           }
         }.frame(width: 250)
 
-        Picker("Choose a Radio", selection: $radioSelection) {
-          Text("Select a Radio").tag(nil as String?)
-          ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-            Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
-          }
-        }.frame(width: 250)
+        if settings.discoveryDisplayType != .broadcastTiming {
+          Picker("Choose a Radio", selection: $radioSelection) {
+            Text("Select a Radio").tag(nil as String?)
+            ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
+              Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
+            }
+          }.frame(width: 250)
+        }
       }
       
-      Divider().frame(height: 2).overlay(.blue)
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
       
       switch settings.discoveryDisplayType  {
       case .vitaFields, .payloadKeyValues, .vitaHex:
@@ -67,11 +71,15 @@ public struct DiscoveryView: View {
               .keyboardShortcut(.defaultAction)
           }
         }
-      case .packetLastSeen: PacketView()
+      case .broadcastTiming: BroadcastTimingView()
       }
+      
       Spacer()
+      
       if settings.discoveryDisplayType != .vitaHex {
         Divider()
+          .frame(height: 2)
+          .background(Color.gray)
         FooterView()
       }
     }
@@ -196,7 +204,7 @@ private struct RawView: View {
         Text(viewModel.hexDump(data))
       }
 
-      Divider()
+      Divider().frame(height: 3)
 
       HStack {
         Button("Save") {
@@ -219,7 +227,7 @@ private struct RawView: View {
   }
 }
 
-private struct PacketView: View {
+private struct BroadcastTimingView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
@@ -229,16 +237,38 @@ private struct PacketView: View {
     return formatter.string(from: date)
   }
   
-  var body: some View {
+  func average(_ intervals: [Double]) -> Double {
+    guard !intervals.isEmpty else { return 0 }
     
-    List() {
-      Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 10) {
-        ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
+    let sum = intervals.reduce(0, +)
+    return sum / Double(intervals.count)
+  }
+  
+  var body: some View {
+    VStack {
+      HStack {
+        Spacer()
+        Text("Broadcast Time Intervals")
+          .gridCellColumns(3)
+        Spacer()
+      }
+      List() {
+        Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 10) {
           GridRow {
-            Text(radio.packet.nickname)
-            Text(formatMinutesAndSeconds(from: radio.lastSeen))
-            Text(String(format: "%3d", Int(radio.lastSeen.timeIntervalSince(Date()))))
-              .foregroundColor( Int(radio.lastSeen.timeIntervalSince(Date())) > 5 ? .red : .red)
+            Text("Radio Name")
+            Text("Average")
+            Text("Peak")
+          }
+          
+          Divider().frame(height: 3)
+          
+          ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
+            GridRow {
+              Text(radio.packet.nickname)
+              Text(average(radio.intervals), format: .number)
+              Text(radio.intervals.max() ?? 0, format: .number)
+                .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
+            }
           }
         }
       }
@@ -248,7 +278,6 @@ private struct PacketView: View {
 
 private struct FooterView: View {
 
-  @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
   var body: some View {

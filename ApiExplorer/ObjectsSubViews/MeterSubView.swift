@@ -14,7 +14,7 @@ import ApiPackage
 // MARK: - View
 
 struct MeterSubView: View {
-  
+
   @Environment(ViewModel.self) private var viewModel
 
   var body: some View {

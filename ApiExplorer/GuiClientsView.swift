@@ -16,10 +16,10 @@ public struct GuiClientsView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-  private var guiClients: [GuiClient] {
-    return viewModel.api.radios
-      .flatMap(\.guiClients)
-  }
+//  private var guiClients: [GuiClient] {
+//    return viewModel.api.radios
+//      .flatMap(\.guiClients)
+//  }
   
   public var body: some View {
     
@@ -31,8 +31,10 @@ public struct GuiClientsView: View {
         HeaderView()
         
         Divider()
-        
-        if guiClients.count == 0 {
+          .frame(height: 2)
+          .background(Color.gray)
+
+        if viewModel.api.guiClients.count == 0 {
           HStack {
             Spacer()
             Text("----------  NO Gui Clients FOUND  ----------")
@@ -43,7 +45,7 @@ public struct GuiClientsView: View {
           
         } else {
           // ----- List of Gui Clients -----
-          ForEach(guiClients, id: \.id) { guiClient in
+          ForEach(viewModel.api.guiClients, id: \.id) { guiClient in
             GridRow {
               Text(guiClient.station)
                 .truncationMode(.tail)
@@ -69,6 +71,9 @@ public struct GuiClientsView: View {
       }
       Spacer()
       Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       FooterView()
     }
   }

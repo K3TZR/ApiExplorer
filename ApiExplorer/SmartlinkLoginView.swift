@@ -24,7 +24,11 @@ public struct SmartlinkLoginView: View {
 
     VStack(spacing: 10) {
       Text( "Smartlink Login" ).font( .title2 )
+      
       Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       Grid(alignment: .leading) {
         GridRow {
           Text( "User" ).frame(alignment: .leading)
@@ -37,7 +41,9 @@ public struct SmartlinkLoginView: View {
       }
       
       Divider()
-      
+        .frame(height: 2)
+        .background(Color.gray)
+
       HStack( spacing: 60 ) {
         Button( "Cancel" ) {
           viewModel.smartlinkCancelButtonTapped()

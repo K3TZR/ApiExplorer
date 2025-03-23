@@ -13,13 +13,14 @@ import ApiPackage
 // MARK: - View
 
 struct AtuSubView: View {
-
+  let radio: Radio?
+  
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
     
     Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
-      if let radio = viewModel.api.activeSelection?.radio {
+      if let radio {
         if radio.atuPresent {
           let atu = viewModel.api.atu
           GridRow {
@@ -68,7 +69,7 @@ struct AtuSubView: View {
 // MARK: - Preview
 
 #Preview {
-  AtuSubView()  
+  AtuSubView(radio: nil)
     .environment(ViewModel())
   
     .frame(width: 1000)

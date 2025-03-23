@@ -13,13 +13,14 @@ import ApiPackage
 // MARK: - View
 
 struct GpsSubView: View {
+  let radio: Radio?
 
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
     
     Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
-      if let radio = viewModel.api.activeSelection?.radio {
+      if let radio {
         if radio.gpsPresent {
           HeadingView()
           let gps = viewModel.api.gps
@@ -76,7 +77,7 @@ private struct HeadingView: View {
 // MARK: - Preview
 
 #Preview {
-  GpsSubView()
+  GpsSubView(radio: nil)
     .environment(ViewModel())
 
     .frame(width: 1000)

@@ -13,13 +13,12 @@ import ApiPackage
 // MARK: - View
 
 struct GuiClientSubView: View {
-  var radio: Radio
   
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
     
-    ForEach(Array(radio.guiClients), id: \.id) { guiClient in
+    ForEach(viewModel.api.guiClients, id: \.id) { guiClient in
       VStack(alignment: .leading, spacing: 0) {
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {
@@ -53,7 +52,7 @@ struct GuiClientSubView: View {
               .gridColumnAlignment(.trailing)
           }
         }
-        Divider().background(Color(.gray))
+        Divider().frame(height: 2)
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
@@ -105,7 +104,7 @@ private struct GuiClientDetailView: View {
 // MARK: - Preview
 
 #Preview {
-  GuiClientSubView(radio: Radio(Packet(.local, "".keyValuesArray()), Set<GuiClient>(), nil))
+  GuiClientSubView()
     .environment(ViewModel())
   
     .frame(width: 1250)

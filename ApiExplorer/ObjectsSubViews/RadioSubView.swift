@@ -13,14 +13,19 @@ import ApiPackage
 // MARK: - View
 
 struct RadioSubView: View {
+    let radio: Radio?
   
   @Environment(ViewModel.self) var viewModel
   @Environment(SettingsModel.self) private var settings
 
+//  var radio: Radio? {
+//    let parts = viewModel.api.activeSelection!.split(separator: "|")
+//    return viewModel.api.radios.first(where: {$0.id == parts[0] + "|" + parts[1] })
+//  }
+  
   var body: some View {
     
-    if viewModel.api.activeSelection != nil {
-      let radio = viewModel.api.activeSelection!.radio
+    if let radio {
       VStack(alignment: .leading, spacing: 0) {
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {
@@ -68,7 +73,7 @@ struct RadioSubView: View {
           }
           
           GridRow {
-            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]).border(.red)
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             
             HStack(spacing: 5) {
               Text("HW")
@@ -94,11 +99,11 @@ struct RadioSubView: View {
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
             }
           }
-          Divider()
+          Divider().frame(height: 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
-        DetailView(filter: settings.radioObjectFilter)
+        DetailView(filter: settings.radioObjectFilter, radio: radio)
       }
     }
   }
@@ -106,6 +111,7 @@ struct RadioSubView: View {
 
 private struct DetailView: View {
   let filter: RadioObjectFilter
+  let radio: Radio
   
   @Environment(ViewModel.self) var viewModel
   
@@ -115,25 +121,26 @@ private struct DetailView: View {
       VStack(alignment: .leading) {
         switch filter {
         case .all:
-          AtuSubView()
+          AtuSubView(radio: radio)
           BandSettingSubView()
           EqualizerSubView()
-          GpsSubView()
+          GpsSubView(radio: radio)
           InterlockSubView()
+          ListsView(radio: radio)
           MemorySubView()
           MeterSubView()
-          ListsView()
+          NetworkSubView()
           TnfSubView()
           TransmitSubView()
-        case .atu:          AtuSubView()
+        case .atu:          AtuSubView(radio: radio)
         case .bandSettings: BandSettingSubView()
         case .equalizers:   EqualizerSubView()
-        case .gps:          GpsSubView()
+        case .gps:          GpsSubView(radio: radio)
         case .interlocks:   InterlockSubView()
-        case .lists:        ListsView()
+        case .lists:        ListsView(radio: radio)
         case .memories:     MemorySubView()
-        case .network:      NetworkSubView()
         case .meters:       MeterSubView()
+        case .network:      NetworkSubView()
         case .tnf:          TnfSubView()
         case .transmit:     TransmitSubView()
         }
@@ -146,7 +153,7 @@ private struct DetailView: View {
 // MARK: - Preview
 
 #Preview {
-  RadioSubView()
+  RadioSubView(radio: nil)
     .environment(ViewModel())
     .environment(SettingsModel.shared)
   

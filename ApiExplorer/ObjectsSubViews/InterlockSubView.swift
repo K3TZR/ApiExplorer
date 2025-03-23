@@ -10,7 +10,7 @@ import SwiftUI
 import ApiPackage
 
 struct InterlockSubView: View {
-  
+
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {

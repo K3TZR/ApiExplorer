@@ -16,14 +16,14 @@ public struct PickerView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   @State var selectedRadioId: String? = nil
   @State var selectedStation: String = ""
   
-  private var guiClients: [GuiClient] {
-    return viewModel.api.radios
-      .flatMap(\.guiClients)
-  }
+  //  private var guiClients: [GuiClient] {
+  //    return viewModel.api.radios
+  //      .flatMap(\.guiClients)
+  //  }
   
   public var body: some View {
     
@@ -31,7 +31,7 @@ public struct PickerView: View {
       
       HeaderView()
       
-      if (settings.isGui && viewModel.api.radios.count == 0) || (!settings.isGui && guiClients.count == 0) {
+      if (settings.isGui && viewModel.api.radios.count == 0) || (!settings.isGui && viewModel.api.guiClients.count == 0) {
         NothingView()
       }
       else if settings.isGui {
@@ -51,7 +51,7 @@ private struct HeaderView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   var body: some View {
     
     HStack {
@@ -78,6 +78,8 @@ private struct HeaderView: View {
     .font(.title3)
     
     Divider()
+      .frame(height: 2)
+      .background(Color.gray)
   }
 }
 
@@ -85,7 +87,7 @@ private struct NothingView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   var body: some View {
     
     VStack {
@@ -106,7 +108,7 @@ private struct GuiView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   var body: some View {
     
     // ----- List of Radios -----
@@ -128,7 +130,7 @@ private struct GuiView: View {
             .truncationMode(.middle)
         }
         .font(.title3)
-        .foregroundColor(settings.defaultGui == radio.id ? .red : nil)
+        .foregroundColor(settings.defaultGui?.radioId == radio.id ? .red : nil)
       }
     }
     .listStyle(.plain)
@@ -141,97 +143,40 @@ private struct NonGuiView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
+  
   var body: some View {
-
+    
     // ----- List of Stations -----
-    List {
-      ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-        if !radio.guiClients.isEmpty {
-          VStack {
-            if radio.guiClients.count > 0 {
-              let guiClient = Array(radio.guiClients).first
-              HStack(spacing: 0) {
-                Text(guiClient!.station)
-                  .frame(width: 200, alignment: .leading)
-                  .truncationMode(.middle)
-                
-                Text(radio.packet.source.rawValue)
-                  .frame(width: 70, alignment: .leading)
-                
-                Text(radio.packet.status)
-                  .frame(width: 100, alignment: .leading)
-                
-                Text(radio.packet.nickname)
-                  .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-                  .truncationMode(.middle)
-              }
-              .font(.title3)
-              .foregroundColor(settings.defaultNonGui == radio.id ? .red : nil)
-              
-              .onTapGesture { // Update selection manually
-                selectedRadioId.wrappedValue = radio.id
-                selectedStation.wrappedValue = guiClient!.station
-              }
-
-            }
-            if radio.guiClients.count > 1 {
-              let guiClient = Array(radio.guiClients).last
-              HStack(spacing: 0) {
-                Text(guiClient!.station)
-                  .frame(width: 200, alignment: .leading)
-                  .truncationMode(.middle)
-                
-                Text(radio.packet.source.rawValue)
-                  .frame(width: 70, alignment: .leading)
-                
-                Text(radio.packet.status)
-                  .frame(width: 100, alignment: .leading)
-                
-                Text(radio.packet.nickname)
-                  .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-                  .truncationMode(.middle)
-              }
-              .font(.title3)
-              .foregroundColor(settings.defaultNonGui == radio.id ? .red : nil)
-              
-              .onTapGesture { // Update selection manually
-                selectedRadioId.wrappedValue = radio.id
-                selectedStation.wrappedValue = guiClient!.station
-              }
-
-            }
+    List(selection: selectedRadioId) {
+      ForEach(viewModel.api.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
+        VStack {
+          HStack(spacing: 0) {
+            Text(guiClient.station)
+              .frame(width: 200, alignment: .leading)
+              .truncationMode(.middle)
+            
+            //                Text(radio.packet.source.rawValue)
+            //                  .frame(width: 70, alignment: .leading)
+            //
+            //                Text(radio.packet.status)
+            //                  .frame(width: 100, alignment: .leading)
+            //
+            //                Text(radio.packet.nickname)
+            //                  .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+            //                  .truncationMode(.middle)
           }
+          .font(.title3)
+          //              .foregroundColor(settings.defaultNonGui == PickerSelection(radio.id, guiClient!.station,nil) ? .red : nil)
+          
+          //              .onTapGesture { // Update selection manually
+          //                selectedRadioId.wrappedValue = radio.id
+          //                selectedStation.wrappedValue = guiClient!.station
+          //              }
+          
         }
-//        ForEach(Array(radio.guiClients), id: \.id) { guiClient in
-//          HStack(spacing: 0) {
-//            Text(guiClient.station)
-//              .frame(width: 200, alignment: .leading)
-//              .truncationMode(.middle)
-//            
-//            Text(radio.packet.source.rawValue)
-//              .frame(width: 70, alignment: .leading)
-//            
-//            Text(radio.packet.status)
-//              .frame(width: 100, alignment: .leading)
-//            
-//            Text(radio.packet.nickname)
-//              .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-//              .truncationMode(.middle)
-//          }
-//          .font(.title3)
-//          .foregroundColor(settings.defaultNonGui == radio.id ? .red : nil)
-//          
-//          .background(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.3) : Color.clear) // Highlight selection
-//          .cornerRadius(8)
-//          .onTapGesture { // Update selection manually
-//            selectedRadioId.wrappedValue = radio.id
-//            selectedStation.wrappedValue = guiClient.station
-//          }
-//        }
       }
-      .listStyle(.plain)
     }
+    .listStyle(.plain)
   }
 }
 
@@ -253,9 +198,11 @@ private struct FooterView: View {
     Spacer()
     
     Divider()
+      .frame(height: 2)
+      .background(Color.gray)
     
     HStack {
-      Button("Test") { viewModel.smartlinkTestButtonTapped(selectedRadioId.wrappedValue!)}
+      Button("Test") { viewModel.pickerTestButtonTapped(selectedRadioId.wrappedValue!)}
         .disabled(selectedRadioIsNotSmartlink || selectedRadioId.wrappedValue == nil)
       Circle()
         .fill(viewModel.api.smartlinkTestResult.success ? Color.green : Color.red)
@@ -264,7 +211,7 @@ private struct FooterView: View {
       Spacer()
       
       Button("Default") {
-        viewModel.defaultButtonTapped(selectedRadioId.wrappedValue!)
+        viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isGui ? settings.stationName : selectedStation.wrappedValue, nil))
       }
       .disabled(selectedRadioId.wrappedValue == nil)
       
@@ -276,11 +223,8 @@ private struct FooterView: View {
       Spacer()
       
       Button("Connect") {
-        if settings.isGui {
-          viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue!, settings.stationName)
-        } else {
-          viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue!, selectedStation.wrappedValue)
-        }
+        //        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue! + "|" + "\(settings.isGui ? settings.stationName : selectedStation.wrappedValue)")
+        viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isGui ? settings.stationName : selectedStation.wrappedValue, nil))
       }
       .keyboardShortcut(.defaultAction)
       .disabled(selectedRadioId.wrappedValue == nil)

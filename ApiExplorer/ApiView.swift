@@ -33,6 +33,15 @@ struct ApiView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
 
+  var isMultiflex: Bool {
+//    if let selection = viewModel.api.activeSelection {
+//      if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
+//        return radio.guiClients.count > 1
+//      }
+//    }
+    return false
+  }
+
   var body: some View {
     @Bindable var viewModel = viewModel
 
@@ -42,12 +51,16 @@ struct ApiView: View {
 
       SendView()
 
-      Divider().background(Color(.gray))
-            
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       ObjectsMessagesSplitView()
       
-      Divider().background(Color(.gray))
-      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       BottomButtonsView()
     }
     .frame(maxWidth: .infinity, alignment: .leading) // <- This makes VStack take full width
@@ -90,7 +103,7 @@ struct ApiView: View {
     // Toolbar
 #if os(macOS)
     .toolbar {
-      if let selection = viewModel.api.activeSelection, selection.radio.guiClients.count > 0 {
+      if isMultiflex {
         Text("MultiFlex")
           .foregroundColor(.red)
       }

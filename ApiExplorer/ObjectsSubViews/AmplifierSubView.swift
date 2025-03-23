@@ -13,6 +13,7 @@ import ApiPackage
 // MARK: - View
 
 struct AmplifierSubView: View {
+  let radio: Radio?
 
   @Environment(ViewModel.self) private var viewModel
 
@@ -68,7 +69,7 @@ private struct HeadingView: View {
 // MARK: - Preview
 
 #Preview {
-  AmplifierSubView()
+  AmplifierSubView(radio: nil)
     .environment(ViewModel())
 
     .frame(width: 1250)

@@ -51,6 +51,8 @@ public struct SettingsView: View {
       .disabled(viewModel.isConnected)
 
       Divider()
+        .frame(height: 2)
+        .background(Color.gray)
 
       HStack() {
         Spacer()

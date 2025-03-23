@@ -13,7 +13,7 @@ import ApiPackage
 // MARK: - View
 
 struct MemorySubView: View {
-  
+
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {

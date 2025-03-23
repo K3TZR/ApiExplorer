@@ -61,23 +61,6 @@ public class ViewModel {
     showAlert = true
   }
   
-  public func defaultButtonTapped(_ radioId: String) {
-    // set / reset the default
-    if _settings.isGui {
-      if _settings.defaultGui == radioId {
-        _settings.defaultGui = ""
-      } else {
-        _settings.defaultGui = radioId
-      }
-    } else {
-      if _settings.defaultNonGui == radioId {
-        _settings.defaultNonGui = ""
-      } else {
-        _settings.defaultNonGui = radioId
-      }
-    }
-  }
-  
   public func directButtonChanged(_ enabled: Bool) {
     if enabled {
       _settings.localEnabled = false
@@ -108,9 +91,11 @@ public class ViewModel {
     activeSheet = nil
   }
 
-    public func multiflexConnectButtonTapped(_ disconnectHandle: String?) {
+  public func multiflexConnectButtonTapped(_ disconnectHandle: String?) {
     activeSheet = nil
-    api.activeSelection?.disconnectHandle = disconnectHandle
+    if let disconnectHandle {
+      api.activeSelection!.disconnectHandle = disconnectHandle
+    }
     Task { await connect(api.activeSelection!) }
   }
   
@@ -141,13 +126,38 @@ public class ViewModel {
     }
   }
     
-  public func pickerConnectButtonTapped(_ radioId: String, _ station: String) {
+  public func pickerConnectButtonTapped(_ selection: PickerSelection) {
     activeSheet = nil
-    api.activeStation = station
     // try to connect to the selected radio / station
-    connectionStart(radioId)
+    connectionStart(selection)
   }
   
+  public func pickerDefaultButtonTapped(_ selection: PickerSelection) {
+    // set / reset the default
+    if _settings.isGui {
+      if _settings.defaultGui == selection {
+        _settings.defaultGui = nil
+      } else {
+        _settings.defaultGui = selection
+      }
+    } else {
+      if _settings.defaultNonGui == selection {
+        _settings.defaultNonGui = nil
+      } else {
+        _settings.defaultNonGui = selection
+      }
+    }
+  }
+  
+  public func pickerTestButtonTapped(_ selection: String) {
+    let parts = selection.split(separator: "|")
+    
+    // reset the result
+    api.smartlinkTestResult = SmartlinkTestResult()
+    // perform a connection test on the smartlink radio
+    api.sendSmartlinkTest(String(parts[0]))
+  }
+
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
     showAlert = true
@@ -228,17 +238,7 @@ public class ViewModel {
       activeSheet = .picker
     }
   }
-  
-  public func smartlinkTestButtonTapped(_ id: RadioId) {
-    // find the radio
-    if let radio = api.radios.first(where: { $0.id == id }) {
-      // result the result
-      api.smartlinkTestResult = SmartlinkTestResult()
-      // perform a connection test on the smartlink radio
-      api.sendSmartlinkTest(radio.packet.serial)
-    }
-  }
-  
+    
   // ----------------------------------------------------------------------------
   // MARK: - Public supporting methods
   
@@ -310,14 +310,14 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Private supporting methods
   
-  private func connect(_ activeSelection: ActiveSelection) async {
+  private func connect(_ selection: PickerSelection) async {
     messages.start(_settings.clearOnStart)
     
     // attempt to connect to the selected Radio / Station
     // try to connect
     let connectTask = Task {
       do {
-        try await api.connect(selection: activeSelection,
+        try await api.connect(selection: selection,
                               isGui: _settings.isGui,
                               programName: "ApiExplorer",
                               mtuValue: _settings.mtuValue,
@@ -337,28 +337,27 @@ public class ViewModel {
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log?.info("ApiExplorer: connection attempt SUCCEEDED for \(self.api.activeSelection!.radio.id)")
+      log?.info("ApiExplorer: connection attempt SUCCEEDED for \(selection.radioId)")
     } else {
-      log?.errorExt("ApiExplorer: connection attempt FAILED for \(self.api.activeSelection!.radio.id)")
+      log?.errorExt("ApiExplorer: connection attempt FAILED for \(selection.radioId)")
     }
   }
   
-  private func connectionStart(_ radioId: RadioId)  {
+  private func connectionStart(_ selection: PickerSelection)  {
     // validate the radio id
-    if let radio = api.radios.first(where: {$0.id == radioId}) {
-      api.activeSelection = ActiveSelection((radio, nil))
-    } else {
-      log?.errorExt("ApiExplorer: Radio not found for ID \(radioId)")
-      return
-    }
-    // handle Multiflex
-    if _settings.isGui && api.activeSelection!.radio.guiClients.count > 0 {
-      activeSheet = .multiflex
+    if api.radios.first(where: {$0.id == selection.radioId}) != nil {
+      api.activeSelection = selection
+      
+      // handle Multiflex
+      if _settings.isGui && api.guiClients.count > 0 {
+        activeSheet = .multiflex
+        
+      } else {
+        Task { await connect(selection) }
+      }
       
     } else {
-      Task {
-        await connect(api.activeSelection!)
-      }
+      log?.errorExt("ApiExplorer: Radio not found for ID \(selection.radioId)")
     }
   }
   

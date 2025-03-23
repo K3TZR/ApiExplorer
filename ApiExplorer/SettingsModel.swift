@@ -13,11 +13,11 @@ import ApiPackage
 public class SettingsModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
-
+  
   public static var shared = SettingsModel()
   private init(_ settings: UserDefaults = UserDefaults.standard) {
     _settings = settings
-
+    
     // read values from UserDefaults
     alertOnError = _settings.bool(forKey: "alertOnError")
     clearOnSend = _settings.bool(forKey: "clearOnSend")
@@ -27,8 +27,8 @@ public class SettingsModel {
     commandsIndex = _settings.integer(forKey: "commandsIndex")
     commandToSend = _settings.string(forKey: "commandToSend") ?? ""
     daxSelection = DaxChoice(rawValue: _settings.string(forKey: "daxSelection") ?? "none") ?? .none
-    defaultGui = _settings.string(forKey: "defaultGui")
-    defaultNonGui = _settings.string(forKey: "defaultNonGui")
+    defaultGui = _settings.getStruct(forKey: "defaultGui", as: PickerSelection.self)
+    defaultNonGui = _settings.getStruct(forKey: "defaultNonGui", as: PickerSelection.self)
     directEnabled = _settings.bool(forKey: "directEnabled")
     discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: "discoveryDisplayType") ?? "fields") ?? .vitaFields
     fontSize = _settings.integer(forKey: "fontSize")
@@ -50,7 +50,7 @@ public class SettingsModel {
     showPings = _settings.bool(forKey: "showPings")
     showReplies = _settings.bool(forKey: "showReplies")
     showTimes = _settings.bool(forKey: "showTimes")
-//    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
+    //    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
     smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
@@ -59,11 +59,11 @@ public class SettingsModel {
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
-
+    
     if fontSize < 12 || fontSize > 18 { fontSize = 12 }
     if mtuValue == 0 { mtuValue = 1250 }
   }
-
+  
   // ----------------------------------------------------------------------------
   // MARK: - Public (Observable) properties
   
@@ -75,8 +75,8 @@ public class SettingsModel {
   public var commandsIndex: Int { didSet { _settings.set(commandsIndex, forKey: "commandsIndex") }}
   public var commandToSend: String { didSet { _settings.set(commandToSend, forKey: "commandToSend") }}
   public var daxSelection: DaxChoice { didSet { _settings.set(daxSelection.rawValue, forKey: "daxSelection") }}
-  public var defaultGui: String? { didSet { _settings.set(defaultGui, forKey: "defaultGui") }}
-  public var defaultNonGui: String? { didSet { _settings.set(defaultNonGui, forKey: "defaultNonGui") }}
+  public var defaultGui: PickerSelection? { didSet { _settings.setStruct(defaultGui, forKey: "defaultGui") }}
+  public var defaultNonGui: PickerSelection? { didSet { _settings.setStruct(defaultNonGui, forKey: "defaultNonGui") }}
   public var directEnabled: Bool { didSet { _settings.set(directEnabled, forKey: "directEnabled") }}
   public var discoveryDisplayType: DiscoveryDisplayType { didSet { _settings.set(discoveryDisplayType.rawValue, forKey: "discoveryDisplayType") }}
   public var fontSize: Int { didSet { _settings.set(fontSize, forKey: "fontSize") }}
@@ -98,7 +98,7 @@ public class SettingsModel {
   public var showPings: Bool { didSet { _settings.set(showPings, forKey: "showPings") }}
   public var showReplies: Bool { didSet { _settings.set(showReplies, forKey: "showReplies") }}
   public var showTimes: Bool { didSet { _settings.set(showTimes, forKey: "showTimes") }}
-//  public var smartlinkIdToken: String { didSet { _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken") }}
+  //  public var smartlinkIdToken: String { didSet { _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken") }}
   public var smartlinkEnabled: Bool { didSet { _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled") }}
   public var smartlinkLoginRequired: Bool { didSet { _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired") }}
   public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
@@ -107,15 +107,15 @@ public class SettingsModel {
   public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
   public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
   public var useDefaultEnabled: Bool { didSet { _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled") }}
-    
+  
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
-
+  
   private let _settings: UserDefaults
   
-// ----------------------------------------------------------------------------
-// MARK: - Public methods
-
+  // ----------------------------------------------------------------------------
+  // MARK: - Public methods
+  
   // write values to UserDefaults
   public func save() {
     _settings.set(alertOnError, forKey: "alertOnError")
@@ -126,8 +126,8 @@ public class SettingsModel {
     _settings.set(commandsIndex, forKey: "commandsIndex")
     _settings.set(commandToSend, forKey: "commandToSend")
     _settings.set(daxSelection.rawValue, forKey: "daxSelection")
-    _settings.set(defaultGui, forKey: "defaultGui")
-    _settings.set(defaultNonGui, forKey: "defaultNonGui")
+    _settings.setStruct(defaultGui, forKey: "defaultGui")
+    _settings.setStruct(defaultNonGui, forKey: "defaultNonGui")
     _settings.set(directEnabled, forKey: "directEnabled")
     _settings.set(discoveryDisplayType.rawValue, forKey: "discoveryDisplayType")
     _settings.set(fontSize, forKey: "fontSize")
@@ -149,7 +149,7 @@ public class SettingsModel {
     _settings.set(showPings, forKey: "showPings")
     _settings.set(showReplies, forKey: "showReplies")
     _settings.set(showTimes, forKey: "showTimes")
-//    _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken")
+    //    _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken")
     _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled")
     _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired")
     _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
@@ -162,6 +162,25 @@ public class SettingsModel {
   
   public func reset(_ name: String = Bundle.main.bundleIdentifier!) {
     _settings.removePersistentDomain(forName: name)
+  }
+}
+
+extension UserDefaults {
+  
+  /// Save a Codable struct to UserDefaults
+  func setStruct<T: Codable>(_ value: T, forKey key: String) {
+    if let encoded = try? JSONEncoder().encode(value) {
+      self.set(encoded, forKey: key)
+    }
+  }
+  
+  /// Retrieve a Codable struct from UserDefaults
+  func getStruct<T: Codable>(forKey key: String, as type: T.Type) -> T? {
+    guard let savedData = self.data(forKey: key),
+          let decodedObject = try? JSONDecoder().decode(T.self, from: savedData) else {
+      return nil
+    }
+    return decodedObject
   }
 }
 

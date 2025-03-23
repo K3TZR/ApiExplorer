@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import ApiPackage
+
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -63,6 +65,13 @@ private struct RadioClientTesterSplitView: View {
 
   @State private var topHeight: CGFloat = 200  // Initial height for the top view
 
+  var radio: Radio? {
+    if let selection = viewModel.api.activeSelection {
+      return viewModel.api.radios.first(where: {$0.id == selection.radioId})
+    }
+    return nil
+  }
+
   let minHeight: CGFloat = 100                 // Minimum height for sections
   
   var body: some View {
@@ -70,7 +79,7 @@ private struct RadioClientTesterSplitView: View {
     // Custom resizable vertical split, works for macOS and iOS
     GeometryReader { geometry in
       VStack(spacing: 0) {
-        RadioSubView()
+        RadioSubView(radio: radio)
           .frame(height: topHeight)
           .frame(maxWidth: .infinity)
         
@@ -95,10 +104,8 @@ private struct RadioClientTesterSplitView: View {
               }
           )
         
-        if let radio = viewModel.api.activeSelection?.radio {
-          GuiClientSubView(radio: radio)
-            .frame(maxWidth: .infinity)
-        }
+        GuiClientSubView()
+          .frame(maxWidth: .infinity)
 
         if settings.isGui == false {
           TesterSubView()

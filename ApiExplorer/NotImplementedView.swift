@@ -23,7 +23,9 @@ public struct NotImplementedView: View {
       Spacer()
       
       Divider()
-      
+        .frame(height: 2)
+        .background(Color.gray)
+
       HStack {
         Spacer()
         Button("Cancel") {
