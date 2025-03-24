@@ -16,11 +16,10 @@ public struct GuiClientsView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-//  private var guiClients: [GuiClient] {
-//    return viewModel.api.radios
-//      .flatMap(\.guiClients)
-//  }
-  
+  private var guiClients: [GuiClient] {
+      viewModel.api.radios.flatMap { $0.guiClients }
+  }
+
   public var body: some View {
     
     VStack(alignment: .center) {
@@ -34,7 +33,7 @@ public struct GuiClientsView: View {
           .frame(height: 2)
           .background(Color.gray)
 
-        if viewModel.api.guiClients.count == 0 {
+        if guiClients.count == 0 {
           HStack {
             Spacer()
             Text("----------  NO Gui Clients FOUND  ----------")
@@ -45,35 +44,35 @@ public struct GuiClientsView: View {
           
         } else {
           // ----- List of Gui Clients -----
-          ForEach(viewModel.api.guiClients, id: \.id) { guiClient in
-            GridRow {
-              Text(guiClient.station)
-                .truncationMode(.tail)
-                .lineLimit(1)   // This is critical
-                .clipped()
-                .help(guiClient.station)
-              
-              Text(guiClient.handle)
-              Text(guiClient.program)
-                .truncationMode(.tail)
-                .lineLimit(1)   // This is critical
-                .clipped()
-                .help(guiClient.program)
-              
-              Text(guiClient.ip)
-              Text(guiClient.host)
-              Text(guiClient.clientId?.uuidString ?? "Unknown")
+            ForEach(guiClients, id: \.id) { guiClient in
+              GridRow {
+                Text(guiClient.station)
+                  .truncationMode(.tail)
+                  .lineLimit(1)   // This is critical
+                  .clipped()
+                  .help(guiClient.station)
+                
+                Text(guiClient.handle)
+                Text(guiClient.program)
+                  .truncationMode(.tail)
+                  .lineLimit(1)   // This is critical
+                  .clipped()
+                  .help(guiClient.program)
+                
+                Text(guiClient.ip)
+                Text(guiClient.host)
+                Text(guiClient.clientId?.uuidString ?? "Unknown")
+                  .frame(width: 300, alignment: .leading)
+              }
+              .padding(.horizontal, 10)
             }
-            .padding(.horizontal, 10)
-
-          }
         }
       }
       Spacer()
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
       FooterView()
     }
   }

@@ -16,9 +16,13 @@ struct GuiClientSubView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
+  private var guiClients: [GuiClient] {
+      viewModel.api.radios.flatMap { $0.guiClients }
+  }
+
   var body: some View {
     
-    ForEach(viewModel.api.guiClients, id: \.id) { guiClient in
+    ForEach(guiClients, id: \.id) { guiClient in
       VStack(alignment: .leading, spacing: 0) {
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {

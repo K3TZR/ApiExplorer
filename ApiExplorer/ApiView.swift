@@ -79,7 +79,7 @@ struct ApiView: View {
           .frame(height: 600)
       case .guiClients:
         GuiClientsView()
-          .frame(width: 1000)
+//          .frame(width: 1000)
       case .multiflex:
         MultiflexView()
           .frame(height: 200)
