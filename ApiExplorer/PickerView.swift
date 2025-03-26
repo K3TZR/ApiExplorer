@@ -20,25 +20,24 @@ public struct PickerView: View {
   @State var selectedRadioId: String? = nil
   @State var selectedStation: String = ""
   
-  //  private var guiClients: [GuiClient] {
-  //    return viewModel.api.radios
-  //      .flatMap(\.guiClients)
-  //  }
-  
+  private var guiClients: [GuiClient] {
+      viewModel.api.radios.flatMap { $0.guiClients }
+  }
+
   public var body: some View {
     
     VStack(alignment: .leading) {
       
       HeaderView()
       
-      if (settings.isGui && viewModel.api.radios.count == 0) || (!settings.isGui && viewModel.api.guiClients.count == 0) {
+      if (settings.isGui && viewModel.api.radios.count == 0) || (!settings.isGui && guiClients.count == 0) {
         NothingView()
       }
       else if settings.isGui {
         GuiView(selectedRadioId: $selectedRadioId)
       }
       else {
-        NonGuiView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
+        NonGuiView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation, guiClients: guiClients)
       }
       
       FooterView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
@@ -140,6 +139,7 @@ private struct GuiView: View {
 private struct NonGuiView: View {
   let selectedRadioId: Binding<String?>
   let selectedStation: Binding<String>
+  let guiClients: [GuiClient]
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
@@ -148,31 +148,37 @@ private struct NonGuiView: View {
     
     // ----- List of Stations -----
     List(selection: selectedRadioId) {
-      ForEach(viewModel.api.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
-        VStack {
-          HStack(spacing: 0) {
-            Text(guiClient.station)
-              .frame(width: 200, alignment: .leading)
-              .truncationMode(.middle)
-            
-            //                Text(radio.packet.source.rawValue)
-            //                  .frame(width: 70, alignment: .leading)
-            //
-            //                Text(radio.packet.status)
-            //                  .frame(width: 100, alignment: .leading)
-            //
-            //                Text(radio.packet.nickname)
-            //                  .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-            //                  .truncationMode(.middle)
+      ForEach(viewModel.api.radios, id:\.id) { radio in
+        ForEach(radio.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
+          if radio.packet.status != "In_Use" {
+            VStack {
+              HStack(spacing: 0) {
+                Text(guiClient.station)
+                  .frame(width: 200, alignment: .leading)
+                  .truncationMode(.middle)
+                
+                Text(radio.packet.source.rawValue)
+                  .frame(width: 70, alignment: .leading)
+                
+                Text(radio.packet.status)
+                  .frame(width: 100, alignment: .leading)
+                
+                Text(radio.packet.nickname)
+                  .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+                  .truncationMode(.middle)
+              }
+              .font(.title3)
+              .foregroundColor(settings.defaultNonGui == PickerSelection(radio.id, guiClient.station, nil) ? .red : nil)
+              .overlay(
+                Rectangle()
+                  .foregroundColor(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.2) : Color.clear)
+              )
+              .onTapGesture { // Update selection manually
+                selectedRadioId.wrappedValue = radio.id
+                selectedStation.wrappedValue = guiClient.station
+              }
+            }
           }
-          .font(.title3)
-          //              .foregroundColor(settings.defaultNonGui == PickerSelection(radio.id, guiClient!.station,nil) ? .red : nil)
-          
-          //              .onTapGesture { // Update selection manually
-          //                selectedRadioId.wrappedValue = radio.id
-          //                selectedStation.wrappedValue = guiClient!.station
-          //              }
-          
         }
       }
     }

@@ -10,20 +10,11 @@ import SwiftUI
 
 import ApiPackage
 
-
-
-
 public enum ActiveSheet: Identifiable {
   case discovery, guiClients, multiflex, picker, smartlinkLogin, settings
   
   public var id: Int { hashValue }
 }
-
-
-
-
-
-
 
 // ----------------------------------------------------------------------------
 // MARK: - View
@@ -34,11 +25,11 @@ struct ApiView: View {
   @Environment(SettingsModel.self) private var settings
 
   var isMultiflex: Bool {
-//    if let selection = viewModel.api.activeSelection {
-//      if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
-//        return radio.guiClients.count > 1
-//      }
-//    }
+    if let selection = viewModel.api.activeSelection {
+      if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
+        return radio.guiClients.count > 1
+      }
+    }
     return false
   }
 
@@ -79,7 +70,6 @@ struct ApiView: View {
           .frame(height: 600)
       case .guiClients:
         GuiClientsView()
-//          .frame(width: 1000)
       case .multiflex:
         MultiflexView()
           .frame(height: 200)

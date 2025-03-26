@@ -23,7 +23,7 @@ struct TesterSubView: View {
           .font(.title)
         
         Text("Bound to Station")
-        Text("\(viewModel.api.activeStation ?? "Unknown")")
+        Text("\(viewModel.api.activeSelection?.station ?? "Unknown")")
           .foregroundColor(.secondary)
         
         Text("Handle")

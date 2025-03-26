@@ -44,28 +44,50 @@ public struct GuiClientsView: View {
           
         } else {
           // ----- List of Gui Clients -----
-            ForEach(guiClients, id: \.id) { guiClient in
+          ForEach(viewModel.api.radios, id:\.id) { radio in
+            ForEach(radio.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
+              //            ForEach(guiClients, id: \.id) { guiClient in
               GridRow {
+                Text(radio.packet.nickname)
+                  .frame(width: 120, alignment: .leading)
+                  .truncationMode(.tail)
+                  .lineLimit(1)   // This is critical
+                  .clipped()
+                  .help(radio.packet.nickname)
+
                 Text(guiClient.station)
+                  .frame(width: 120, alignment: .leading)
                   .truncationMode(.tail)
                   .lineLimit(1)   // This is critical
                   .clipped()
                   .help(guiClient.station)
                 
                 Text(guiClient.handle)
+                
                 Text(guiClient.program)
+                  .frame(width: 120, alignment: .leading)
                   .truncationMode(.tail)
                   .lineLimit(1)   // This is critical
                   .clipped()
                   .help(guiClient.program)
                 
                 Text(guiClient.ip)
+                  .frame(width: 120, alignment: .leading)
+                
                 Text(guiClient.host)
+                  .frame(width: 120, alignment: .leading)
+                  .truncationMode(.tail)
+                  .lineLimit(1)   // This is critical
+                  .clipped()
+                  .help(guiClient.host)
+                
                 Text(guiClient.clientId?.uuidString ?? "Unknown")
                   .frame(width: 300, alignment: .leading)
               }
+              .monospaced()
               .padding(.horizontal, 10)
             }
+          }
         }
       }
       Spacer()
@@ -83,6 +105,7 @@ private struct HeaderView: View {
   var body: some View {
     
     GridRow {
+      Text("Radio")
       Text("Station")
       Text("Handle")
       Text("Program")

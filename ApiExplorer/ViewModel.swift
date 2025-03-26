@@ -345,11 +345,11 @@ public class ViewModel {
   
   private func connectionStart(_ selection: PickerSelection)  {
     // validate the radio id
-    if api.radios.first(where: {$0.id == selection.radioId}) != nil {
+    if let radio = api.radios.first(where: {$0.id == selection.radioId}) {
       api.activeSelection = selection
       
       // handle Multiflex
-      if _settings.isGui && api.guiClients.count > 0 {
+      if _settings.isGui && radio.guiClients.count > 0 {
         activeSheet = .multiflex
         
       } else {

@@ -16,6 +16,15 @@ public struct MultiflexView: View {
   
   @Environment(ViewModel.self) var viewModel
   
+  private var guiClients: [GuiClient] {
+    if let radioId = viewModel.api.activeSelection?.radioId {
+      if let radio = viewModel.api.radios.first(where: { $0.id == radioId }) {
+        return radio.guiClients
+      }
+    }
+    return []
+  }
+  
   public var body: some View {
     
     VStack(spacing: 20) {
@@ -25,24 +34,24 @@ public struct MultiflexView: View {
         .frame(height: 2)
         .background(Color.gray)
 
-      if viewModel.api.guiClients.count == 1 {
+      if guiClients.count == 1 {
         Button("MultiFlex connect") {
           viewModel.multiflexConnectButtonTapped(nil)
         }
         .keyboardShortcut(.defaultAction)
         .frame(width: 150)
         
-        Button("Close " + viewModel.api.guiClients[0].station) {
-          viewModel.multiflexConnectButtonTapped(viewModel.api.guiClients[0].handle)
+        Button("Close " + guiClients[0].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
         }
         .frame(width: 150)
         
-      } else if viewModel.api.guiClients.count == 2 {
-        Button("Close " + viewModel.api.guiClients[0].station) {
-          viewModel.multiflexConnectButtonTapped(viewModel.api.guiClients[0].handle)
+      } else if guiClients.count == 2 {
+        Button("Close " + guiClients[0].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
         }
-        Button("Close " + viewModel.api.guiClients[1].station) {
-          viewModel.multiflexConnectButtonTapped(viewModel.api.guiClients[1].handle)
+        Button("Close " + guiClients[1].station) {
+          viewModel.multiflexConnectButtonTapped(guiClients[1].handle)
         }
       }
     

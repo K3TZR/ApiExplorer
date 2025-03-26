@@ -17,9 +17,14 @@ struct GuiClientSubView: View {
   @Environment(ViewModel.self) private var viewModel
   
   private var guiClients: [GuiClient] {
-      viewModel.api.radios.flatMap { $0.guiClients }
+    if let radioId = viewModel.api.activeSelection?.radioId {
+      if let radio = viewModel.api.radios.first(where: { $0.id == radioId }) {
+        return radio.guiClients
+      }
+    }
+    return []
   }
-
+  
   var body: some View {
     
     ForEach(guiClients, id: \.id) { guiClient in
