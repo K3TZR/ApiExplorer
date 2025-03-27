@@ -53,8 +53,8 @@ public class SettingsModel {
     //    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
-    smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
-    smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken") ?? ""
+//    smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
+    smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken")
     smartlinkUser = _settings.string(forKey: "smartlinkUser") ?? ""
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
@@ -101,8 +101,8 @@ public class SettingsModel {
   //  public var smartlinkIdToken: String { didSet { _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken") }}
   public var smartlinkEnabled: Bool { didSet { _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled") }}
   public var smartlinkLoginRequired: Bool { didSet { _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired") }}
-  public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
-  public var smartlinkRefreshToken: String { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
+//  public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
+  public var smartlinkRefreshToken: String? { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
   public var smartlinkUser: String { didSet { _settings.set(smartlinkUser, forKey: "smartlinkUser") }}
   public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
   public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
@@ -152,7 +152,7 @@ public class SettingsModel {
     //    _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken")
     _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled")
     _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired")
-    _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
+//    _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
     _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken")
     _settings.set(smartlinkUser, forKey: "smartlinkUser")
     _settings.set(stationName, forKey: "stationName")

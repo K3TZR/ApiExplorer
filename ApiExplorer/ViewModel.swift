@@ -62,10 +62,13 @@ public class ViewModel {
   }
   
   public func directButtonChanged(_ enabled: Bool) {
-    if enabled {
-      _settings.localEnabled = false
-      _settings.smartlinkEnabled = false
-    }
+    alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
+    showAlert = true
+    _settings.directEnabled = false
+//    if enabled {
+//      _settings.localEnabled = false
+//      _settings.smartlinkEnabled = false
+//    }
   }
   
   public func fontFieldTapped() {
@@ -81,9 +84,12 @@ public class ViewModel {
   public func localButtonChanged(_ enabled: Bool) {
     if enabled {
       _settings.directEnabled = false
-      api.localListenerStart()
+      api.listenerLocal = ListenerLocal(api)
+      Task { await api.listenerLocal!.start() }
     } else {
-      api.localListenerStop()
+      api.listenerLocal!.stop()
+      api.listenerLocal = nil
+      api.removeRadios(.local)
     }
   }
   
@@ -108,12 +114,12 @@ public class ViewModel {
       
       // start Local if enabled
       if _settings.localEnabled {
-        api.localListenerStart()
+        localButtonChanged(true)
       }
       
      // start Smartlink if enabled
       if _settings.smartlinkEnabled {
-        smartlinkLoginOptions()
+        smartlinkButtonChanged(true)
       }
       
       // make sure we have a Client Id
@@ -191,11 +197,45 @@ public class ViewModel {
   
   public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
+      // disable direct, it is incompatable with other connection types
       _settings.directEnabled = false
-      smartlinkLoginOptions()
+
+      guard _settings.smartlinkLoginRequired  == false else {
+        activeSheet = .smartlinkLogin
+        return
+      }
+      
+      // start the listener
+      api.listenerSmartlink = ListenerSmartlink(api)
+      // is the previous IdToken still valid?
+      if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
+        // YES, connect using the IdToken
+        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, _settings.smartlinkRefreshToken)) {
+          // did not connect, force a Login
+          activeSheet = .smartlinkLogin
+        }
+        
+      // NO, try using the RefreshToken
+      } else if _settings.smartlinkRefreshToken != nil {
+        Task {
+          // Can we get an IdToken using the RefreshToken?
+          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: _settings.smartlinkRefreshToken!) {
+            // YES, connect using the IdToken
+            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, _settings.smartlinkRefreshToken)) {
+              // did not connect, force a Login
+              activeSheet = .smartlinkLogin
+            }
+          } else {
+            // did not connect, force a Login
+            activeSheet = .smartlinkLogin
+          }
+        }
+      }
       
     } else {
-      api.smartlinkListenerStop()
+      // stop smartlink listener
+      api.listenerSmartlink?.stop()
+      api.listenerSmartlink = nil
       api.removeRadios(.smartlink)
     }
   }
@@ -208,11 +248,14 @@ public class ViewModel {
   public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
     activeSheet = nil
     Task {
-      if let tokens = await api.smartlinkListenerStart( user, password) {
-        _settings.smartlinkRefreshToken = tokens.refreshToken
-        _smartlinkIdToken = tokens.idToken
+      var tokens: Tokens?
+      
+      tokens = await api.listenerSmartlink?.requestTokens(user, password)
+      if api.listenerSmartlink!.connect(tokens!) {
+        _settings.smartlinkRefreshToken = tokens!.refreshToken
+        _smartlinkIdToken = tokens!.idToken
       } else {
-        alertInfo = AlertInfo("Smartlink login", "FAILED for user: \(user)")
+        alertInfo = AlertInfo("Smartlink tokens", "FAILED for user: \(user)")
         _settings.smartlinkEnabled = false
         showAlert = true
       }
@@ -457,42 +500,42 @@ public class ViewModel {
     return false
   }
 
-  private func smartlinkLoginOptions() {
-    // start smartlink listener
-    if _settings.smartlinkLoginRequired {
-      // LOGIN required
-      activeSheet = .smartlinkLogin
-      
-    } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
-      // use ID Token
-      Task {
-        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: _settings.smartlinkRefreshToken) {
-          _settings.smartlinkRefreshToken = tokens.refreshToken
-          _smartlinkIdToken = tokens.idToken
-        } else {
-          // show LOGIN sheet
-          activeSheet = .smartlinkLogin
-        }
-      }
-      
-    } else if _settings.smartlinkRefreshToken.isEmpty == false {
-      // use Refresh Token
-      Task {
-        if let tokens = await api.smartlinkListenerStart(refreshToken: _settings.smartlinkRefreshToken) {
-          _settings.smartlinkRefreshToken = tokens.refreshToken
-          _smartlinkIdToken = tokens.idToken
-        } else {
-          // show LOGIN sheet
-          activeSheet = .smartlinkLogin
-        }
-      }
-      
-    } else {
-      // IdToken and/or refreshToken failure
-      // show LOGIN sheet
-      activeSheet = .smartlinkLogin
-    }
-  }
+//  private func smartlinkLoginOptions() {
+//    // start smartlink listener
+//    if _settings.smartlinkLoginRequired {
+//      // LOGIN required
+//      activeSheet = .smartlinkLogin
+//      
+//    } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
+//      // use ID Token
+//      Task {
+//        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: _settings.smartlinkRefreshToken) {
+//          _settings.smartlinkRefreshToken = tokens.refreshToken
+//          _smartlinkIdToken = tokens.idToken
+//        } else {
+//          // show LOGIN sheet
+//          activeSheet = .smartlinkLogin
+//        }
+//      }
+//      
+//    } else if _settings.smartlinkRefreshToken.isEmpty == false {
+//      // use Refresh Token
+//      Task {
+//        if let tokens = await api.smartlinkListenerStart(refreshToken: _settings.smartlinkRefreshToken) {
+//          _settings.smartlinkRefreshToken = tokens.refreshToken
+//          _smartlinkIdToken = tokens.idToken
+//        } else {
+//          // show LOGIN sheet
+//          activeSheet = .smartlinkLogin
+//        }
+//      }
+//      
+//    } else {
+//      // IdToken and/or refreshToken failure
+//      // show LOGIN sheet
+//      activeSheet = .smartlinkLogin
+//    }
+//  }
 }
 
 // ----------------------------------------------------------------------------

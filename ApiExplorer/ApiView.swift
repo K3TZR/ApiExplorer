@@ -80,6 +80,7 @@ struct ApiView: View {
         SmartlinkLoginView()
       case .settings:
         SettingsView()
+          .frame(width: 400)
       }
     }
 

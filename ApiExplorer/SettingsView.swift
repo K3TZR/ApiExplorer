@@ -18,58 +18,89 @@ public struct SettingsView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
-
+  
   public var body: some View {
     @Bindable var viewModelBinding = viewModel
     @Bindable var settings = settings
-
-    VStack(alignment: .center) {
-      
-      VStack(alignment: .leading) {
-        TextField(settings.stationName, text: $settings.stationName)
-        
-        Toggle("Require Smartlink Login", isOn: $settings.smartlinkLoginRequired)
-        
-        Toggle("Use saved Defaults", isOn: $settings.useDefaultEnabled)
-        
-        Toggle("Clear messages on Start", isOn: $settings.clearOnStart)
-
-        Toggle("Clear messages on Stop", isOn: $settings.clearOnStop)
-
-        Toggle("Low BW Connect", isOn: $settings.lowBandwidthDax)
-        
-        Toggle("Rx Audio Compression", isOn: $settings.remoteRxAudioCompressed)
-          .onChange(of: settings.remoteRxAudioCompressed) { _, _ in
-            viewModel.remoteRxAudioCompressedButtonChanged()
-          }
-        
-        Toggle("Tx Audio Compression", isOn: $settings.remoteTxAudioCompressed)
-          .onChange(of: settings.remoteTxAudioCompressed) { _, _ in
-            viewModel.remoteTxAudioCompressedButtonChanged()
-          }
+    
+    Grid(alignment: .leading) {
+      GridRow {
+        Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+        Text("Settings")
+          .font(.title)
       }
-      .disabled(viewModel.isConnected)
-
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
-      HStack() {
-        Spacer()
-        Button("Close") { dismiss() }
-          .keyboardShortcut(.defaultAction)
+      
+      GridRow {
+          Text("Station Name")
+          TextField("", text: $settings.stationName)
+          .frame(width: 200)
+      }
+      
+      GridRow {
+          Text("Require Smartlink Login")
+          Toggle("", isOn: $settings.smartlinkLoginRequired)
+      }
+      
+      GridRow {
+          Text("Use saved Defaults")
+          Toggle("", isOn: $settings.useDefaultEnabled)
+      }
+      
+      GridRow {
+          Text("Clear messages on Start")
+          Toggle("", isOn: $settings.clearOnStart)
+      }
+      
+      GridRow {
+          Text("Clear messages on Stop")
+          Toggle("", isOn: $settings.clearOnStop)
+      }
+      
+      GridRow {
+          Text("Low BW Connect")
+          Toggle("", isOn: $settings.lowBandwidthDax)
+      }
+      
+      GridRow {
+          Text("Rx Audio Compression")
+          Toggle("", isOn: $settings.remoteRxAudioCompressed)
+      }
+      
+      GridRow {
+          Text("Tx Audio Compression")
+          Toggle("", isOn: $settings.remoteTxAudioCompressed)
       }
     }
-    .frame(width: 300)
-    .padding(10)
+    .padding(.horizontal, 10)
+    .disabled(viewModel.isConnected)
+//    .frame(width: .infinity, alignment: .leading)
+
+    Divider()
+      .frame(height: 2)
+      .background(Color.gray)
+    
+    HStack() {
+      Spacer()
+      Button("Close") { dismiss() }
+        .keyboardShortcut(.defaultAction)
+    }
+//    .frame(width: 300)
+    .padding(.trailing, 10)
+    .padding(.bottom, 10)
   }
 }
-  
+
+
 // ----------------------------------------------------------------------------
 // MARK: - Preview
 
 #Preview("SettingsView") {
   SettingsView()
-    
+  
     .environment(ViewModel())
+    .environment(SettingsModel.shared)
 }

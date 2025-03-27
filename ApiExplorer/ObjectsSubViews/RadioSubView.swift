@@ -32,7 +32,7 @@ struct RadioSubView: View {
             Text(radio.packet.nickname)
               .frame(width: 200, alignment: .leading)
               .font(.title)
-              .foregroundColor(.green)
+              .foregroundColor(radio.packet.source == .local ? .green : .red)
               .gridColumnAlignment(.leading)
               .truncationMode(.tail)
               .lineLimit(1)   // This is critical
