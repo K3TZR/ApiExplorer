@@ -61,7 +61,9 @@ struct GuiClientSubView: View {
               .gridColumnAlignment(.trailing)
           }
         }
-        Divider().frame(height: 2)
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           

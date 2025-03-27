@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 // ----------------------------------------------------------------------------
 // MARK: - View
 
@@ -19,8 +25,7 @@ public struct SendView: View {
     @Bindable var settings = settings
 
     HStack {
-      Button("Send") { viewModel.sendButtonTapped() }
-        .frame(width: 60, alignment: .leading)
+      ButtonX(title: "Send") { viewModel.sendButtonTapped() }
       .keyboardShortcut(.defaultAction)
       .disabled(viewModel.isConnected == false)
       
@@ -31,24 +36,24 @@ public struct SendView: View {
           }
           .help("Clear the command field")
         
-//        Stepper("", onIncrement: {
-//          viewModel.previousStepperTapped()
-//        }, onDecrement: {
-//          viewModel.nextStepperTapped()
-//        })
-//        .help("Load previously sent commands")
-        
         TextField("Command to send", text: $settings.commandToSend)
+        #if os(iOS)
+          .textInputAutocapitalization(.never)
+          .autocorrectionDisabled(true)
+          .onSubmit {
+              hideKeyboard()
+          }
+        #endif
       }
   
-      Toggle("Clear on Send", isOn: $settings.clearOnSend)
+      ToggleX(title: "Clear on Send", isOn: $settings.clearOnSend)
         .toggleStyle(.button)
         .help("Clear the field after sending a command")
       
       #if os(iOS)
-      Button("Discovery") { viewModel.activeSheet = .discovery }
-      Button("Gui Clients") { viewModel.activeSheet = .guiClients }
-      Button("Settings") { viewModel.activeSheet = .settings }
+      ButtonX(title: "Discovery") { viewModel.activeSheet = .discovery }
+      ButtonX(title: "Gui Clients") { viewModel.activeSheet = .guiClients }
+      ButtonX(title: "Settings") { viewModel.activeSheet = .settings }
       #endif
     }
   }

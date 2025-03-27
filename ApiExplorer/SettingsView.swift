@@ -35,44 +35,49 @@ public struct SettingsView: View {
         .background(Color.gray)
       
       GridRow {
-          Text("Station Name")
-          TextField("", text: $settings.stationName)
+        Text("Station Name")
+        TextField("", text: $settings.stationName)
           .frame(width: 200)
       }
       
       GridRow {
-          Text("Require Smartlink Login")
-          Toggle("", isOn: $settings.smartlinkLoginRequired)
+        Text("Require Smartlink Login")
+        Toggle("", isOn: $settings.smartlinkLoginRequired)
       }
       
       GridRow {
-          Text("Use saved Defaults")
-          Toggle("", isOn: $settings.useDefaultEnabled)
+        Text("Use saved Defaults")
+        Toggle("", isOn: $settings.useDefaultEnabled)
       }
       
       GridRow {
-          Text("Clear messages on Start")
-          Toggle("", isOn: $settings.clearOnStart)
+        Text("Clear messages on Start")
+        Toggle("", isOn: $settings.clearOnStart)
       }
       
       GridRow {
-          Text("Clear messages on Stop")
-          Toggle("", isOn: $settings.clearOnStop)
+        Text("Clear messages on Stop")
+        Toggle("", isOn: $settings.clearOnStop)
       }
       
       GridRow {
-          Text("Low BW Connect")
-          Toggle("", isOn: $settings.lowBandwidthDax)
+        Text("Low BW Connect")
+        Toggle("", isOn: $settings.lowBandwidthConnect)
       }
       
       GridRow {
-          Text("Rx Audio Compression")
-          Toggle("", isOn: $settings.remoteRxAudioCompressed)
+        Text("Low BW Dax")
+        Toggle("", isOn: $settings.lowBandwidthDax)
       }
       
       GridRow {
-          Text("Tx Audio Compression")
-          Toggle("", isOn: $settings.remoteTxAudioCompressed)
+        Text("Rx Audio Compression")
+        Toggle("", isOn: $settings.remoteRxAudioCompressed)
+      }
+      
+      GridRow {
+        Text("Tx Audio Compression")
+        Toggle("", isOn: $settings.remoteTxAudioCompressed)
       }
     }
     .padding(.horizontal, 10)
@@ -87,6 +92,9 @@ public struct SettingsView: View {
       Spacer()
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
+#if os(iOS)
+        .buttonStyle(.bordered)
+#endif
     }
 //    .frame(width: 300)
     .padding(.trailing, 10)

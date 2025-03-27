@@ -185,9 +185,9 @@ public class ViewModel {
   }
   
   public func sendButtonTapped() {
-    _settings.commandsArray.append(_settings.commandToSend)
+    _settings.commandsArray.append(_settings.commandToSend.lowercased())
     // send command to the radio
-    api.sendTcp(_settings.commandToSend)
+    api.sendTcp(_settings.commandToSend.lowercased())
     if _settings.clearOnSend { clearTextButtonTapped() }
   }
   

@@ -67,8 +67,8 @@ public struct DiscoveryView: View {
             Spacer()
             Text("Did you choose a Radio?")
             Spacer()
-            Button("Close") { dismiss() }
-              .keyboardShortcut(.defaultAction)
+//            ButtonX(title: "Close") { dismiss() }
+//              .keyboardShortcut(.defaultAction)
           }
         }
       case .broadcastTiming: BroadcastTimingView()
@@ -204,15 +204,17 @@ private struct RawView: View {
         Text(viewModel.hexDump(data))
       }
 
-      Divider().frame(height: 3)
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
 
       HStack {
-        Button("Save") {
+        ButtonX(title: "Save") {
           document = SaveDocument(text: viewModel.hexDump(data))
           isSaving = true
         }
         Spacer()
-        Button("Close") { dismiss() }
+        ButtonX(title: "Close") { dismiss() }
           .keyboardShortcut(.defaultAction)
       }
     }
@@ -260,7 +262,9 @@ private struct BroadcastTimingView: View {
             Text("Peak")
           }
           
-          Divider().frame(height: 3)
+          Divider()
+            .frame(height: 2)
+            .background(Color.gray)
           
           ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
             GridRow {
@@ -283,7 +287,7 @@ private struct FooterView: View {
   var body: some View {
     HStack {
       Spacer()
-      Button("Close") { dismiss() }
+      ButtonX(title: "Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
     .padding(.horizontal)

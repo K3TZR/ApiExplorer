@@ -35,22 +35,22 @@ public struct MultiflexView: View {
         .background(Color.gray)
 
       if guiClients.count == 1 {
-        Button("MultiFlex connect") {
+        ButtonX(title: "MultiFlex connect") {
           viewModel.multiflexConnectButtonTapped(nil)
         }
         .keyboardShortcut(.defaultAction)
         .frame(width: 150)
         
-        Button("Close " + guiClients[0].station) {
+        ButtonX(title: "Close " + guiClients[0].station) {
           viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
         }
         .frame(width: 150)
         
       } else if guiClients.count == 2 {
-        Button("Close " + guiClients[0].station) {
+        ButtonX(title: "Close " + guiClients[0].station) {
           viewModel.multiflexConnectButtonTapped(guiClients[0].handle)
         }
-        Button("Close " + guiClients[1].station) {
+        ButtonX(title: "Close " + guiClients[1].station) {
           viewModel.multiflexConnectButtonTapped(guiClients[1].handle)
         }
       }
@@ -59,7 +59,7 @@ public struct MultiflexView: View {
         .frame(height: 2)
         .background(Color.gray)
 
-      Button("Cancel") {
+      ButtonX(title: "Cancel") {
         viewModel.multiflexCancelButtonTapped()
       }
       .keyboardShortcut(.cancelAction)

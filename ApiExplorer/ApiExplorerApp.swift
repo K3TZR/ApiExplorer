@@ -49,7 +49,11 @@ struct ApiExplorerApp: App {
       ApiView()
         .environment(viewModel)
         .environment(SettingsModel.shared)
-
+#if os(iOS)
+        .onAppear {
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
+        }
+#endif
     }
 #if os(macOS)
     Settings {

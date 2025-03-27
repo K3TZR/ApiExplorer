@@ -208,7 +208,7 @@ private struct FooterView: View {
       .background(Color.gray)
     
     HStack {
-      Button("Test") { viewModel.pickerTestButtonTapped(selectedRadioId.wrappedValue!)}
+      ButtonX(title: "Test") { viewModel.pickerTestButtonTapped(selectedRadioId.wrappedValue!)}
         .disabled(selectedRadioIsNotSmartlink || selectedRadioId.wrappedValue == nil)
       Circle()
         .fill(viewModel.api.smartlinkTestResult.success ? Color.green : Color.red)
@@ -216,19 +216,19 @@ private struct FooterView: View {
       
       Spacer()
       
-      Button("Default") {
+      ButtonX(title: "Default") {
         viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isGui ? settings.stationName : selectedStation.wrappedValue, nil))
       }
       .disabled(selectedRadioId.wrappedValue == nil)
       
       Spacer()
       
-      Button("Cancel") { dismiss() }
+      ButtonX(title: "Cancel") { dismiss() }
         .keyboardShortcut(.cancelAction)
       
       Spacer()
       
-      Button("Connect") {
+      ButtonX(title: "Connect") {
         //        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue! + "|" + "\(settings.isGui ? settings.stationName : selectedStation.wrappedValue)")
         viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isGui ? settings.stationName : selectedStation.wrappedValue, nil))
       }

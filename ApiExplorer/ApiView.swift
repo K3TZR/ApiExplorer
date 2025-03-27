@@ -138,9 +138,14 @@ struct ApiView: View {
 // MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
+#if os(macOS)
   @State private var topHeight: CGFloat = 600  // Initial height for the top view
   let minHeight: CGFloat = 200                 // Minimum height for sections
-  
+#else
+  @State private var topHeight: CGFloat = 200  // Initial height for the top view
+  let minHeight: CGFloat = 100                 // Minimum height for sections
+#endif
+
   var body: some View {
     
     // Custom resizable vertical split, works for both macOS and iOS

@@ -20,6 +20,8 @@ public struct GuiClientsView: View {
       viewModel.api.radios.flatMap { $0.guiClients }
   }
 
+  @State var showInfo: Bool = false
+  
   public var body: some View {
     
     VStack(alignment: .center) {
@@ -49,48 +51,50 @@ public struct GuiClientsView: View {
               //            ForEach(guiClients, id: \.id) { guiClient in
               GridRow {
                 Text(radio.packet.nickname)
-                  .frame(width: 120, alignment: .leading)
                   .truncationMode(.tail)
                   .lineLimit(1)   // This is critical
                   .clipped()
                   .help(radio.packet.nickname)
-
-                Text(guiClient.station)
-                  .frame(width: 120, alignment: .leading)
-                  .truncationMode(.tail)
-                  .lineLimit(1)   // This is critical
-                  .clipped()
-                  .help(guiClient.station)
                 
-                Text(guiClient.handle)
+                HStack(spacing: 5) {
+                  Text(guiClient.station)
+                    .truncationMode(.tail)
+                    .lineLimit(1)   // This is critical
+                    .clipped()
+                    .help(guiClient.station)
+                  Button(action: {
+                    showInfo.toggle()
+                  }) {
+                    Image(systemName: "info.circle")
+                      .foregroundColor(.blue)
+                  }
+                  .popover(isPresented: $showInfo) {
+                    VStack(spacing: 0) {
+                      Text("Client ID")
+                      Divider()
+                        .frame(height: 2)
+                        .background(Color.gray)
+                      Text(guiClient.clientId?.uuidString ?? "Unknown")
+                        .padding()
+                    }
+                  }
+                }
                 
                 Text(guiClient.program)
-                  .frame(width: 120, alignment: .leading)
                   .truncationMode(.tail)
                   .lineLimit(1)   // This is critical
                   .clipped()
                   .help(guiClient.program)
                 
-                Text(guiClient.ip)
-                  .frame(width: 120, alignment: .leading)
-                
-                Text(guiClient.host)
-                  .frame(width: 120, alignment: .leading)
-                  .truncationMode(.tail)
-                  .lineLimit(1)   // This is critical
-                  .clipped()
-                  .help(guiClient.host)
-                
-                Text(guiClient.clientId?.uuidString ?? "Unknown")
-                  .frame(width: 300, alignment: .leading)
+                Text(guiClient.handle)
               }
-              .monospaced()
-              .padding(.horizontal, 10)
             }
           }
         }
       }
+      
       Spacer()
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
@@ -107,16 +111,10 @@ private struct HeaderView: View {
     GridRow {
       Text("Radio")
       Text("Station")
-      Text("Handle")
       Text("Program")
-      Text("Ip")
-      Text("Host")
-      Text("Client Id")
-        .frame(width: 150, alignment: .leading)
+      Text("Handle")
     }
-    .frame(width: 100, alignment: .leading)
     .font(.title3)
-    .padding(.leading, 10)
   }
 }
 

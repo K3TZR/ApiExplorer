@@ -27,7 +27,7 @@ public struct BottomButtonsView: View {
 
     VStack(alignment: .leading) {
       HStack( spacing: 10) {
-        ToggleX(title: "Reverse", isOn: $settings.gotoBottom, width: 130)
+        ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
         
         Spacer()
         
@@ -46,24 +46,24 @@ public struct BottomButtonsView: View {
         Spacer()
         
         HStack(spacing: 5) {
-          ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages, width: 70)
-          ToggleX(title: "Times", isOn: $settings.showTimes, width: 70)
-          ToggleX(title: "Pings", isOn: $settings.showPings, width: 70)
-          ToggleX(title: "Replies", isOn: $settings.showReplies, width: 70)
-          ToggleX(title: "Alerts", isOn: $settings.alertOnError, width: 70)
+          ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
+          ToggleX(title: "Times", isOn: $settings.showTimes)
+          ToggleX(title: "Pings", isOn: $settings.showPings)
+          ToggleX(title: "Replies", isOn: $settings.showReplies)
+          ToggleX(title: "Alerts", isOn: $settings.alertOnError)
             .help("Display a sheet when an Error / Warning occurs")
         }
         
         Spacer()
         
-        Button("Save") {
+        ButtonX(title: "Save") {
           document = SaveDocument(text: viewModel.messages.messagesText())
           isSaving = true
         }
         
         Spacer()
         
-        Button("Clear") { viewModel.messages.clearButtonTapped() }
+        ButtonX(title: "Clear") { viewModel.messages.clearButtonTapped() }
       }
       .frame(maxWidth: .infinity)
     }
@@ -92,24 +92,45 @@ public struct BottomButtonsView: View {
     .frame(width: 1000)
 }
 
+// ----------------------------------------------------------------------------
+// MARK: - Alternate controls (iOS vs macOS)
+
+public struct ButtonX: View {
+  let title: String
+  let action: () -> Void
+//  let width: CGFloat?
+  
+  public var body: some View {
+
+#if os(macOS)
+    Button(title, action: action)
+//      .frame(width: width ?? 100)
+#else
+    Button(title, action: action)
+//      .frame(width: width ?? 100)
+      .buttonStyle(.bordered)
+#endif
+  }
+}
+
 public struct ToggleX: View {
   let title: String
   let isOn: Binding<Bool>
-  let width: CGFloat?
+//  let width: CGFloat?
   
   public var body: some View {
 
 #if os(macOS)
     Toggle(title, isOn: isOn)
       .toggleStyle(ButtonToggleStyle())
+//      .frame(width: width ?? 100)
 #else
-    VStack(spacing: 0) {
-      Text(title)
-        .frame(maxWidth: .infinity, alignment: .center)
-      Toggle(title, isOn: isOn)
-        .labelsHidden()
-    }
-    .frame(width: width)
+    Toggle(title, isOn: isOn)
+//      .frame(width: width ?? 100)
+      .toggleStyle(ButtonToggleStyle())
+      .border(Color.gray, width: 0.5)
+      .background(isOn.wrappedValue ? Color.blue.opacity(0.5) : Color.clear)
+      .foregroundColor(isOn.wrappedValue ? Color.white : Color.blue)
 #endif
   }
 }

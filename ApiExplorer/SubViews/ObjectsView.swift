@@ -63,7 +63,13 @@ private struct RadioClientTesterSplitView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
 
+#if os(macOS)
   @State private var topHeight: CGFloat = 200  // Initial height for the top view
+  let minHeight: CGFloat = 100                 // Minimum height for sections
+#else
+  @State private var topHeight: CGFloat = 50  // Initial height for the top view
+  let minHeight: CGFloat = 25                 // Minimum height for sections
+#endif
 
   var radio: Radio? {
     if let selection = viewModel.api.activeSelection {
@@ -71,8 +77,6 @@ private struct RadioClientTesterSplitView: View {
     }
     return nil
   }
-
-  let minHeight: CGFloat = 100                 // Minimum height for sections
   
   var body: some View {
 
