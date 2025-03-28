@@ -96,7 +96,9 @@ struct ApiView: View {
     .toolbar {
       if isMultiflex {
         Text("MultiFlex")
-          .foregroundColor(.red)
+          .foregroundColor(.blue)
+          .padding(10)
+          .border(Color.blue, width: 2)
       }
       Button("Discovery") {
         viewModel.activeSheet = .discovery

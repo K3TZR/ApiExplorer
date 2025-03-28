@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 import ApiPackage
-import JWTDecode
 
 @MainActor
 @Observable
@@ -490,15 +489,15 @@ public class ViewModel {
   /// Validate an Id Token
   /// - Parameter idToken:        the Id Token
   /// - Returns:                  true / false
-  private func isValid(_ idToken: IdToken?) -> Bool {
-    if let token = idToken {
-      if let jwt = try? decode(jwt: token) {
-        let result = IDTokenValidation(issuer: kDomain, audience: kClientId).validate(jwt)
-        if result == nil { return true }
-      }
-    }
-    return false
-  }
+//  private func isValid(_ idToken: IdToken?) -> Bool {
+//    if let token = idToken {
+//      if let jwt = try? decode(jwt: token) {
+//        let result = IDTokenValidation(issuer: kDomain, audience: kClientId).validate(jwt)
+//        if result == nil { return true }
+//      }
+//    }
+//    return false
+//  }
 
 //  private func smartlinkLoginOptions() {
 //    // start smartlink listener
