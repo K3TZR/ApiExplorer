@@ -16,10 +16,14 @@ public struct GuiClientsView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-  private var guiClients: [GuiClient] {
-      viewModel.api.radios.flatMap { $0.guiClients }
+  @State var useSmartlink: Bool = false
+  
+  private var guiClients: [(String, GuiClient)] {
+    return viewModel.api.radios
+        .filter { $0.packet.source == (useSmartlink ? .smartlink : .local) }
+        .flatMap { radio in radio.guiClients.map { (radio.packet.nickname, $0) } }
   }
-
+  
   @State var showInfo: Bool = false
   
   public var body: some View {
@@ -34,7 +38,7 @@ public struct GuiClientsView: View {
         Divider()
           .frame(height: 2)
           .background(Color.gray)
-
+        
         if guiClients.count == 0 {
           HStack {
             Spacer()
@@ -46,48 +50,38 @@ public struct GuiClientsView: View {
           
         } else {
           // ----- List of Gui Clients -----
-          ForEach(viewModel.api.radios, id:\.id) { radio in
-            ForEach(radio.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
-              //            ForEach(guiClients, id: \.id) { guiClient in
-              GridRow {
-                Text(radio.packet.nickname)
-                  .truncationMode(.tail)
-                  .lineLimit(1)   // This is critical
-                  .clipped()
-                  .help(radio.packet.nickname)
-                
-                HStack(spacing: 5) {
-                  Text(guiClient.station)
-                    .truncationMode(.tail)
-                    .lineLimit(1)   // This is critical
-                    .clipped()
-                    .help(guiClient.station)
-                  Button(action: {
-                    showInfo.toggle()
-                  }) {
-                    Image(systemName: "info.circle")
-                      .foregroundColor(.blue)
-                  }
-                  .popover(isPresented: $showInfo) {
-                    VStack(spacing: 0) {
-                      Text("Client ID")
-                      Divider()
-                        .frame(height: 2)
-                        .background(Color.gray)
-                      Text(guiClient.clientId?.uuidString ?? "Unknown")
-                        .padding()
-                    }
-                  }
-                }
-                
-                Text(guiClient.program)
-                  .truncationMode(.tail)
-                  .lineLimit(1)   // This is critical
-                  .clipped()
-                  .help(guiClient.program)
-                
-                Text(guiClient.handle)
-              }
+          let sortedGuiClients = guiClients.sorted(by: { $0.1.station < $1.1.station })
+          ForEach(sortedGuiClients, id: \.1.clientId) { (name, guiClient) in
+            GridRow {
+              Text(name)
+              
+              Text(guiClient.station)
+              //#else
+              //              HStack(spacing: 5) {
+              //                Text(guiClient.station)
+              //                Button(action: {
+              //                  showInfo.toggle()
+              //                }) {
+              //                  Image(systemName: "info.circle")
+              //                    .foregroundColor(.blue)
+              //                }
+              //                .popover(isPresented: $showInfo) {
+              //                  VStack(spacing: 0) {
+              //                    Text("Client ID")
+              //                    Divider()
+              //                      .frame(height: 2)
+              //                      .background(Color.gray)
+              //                    Text(guiClient.clientId?.uuidString ?? "Unknown")
+              //                      .padding()
+              //                  }
+              //                }
+              //              }
+              //#endif
+              Text(guiClient.program)
+              
+              Text(guiClient.handle)
+              
+              Text(guiClient.clientId?.uuidString ?? "Unknown")
             }
           }
         }
@@ -99,8 +93,9 @@ public struct GuiClientsView: View {
         .frame(height: 2)
         .background(Color.gray)
       
-      FooterView()
+      FooterView(useSmartlink: $useSmartlink)
     }
+    .padding()
   }
 }
 
@@ -113,23 +108,24 @@ private struct HeaderView: View {
       Text("Station")
       Text("Program")
       Text("Handle")
+      Text("Client Id")
     }
     .font(.title3)
   }
 }
 
 private struct FooterView: View {
+  let useSmartlink: Binding<Bool>
   
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
     HStack {
+      Toggle("Use SmartLink", isOn: useSmartlink)
       Spacer()
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
-    .padding(.trailing, 10)
-    .padding(.bottom, 10)
   }
 }
 

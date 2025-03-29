@@ -18,7 +18,7 @@ public struct DiscoveryView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
-
+  
   @State var radioSelection: String?
   
   var data: Data? {
@@ -33,45 +33,41 @@ public struct DiscoveryView: View {
     @Bindable var settings = settings
     
     VStack(alignment: .center) {
-      Text("Discovery").font(.title)
+      Text("Discovery Broadcasts").font(.title)
       
       HStack {
         Picker("Display", selection: $settings.discoveryDisplayType) {
           ForEach(DiscoveryDisplayType.allCases, id: \.self) {
             Text($0.rawValue).tag($0)
           }
-        }.frame(width: 250)
-
-        if settings.discoveryDisplayType != .broadcastTiming {
+        }
+        .labelsHidden()
+        //        .frame(width: 250)
+        
+        if settings.discoveryDisplayType != .timing {
           Picker("Choose a Radio", selection: $radioSelection) {
-            Text("Select a Radio").tag(nil as String?)
+            Text("--- Select a Radio ---").tag(nil as String?)
             ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname}), id: \.id) { radio in
-              Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
+              if radio.packet.source == .local {
+                Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname).tag(radio.id)
+              }
             }
-          }.frame(width: 250)
+          }
+          .labelsHidden()
+          //          .frame(width: 250)
         }
       }
       
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
       switch settings.discoveryDisplayType  {
-      case .vitaFields, .payloadKeyValues, .vitaHex:
+      case .vitaHeader, .vitaPayload, .vitaHex:
         if let data {
-          if settings.discoveryDisplayType == .vitaFields { VitaFieldsView(data: data)}
-          if settings.discoveryDisplayType == .payloadKeyValues { PayloadFieldsView(data: data)}
-          if settings.discoveryDisplayType == .vitaHex { RawView(data: data)}
+          if settings.discoveryDisplayType == .vitaHeader { VitaHeaderView(data: data)}
+          if settings.discoveryDisplayType == .vitaPayload { VitaPayloadView(data: data)}
+          if settings.discoveryDisplayType == .vitaHex { VitaHexView(data: data)}
         } else {
-          VStack {
-            Spacer()
-            Text("Did you choose a Radio?")
-            Spacer()
-//            ButtonX(title: "Close") { dismiss() }
-//              .keyboardShortcut(.defaultAction)
-          }
+          EmptyView()
         }
-      case .broadcastTiming: BroadcastTimingView()
+      case .timing: TimingView()
       }
       
       Spacer()
@@ -85,11 +81,11 @@ public struct DiscoveryView: View {
     }
     .monospaced()
     .padding()
-//    .frame(height: 600)
+    //    .frame(height: 600)
   }
 }
 
-private struct VitaFieldsView: View {
+private struct VitaHeaderView: View {
   let data: Data
   
   @Environment(ViewModel.self) private var viewModel
@@ -99,115 +95,164 @@ private struct VitaFieldsView: View {
   }
   
   var body: some View {
-    ScrollView {
-      Grid (alignment: .leading, verticalSpacing: 10) {
-        GridRow {
-          Text("Packet Type")
-          Text(vita.packetType.description()).gridColumnAlignment(.trailing)
-        }
-        GridRow {
-          Text("Class Code")
-          Text(vita.classCode.description())
-        }
-        GridRow {
-          Text("Packet Size")
-          Text("\(vita.packetSize)")
-        }
-        GridRow {
-          Text("Header Size")
-          Text("\(vita.headerSize)")
-        }
-        GridRow {
-          Text("Payload Size")
-          Text("\(vita.payloadSize)")
-        }
-        GridRow {
-          Text("Stream ID")
-          Text("\(vita.streamId)")
-        }
-        GridRow {
-          Text("Tsi Type")
-          Text("\(vita.tsiType)")
-        }
-        GridRow {
-          Text("Tsf Type")
-          Text("\(vita.tsfType)")
-        }
-        GridRow {
-          Text("Sequence")
-          Text("\(vita.sequence)")
-        }
-        GridRow {
-          Text("Integer Time Stamp")
-          Text("\(vita.integerTimestamp)")
-        }
-        GridRow {
-          Text("Frac Time Stamp Lsb")
-          Text("\(vita.fracTimeStampLsb)")
-        }
-        GridRow {
-          Text("Frac Time Stamp Msb")
-          Text("\(vita.fracTimeStampMsb)")
-        }
-        GridRow {
-          Text("OUI")
-          Text("\(vita.oui)")
-        }
-        GridRow {
-          Text("Information Class Code")
-          Text("\(vita.informationClassCode)")
-        }
-        GridRow {
-          Text("Trailer")
-          Text("\(vita.trailer)")
-        }
-        GridRow {
-          Text("Trailer Present")
-          Text("\(vita.trailerPresent)")
-        }
+    VStack (alignment: .leading, spacing: 10) {
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      HStack {
+        Text("Packet Type")
+        Spacer()
+        Text(vita.packetType.description()).frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Class Code")
+        Spacer()
+        Text(vita.classCode.description()).frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Packet Size")
+        Spacer()
+        Text("\(vita.packetSize)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Header Size")
+        Spacer()
+        Text("\(vita.headerSize)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Payload Size")
+        Spacer()
+        Text("\(vita.payloadSize)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Stream ID")
+        Spacer()
+        Text("\(vita.streamId)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Tsi Type")
+        Spacer()
+        Text("\(vita.tsiType)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Tsf Type")
+        Spacer()
+        Text("\(vita.tsfType)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Sequence")
+        Spacer()
+        Text("\(vita.sequence)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Integer Time Stamp")
+        Spacer()
+        Text("\(vita.integerTimestamp)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Frac Time Stamp Lsb")
+        Spacer()
+        Text("\(vita.fracTimeStampLsb)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Frac Time Stamp Msb")
+        Spacer()
+        Text("\(vita.fracTimeStampMsb)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("OUI")
+        Spacer()
+        Text("\(vita.oui)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Information Class Code")
+        Spacer()
+        Text("\(vita.informationClassCode)").frame(alignment: .trailing)
+      }
+      
+      HStack {
+        Text("Trailer")
+        Spacer()
+        Text("\(vita.trailer)").frame(alignment: .trailing)
+      }.background(Color.gray.opacity(0.2))
+      
+      HStack {
+        Text("Trailer Present")
+        Spacer()
+        Text("\(vita.trailerPresent)").frame(alignment: .trailing)
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
-private struct PayloadFieldsView: View {
+private struct VitaPayloadView: View {
   let data: Data
   
   @Environment(ViewModel.self) private var viewModel
   
+  @State var even = false
+  
   var body: some View {
+    Divider()
+      .frame(height: 2)
+      .background(Color.gray)
+    
     ScrollView {
-      Grid (alignment: .leading, verticalSpacing: 10) {
+      VStack(spacing: 10) {
         ForEach(viewModel.payloadProperties(data) , id: \.key) { property in
-          GridRow {
+          HStack {
             Text(property.key)
-            Text(property.value).gridColumnAlignment(.trailing)
+              .frame(alignment: .leading)
+            Spacer()
+            Text(property.value)
+              .frame(alignment: .trailing)
           }
+          .background(property.index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
         }
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 }
 
-private struct RawView: View {
+private struct VitaHexView: View {
   let data: Data
   
   @State var isSaving = false
   @State var document: SaveDocument?
-
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
+  
   var body: some View {
     VStack {
-      ScrollView {
-        Text(viewModel.hexDump(data))
-      }
-
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
+      ScrollView {
+        Text(viewModel.hexDump(data))
+      }
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
       HStack {
         ButtonX(title: "Save") {
           document = SaveDocument(text: viewModel.hexDump(data))
@@ -219,17 +264,17 @@ private struct RawView: View {
       }
     }
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
-        switch result {
-        case .success(let url):
-          log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
-        case .failure(let error):
-          log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
-        }
+      switch result {
+      case .success(let url):
+        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
+      case .failure(let error):
+        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
       }
+    }
   }
 }
 
-private struct BroadcastTimingView: View {
+private struct TimingView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
@@ -239,49 +284,70 @@ private struct BroadcastTimingView: View {
     return formatter.string(from: date)
   }
   
-  func average(_ intervals: [Double]) -> Double {
-    guard !intervals.isEmpty else { return 0 }
+  func average(_ intervals: [Double]) -> String {
+    guard !intervals.isEmpty else { return "---" }
     
-    let sum = intervals.reduce(0, +)
-    return sum / Double(intervals.count)
+    let nonZero = intervals.filter {$0 != 0}
+    let count = nonZero.count
+    if count == 0 {
+      return "---"
+    } else {
+      let avg = nonZero.reduce(0, +) / Double(count)
+      return String(format: "%.3f", avg)
+    }
+  }
+  
+  func peak(_ intervals: [Double]) -> String {
+    guard !intervals.isEmpty else { return "---" }
+    let max = intervals.max() ?? 0
+    if max == 0 {
+      return "---"
+    } else {
+      return String(format: "%.3f", max)
+    }
   }
   
   var body: some View {
-    VStack {
-      HStack {
-        Spacer()
-        Text("Broadcast Time Intervals")
-          .gridCellColumns(3)
-        Spacer()
-      }
-      List() {
-        Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 10) {
-          GridRow {
-            Text("Radio Name")
-            Text("Average")
-            Text("Peak")
-          }
-          
-          Divider()
-            .frame(height: 2)
-            .background(Color.gray)
-          
-          ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
-            GridRow {
+    ScrollView {
+      VStack(spacing: 10) {
+        HStack {
+          Text("Radio Name")
+          Spacer()
+          Text("Average")
+          Spacer()
+          Text("Peak")
+        }
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
+          if radio.packet.source == .local {
+            HStack{
               Text(radio.packet.nickname)
-              Text(average(radio.intervals), format: .number)
-              Text(radio.intervals.max() ?? 0, format: .number)
+              
+              Spacer()
+              
+              Text(average(radio.intervals))
+                .frame(alignment: .trailing)
+              
+              Spacer()
+              
+              Text(peak(radio.intervals))
+                .frame(alignment: .trailing)
                 .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
             }
           }
         }
       }
+      .frame(maxWidth: .infinity, alignment: .leading)
     }
   }
 }
 
 private struct FooterView: View {
-
+  
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
@@ -290,7 +356,7 @@ private struct FooterView: View {
       ButtonX(title: "Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
-    .padding(.horizontal)
+//    .padding(.horizontal)
   }
 }
 
@@ -300,4 +366,5 @@ private struct FooterView: View {
 #Preview("DiscoveryView") {
   DiscoveryView()
     .environment(ViewModel())
+    .environment(SettingsModel.shared)
 }

@@ -57,6 +57,7 @@ public class ViewModel {
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
     alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
+    _settings.daxSelection = .none
     showAlert = true
   }
   
@@ -337,7 +338,7 @@ public class ViewModel {
     return string
   }
   
-  public func payloadProperties(_ data: Data) -> KeyValuesArray {
+  public func payloadProperties(_ data: Data) -> KeyValuesArrayIndexed {
     //    let len = 552
     let len = data.count
     var bytes = [UInt8](repeating: 0x00, count: len)
@@ -346,7 +347,7 @@ public class ViewModel {
 
     let payloadBytes = bytes[27...len-1]
     let text = String(decoding: payloadBytes, as: UTF8.self)
-    return text.keyValuesArray()
+    return text.keyValuesArrayIndexed()
   }
 
   // ----------------------------------------------------------------------------

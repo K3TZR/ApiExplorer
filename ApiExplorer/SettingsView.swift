@@ -79,6 +79,11 @@ public struct SettingsView: View {
         Text("Tx Audio Compression")
         Toggle("", isOn: $settings.remoteTxAudioCompressed)
       }
+
+      GridRow {
+        Text("Dark mode")
+        Toggle("", isOn: $settings.darkMode)
+      }
     }
     .padding(.horizontal, 10)
     .disabled(viewModel.isConnected)

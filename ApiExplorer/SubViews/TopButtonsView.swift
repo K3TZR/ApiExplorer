@@ -64,12 +64,13 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      Picker("Dax", selection: $settings.daxSelection) {
+      Picker("", selection: $settings.daxSelection) {
         ForEach(DaxChoice.allCases, id: \.self) {
           Text($0.rawValue.capitalized).tag($0)
         }
       }
       .frame(width: 180)
+      .labelsHidden()
       .disabled(settings.isGui == false)
       .onChange(of: settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)

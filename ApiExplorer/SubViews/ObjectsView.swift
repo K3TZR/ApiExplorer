@@ -129,7 +129,7 @@ private struct FilterRadioObjectsView: View {
   var body: some View {
     @Bindable var settings = settings
     
-    Picker("Show RADIO Objects of type", selection: $settings.radioObjectFilter) {
+    Picker("RADIO Objects", selection: $settings.radioObjectFilter) {
       ForEach(RadioObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }
@@ -146,7 +146,7 @@ private struct FilterStationObjectsView: View {
   var body: some View {
     @Bindable var settings = settings
 
-    Picker("Show STATION Objects of type", selection: $settings.stationObjectFilter) {
+    Picker("STATION Objects", selection: $settings.stationObjectFilter) {
       ForEach(StationObjectFilter.allCases, id: \.self) {
         Text($0.rawValue).tag($0)
       }

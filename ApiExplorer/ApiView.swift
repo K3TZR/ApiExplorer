@@ -54,7 +54,7 @@ struct ApiView: View {
 
       BottomButtonsView()
     }
-    .frame(maxWidth: .infinity, alignment: .leading) // <- This makes VStack take full width
+    .frame(maxWidth: .infinity, alignment: .leading)
     .padding(10)
     
     // initialize
@@ -67,12 +67,13 @@ struct ApiView: View {
       switch sheet {
       case .discovery:
         DiscoveryView()
-          .frame(height: 600)
+          .frame(width: 500, height: 600)
       case .guiClients:
         GuiClientsView()
+          .frame(width: 800, height: 300)
       case .multiflex:
         MultiflexView()
-          .frame(height: 200)
+          .frame(width: 300)
       case .picker:
         PickerView()
           .frame(height: 300)
@@ -109,7 +110,7 @@ struct ApiView: View {
       Label( "Settings", systemImage: "gearshape")
         .onTapGesture {
           viewModel.activeSheet = .settings
-        }
+        }.disabled(viewModel.api.activeSelection != nil)
     }
 #endif
 
@@ -121,6 +122,7 @@ struct ApiView: View {
           viewModel.showAlert = true
         }
     }
+    .preferredColorScheme(settings.darkMode ? .dark : .light)
   }
 }
 

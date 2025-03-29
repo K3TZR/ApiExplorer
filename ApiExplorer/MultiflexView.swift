@@ -64,7 +64,7 @@ public struct MultiflexView: View {
       }
       .keyboardShortcut(.cancelAction)
     }
-    .padding(10)
+    .padding()
   }
 }
 

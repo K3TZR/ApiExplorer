@@ -27,23 +27,28 @@ public struct BottomButtonsView: View {
 
     VStack(alignment: .leading) {
       HStack( spacing: 10) {
-        ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
-        
-        Spacer()
-        
-        HStack(spacing: 5) {
-          Text("Font: ")
-          Text(settings.fontSize, format: .number)
-            .frame(width: 20, alignment: .trailing)
-          Button("+") {
-            viewModel.fontFieldTapped()
+        Label( "", systemImage: "arrow.up.arrow.down.square").font(.title)
+          .onTapGesture {
+            settings.gotoBottom.toggle()
           }
-          .hidden()
-          .keyboardShortcut("+", modifiers: [.command])
-        }
-        .help("CMD-+ to cnage font size")
+
+//        ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
         
         Spacer()
+        
+//        HStack(spacing: 5) {
+//          Text("Font: ")
+//          Text(settings.fontSize, format: .number)
+//            .frame(width: 20, alignment: .trailing)
+//          Button("+") {
+//            viewModel.fontFieldTapped()
+//          }
+//          .hidden()
+//          .keyboardShortcut("+", modifiers: [.command])
+//        }
+//        .help("CMD-+ to cnage font size")
+//        
+//        Spacer()
         
         HStack(spacing: 5) {
           ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)

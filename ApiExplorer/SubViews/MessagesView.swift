@@ -89,7 +89,7 @@ private struct FilterView: View {
     @Bindable var settings = settings
     
     HStack {
-      Picker("Show Tcp Messages of type", selection: $settings.messageFilter) {
+      Picker("Tcp Messages", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
