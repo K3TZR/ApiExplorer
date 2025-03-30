@@ -75,6 +75,10 @@ public final class MessagesModel: TcpProcessor {
     }
   }
 
+  public func removePings() {
+    filteredMessages.removeAll { $0.text.contains("|ping") }
+  }
+  
   public func start(_ clearOnStart: Bool) {
     _startTime = Date()
     if clearOnStart {
@@ -109,9 +113,11 @@ public final class MessagesModel: TcpProcessor {
           if parts[2] != "" { return false }                        // additional data present
           return true                                               // otherwise, ignore it
         }
-        
+
         // ignore received replies unless they are non-zero or contain additional data
         if isInput && ignoreReply(text) { return }
+        // ignore received gps messages unless ignoreGps is false
+        if isInput && text.prefix(6) == "S0|gps" && _settings.ignoreGps { return }
         // ignore sent "ping" messages unless showPings is true
         if text.contains("ping") && _settings.showPings == false { return }
         

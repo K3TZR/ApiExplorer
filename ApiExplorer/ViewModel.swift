@@ -291,7 +291,7 @@ public class ViewModel {
 
     (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
     
-    var string = "  \(String(format: "%3d", len ))    00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
+    var string = "  \(String(format: "%4d", len ))  00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
     string += " bytes    -------------------------------------------------\n\n"
     
     string += "----- HEADER (Hex) -----\n"

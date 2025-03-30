@@ -54,9 +54,11 @@ public struct BottomButtonsView: View {
           ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
           ToggleX(title: "Times", isOn: $settings.showTimes)
           ToggleX(title: "Pings", isOn: $settings.showPings)
-          ToggleX(title: "Replies", isOn: $settings.showReplies)
+            .onChange(of: settings.showPings) {
+              if $1 == false { viewModel.messages.removePings() }
+            }
+//          ToggleX(title: "Replies", isOn: $settings.showReplies)
           ToggleX(title: "Alerts", isOn: $settings.alertOnError)
-            .help("Display a sheet when an Error / Warning occurs")
         }
         
         Spacer()

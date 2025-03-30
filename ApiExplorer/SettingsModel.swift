@@ -35,6 +35,7 @@ public class SettingsModel {
     fontSize = _settings.integer(forKey: "fontSize")
     gotoBottom = _settings.bool(forKey: "gotoBottom")
     guiClientId = _settings.string(forKey: "guiClientId") ?? ""
+    ignoreGps = _settings.bool(forKey: "ignoreGps")
     isGui = _settings.bool(forKey: "isGui")
     localEnabled = _settings.bool(forKey: "localEnabled")
     lowBandwidthConnect = _settings.bool(forKey: "lowBandwidthConnect")
@@ -84,6 +85,7 @@ public class SettingsModel {
   public var fontSize: Int { didSet { _settings.set(fontSize, forKey: "fontSize") }}
   public var gotoBottom: Bool { didSet { _settings.set(gotoBottom, forKey: "gotoBottom") }}
   public var guiClientId: String { didSet { _settings.set(guiClientId, forKey: "guiClientId") }}
+  public var ignoreGps: Bool { didSet { _settings.set(isGui, forKey: "ignoreGps") }}
   public var isGui: Bool { didSet { _settings.set(isGui, forKey: "isGui") }}
   public var localEnabled: Bool { didSet { _settings.set(localEnabled, forKey: "localEnabled") }}
   public var lowBandwidthConnect: Bool { didSet { _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect") }}
@@ -136,6 +138,7 @@ public class SettingsModel {
     _settings.set(fontSize, forKey: "fontSize")
     _settings.set(gotoBottom, forKey: "gotoBottom")
     _settings.set(guiClientId, forKey: "guiClientId")
+    _settings.set(ignoreGps, forKey: "ignoreGps")
     _settings.set(isGui, forKey: "isGui")
     _settings.set(localEnabled, forKey: "localEnabled")
     _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect")

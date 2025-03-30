@@ -84,6 +84,11 @@ public struct SettingsView: View {
         Text("Dark mode")
         Toggle("", isOn: $settings.darkMode)
       }
+
+      GridRow {
+        Text("Ignore Gps status")
+        Toggle("", isOn: $settings.ignoreGps)
+      }
     }
     .padding(.horizontal, 10)
     .disabled(viewModel.isConnected)

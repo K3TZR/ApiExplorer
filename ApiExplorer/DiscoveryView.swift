@@ -65,18 +65,10 @@ public struct DiscoveryView: View {
           if settings.discoveryDisplayType == .vitaPayload { VitaPayloadView(data: data)}
           if settings.discoveryDisplayType == .vitaHex { VitaHexView(data: data)}
         } else {
+          Spacer()
           EmptyView()
         }
       case .timing: TimingView()
-      }
-      
-      Spacer()
-      
-      if settings.discoveryDisplayType != .vitaHex {
-        Divider()
-          .frame(height: 2)
-          .background(Color.gray)
-        FooterView()
       }
     }
     .monospaced()
@@ -195,6 +187,9 @@ private struct VitaHeaderView: View {
         Spacer()
         Text("\(vita.trailerPresent)").frame(alignment: .trailing)
       }
+      Spacer()
+      
+      FooterView(data: data)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
@@ -227,14 +222,12 @@ private struct VitaPayloadView: View {
       }
       .frame(maxWidth: .infinity, alignment: .leading)
     }
+    FooterView(data: data)
   }
 }
 
 private struct VitaHexView: View {
   let data: Data
-  
-  @State var isSaving = false
-  @State var document: SaveDocument?
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
@@ -248,28 +241,7 @@ private struct VitaHexView: View {
       ScrollView {
         Text(viewModel.hexDump(data))
       }
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      HStack {
-        ButtonX(title: "Save") {
-          document = SaveDocument(text: viewModel.hexDump(data))
-          isSaving = true
-        }
-        Spacer()
-        ButtonX(title: "Close") { dismiss() }
-          .keyboardShortcut(.defaultAction)
-      }
-    }
-    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
-      switch result {
-      case .success(let url):
-        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
-      case .failure(let error):
-        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
-      }
+      FooterView(data: data)
     }
   }
 }
@@ -312,9 +284,15 @@ private struct TimingView: View {
       VStack(spacing: 10) {
         HStack {
           Text("Radio Name")
+            .frame(width: 150, alignment: .leading)
+          
           Spacer()
+          
           Text("Average")
+            .frame(width: 150, alignment: .trailing)
+          
           Spacer()
+          
           Text("Peak")
         }
         
@@ -326,11 +304,12 @@ private struct TimingView: View {
           if radio.packet.source == .local {
             HStack{
               Text(radio.packet.nickname)
+                .frame(width: 150, alignment: .leading)
               
               Spacer()
               
               Text(average(radio.intervals))
-                .frame(alignment: .trailing)
+                .frame( width: 150, alignment: .trailing)
               
               Spacer()
               
@@ -340,23 +319,61 @@ private struct TimingView: View {
             }
           }
         }
+        
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
     }
+    
+    Spacer()
+    
+    FooterView(data: nil)
   }
 }
 
 private struct FooterView: View {
-  
+  let data: Data?
+
+  @Environment(SettingsModel.self) private var settings
+  @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-  
+
+  @State var isSaving = false
+  @State var document: SaveDocument?
+
   var body: some View {
-    HStack {
-      Spacer()
-      ButtonX(title: "Close") { dismiss() }
-        .keyboardShortcut(.defaultAction)
+    VStack {
+      if settings.discoveryDisplayType == .timing {
+        Spacer()
+        HStack {
+          Text("updated every 10 seconds  ")
+          Spacer()
+        }
+      }
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      HStack {
+        if settings.discoveryDisplayType == .vitaHex {
+          ButtonX(title: "Save") {
+            document = SaveDocument(text: viewModel.hexDump(data!))
+            isSaving = true
+          }
+        }
+        Spacer()
+        ButtonX(title: "Close") { dismiss() }
+          .keyboardShortcut(.defaultAction)
+      }
+    }.border(.red)
+    
+    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
+      switch result {
+      case .success(let url):
+        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
+      case .failure(let error):
+        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
+      }
     }
-//    .padding(.horizontal)
   }
 }
 
