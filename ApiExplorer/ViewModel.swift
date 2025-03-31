@@ -285,58 +285,114 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Public supporting methods
   
-  public func hexDump(_ data: Data) -> String {
-    let len = data.count
-    var bytes = [UInt8](repeating: 0x00, count: len)
-
-    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
-    
-    var string = "  \(String(format: "%4d", len ))  00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
-    string += " bytes    -------------------------------------------------\n\n"
-    
-    string += "----- HEADER (Hex) -----\n"
-    
-    var address = 0
-    string += address.toHex() + "   "
-    for i in 1...28 {
-      string += String(format: "%02X", bytes[i-1]) + " "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
+  public func vitaHeader(_ data: Data) -> [String ]{
+    var stringArray: [String] = []
+    let byteStrings = data.map { String(format: "%02X", $0) }
+    for i in stride(from: 0, to: 28, by: 16) {
+      let row = byteStrings[i..<min(i+16, 28)].joined(separator: " ")
+      stringArray.append(row)
     }
-
-    string += "\n\n----- PAYLOAD (Hex) -----\n"
-      
-    
-    string += address.toHex() + "                                         "
-    for i in 29...len {
-      string += String(format: "%02X", bytes[i-1]) + " "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
-    }
-
-    string += "\n\n----- PAYLOAD (UTF8) -----\n"
-      
-    address = 16
-    string += address.toHex() + "                                         "
-    for i in 29...len {
-      string += String(decoding: bytes[i-1...i-1], as: UTF8.self) + "  "
-      if (i % 8) == 0 { string += "  " }
-      if (i % 16) == 0 {
-        string += "\n"
-        address += 16
-        string += address.toHex() + "   "
-      }
-    }
-    return string
+    return stringArray
   }
+
+  /// Converts Data to an array of formatted hex string lines (16 bytes per row).
+ public func vitaPayload(_ data: Data, _ utf8: Bool) -> [String] {
+    var stringArray: [String] = []
+    
+    if utf8 {
+      if data.count > 28 { // Ensure data has at least 28 bytes to avoid errors
+        let trimmedData = data.dropFirst(28) // Skip first 28 bytes
+        
+        if let string = String(data: trimmedData, encoding: .utf8) {
+          for i in stride(from: 0, to: 4, by: 16) {
+            let startIndex = string.index(string.startIndex, offsetBy: i)
+            let endIndex = string.index(startIndex, offsetBy: 4, limitedBy: string.endIndex) ?? string.endIndex
+            let row = String(string[startIndex..<endIndex])
+            stringArray.append(row)
+          }
+          for i in stride(from: 4, to: string.count, by: 16) {
+            let startIndex = string.index(string.startIndex, offsetBy: i)
+            let endIndex = string.index(startIndex, offsetBy: 16, limitedBy: string.endIndex) ?? string.endIndex
+            let row = String(string[startIndex..<endIndex])
+            stringArray.append(row)
+          }
+        }
+      }
+      
+    } else {
+      let byteStrings = data.map { String(format: "%02X", $0) }
+      for i in stride(from: 16, to: byteStrings.count, by: 16) {
+        if i == 16 {
+          stringArray.append( String(repeating: " ", count: 36) + byteStrings[28...31].joined(separator: " ") )
+        } else {
+          let row = byteStrings[i..<min(i+16, byteStrings.count)].joined(separator: " ")
+          stringArray.append(row)
+        }
+      }
+    }
+    return stringArray
+  }
+  
+  public func vitaString(_ data: Data, _ utf8: Bool) -> String {
+    var string = "--- Header ---\n"
+    string += vitaHeader(data).joined(separator: "\n")
+    string += "\n\n --- Payload ---\n"
+    return string + vitaPayload(data, utf8).joined(separator: "\n")
+  }
+
+  
+//  public func hexDump(_ data: Data) -> String {
+//    let len = data.count
+//    var bytes = [UInt8](repeating: 0x00, count: len)
+//
+//    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
+//    
+//    var string = "  \(String(format: "%4d", len ))  00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
+//    string += " bytes    -------------------------------------------------\n\n"
+//    
+//    string += "----- HEADER (Hex) -----\n"
+//    
+//    var address = 0
+//    string += address.toHex() + "   "
+//    for i in 1...28 {
+//      string += String(format: "%02X", bytes[i-1]) + " "
+//      if (i % 8) == 0 { string += "  " }
+//      if (i % 16) == 0 {
+//        string += "\n"
+//        address += 16
+//        string += address.toHex() + "   "
+//      }
+//    }
+//
+//    string += "\n\n----- PAYLOAD (Hex) -----\n"
+//      
+//    
+//    string += address.toHex() + "                                         "
+//    for i in 29...len {
+//      string += String(format: "%02X", bytes[i-1]) + " "
+//      if (i % 8) == 0 { string += "  " }
+//      if (i % 16) == 0 {
+//        string += "\n"
+//        address += 16
+//        string += address.toHex() + "   "
+//      }
+//    }
+//
+//    string += "\n\n----- PAYLOAD (UTF8) -----\n"
+//      
+//    address = 16
+//    string += address.toHex() + "                                         "
+//    for i in 29...len {
+//      string += String(decoding: bytes[i-1...i-1], as: UTF8.self) + "  "
+//      if (i % 8) == 0 { string += "  " }
+//      if (i % 16) == 0 {
+//        string += "\n"
+//        address += 16
+//        string += address.toHex() + "   "
+//      }
+//    }
+//    return string
+//  }
   
   public func payloadProperties(_ data: Data) -> KeyValuesArrayIndexed {
     //    let len = 552

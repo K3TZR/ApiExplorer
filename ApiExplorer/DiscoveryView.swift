@@ -59,14 +59,26 @@ public struct DiscoveryView: View {
       }
       
       switch settings.discoveryDisplayType  {
-      case .vitaHeader, .vitaPayload, .vitaHex:
+      case .vitaHeader, .vitaPayload, .vitaByteMap:
         if let data {
           if settings.discoveryDisplayType == .vitaHeader { VitaHeaderView(data: data)}
           if settings.discoveryDisplayType == .vitaPayload { VitaPayloadView(data: data)}
-          if settings.discoveryDisplayType == .vitaHex { VitaHexView(data: data)}
+          if settings.discoveryDisplayType == .vitaByteMap { VitaHexView(data: data)}
+          //          if settings.discoveryDisplayType == .vitaByteMapOld { VitaHexViewOld(data: data)}
         } else {
           Spacer()
           EmptyView()
+          Spacer()
+          
+          Divider()
+            .frame(height: 2)
+            .background(Color.gray)
+          
+          HStack {
+            Spacer()
+            ButtonX(title: "Close") { dismiss() }
+              .keyboardShortcut(.defaultAction)
+          }
         }
       case .timing: TimingView()
       }
@@ -81,6 +93,7 @@ private struct VitaHeaderView: View {
   let data: Data
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(\.dismiss) var dismiss
   
   var vita: Vita {
     Vita.decode(from: data)!
@@ -189,7 +202,15 @@ private struct VitaHeaderView: View {
       }
       Spacer()
       
-      FooterView(data: data)
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      HStack {
+        Spacer()
+        ButtonX(title: "Close") { dismiss() }
+          .keyboardShortcut(.defaultAction)
+      }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
@@ -199,6 +220,7 @@ private struct VitaPayloadView: View {
   let data: Data
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(\.dismiss) var dismiss
   
   @State var even = false
   
@@ -222,7 +244,16 @@ private struct VitaPayloadView: View {
       }
       .frame(maxWidth: .infinity, alignment: .leading)
     }
-    FooterView(data: data)
+    
+    Divider()
+      .frame(height: 2)
+      .background(Color.gray)
+    
+    HStack {
+      Spacer()
+      ButtonX(title: "Close") { dismiss() }
+        .keyboardShortcut(.defaultAction)
+    }
   }
 }
 
@@ -232,16 +263,79 @@ private struct VitaHexView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
+  @State var isSaving = false
+  @State var document: SaveDocument?
+  @State var utf8 = false
+  
   var body: some View {
-    VStack {
+    VStack(alignment: .leading, spacing: 2) {
+      HStack {
+        Text("Bytes: \(data.count.toHex())")
+        Spacer()
+      }
+      
+      // Header row for hex dump
+      Text("      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F")
+        .font(.system(.body, design: .monospaced))
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
       
-      ScrollView {
-        Text(viewModel.hexDump(data))
+      Text("--- Header ---")
+      
+      ForEach(Array(viewModel.vitaHeader(data).enumerated()), id: \.offset) { index, string in
+        HStack {
+          Text(String(format: "%04X:", index * 16))
+          Text(string)
+            .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
       }
-      FooterView(data: data)
+      
+      ScrollView {
+        HStack {
+          Text("--- Payload ---")
+          Spacer()
+          Toggle("UTF8", isOn: $utf8)
+        }
+        
+        ForEach(Array(viewModel.vitaPayload(data, utf8).enumerated()), id: \.offset) { index, string in
+          HStack {
+            Text(String(format: "%04X:", (index * 16) + 16))
+            Text(string)
+              .foregroundColor(.secondary)
+          }
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
+        }
+      }
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      HStack {
+        ButtonX(title: "Save") {
+          document = SaveDocument(text: viewModel.vitaString(data, utf8))
+          isSaving = true
+        }
+        Spacer()
+        ButtonX(title: "Close") { dismiss() }
+          .keyboardShortcut(.defaultAction)
+      }
+    }
+    .font(.system(.body, design: .monospaced))
+    .padding()
+    
+    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
+      switch result {
+      case .success(let url):
+        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
+      case .failure(let error):
+        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
+      }
     }
   }
 }
@@ -249,6 +343,7 @@ private struct VitaHexView: View {
 private struct TimingView: View {
   
   @Environment(ViewModel.self) private var viewModel
+  @Environment(\.dismiss) var dismiss
   
   func formatMinutesAndSeconds(from date: Date) -> String {
     let formatter = DateFormatter()
@@ -294,6 +389,7 @@ private struct TimingView: View {
           Spacer()
           
           Text("Peak")
+            .frame(width: 150, alignment: .trailing)
         }
         
         Divider()
@@ -314,7 +410,7 @@ private struct TimingView: View {
               Spacer()
               
               Text(peak(radio.intervals))
-                .frame(alignment: .trailing)
+                .frame( width: 150, alignment: .trailing)
                 .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
             }
           }
@@ -325,54 +421,20 @@ private struct TimingView: View {
     
     Spacer()
     
-    FooterView(data: nil)
-  }
-}
-
-private struct FooterView: View {
-  let data: Data?
-
-  @Environment(SettingsModel.self) private var settings
-  @Environment(ViewModel.self) private var viewModel
-  @Environment(\.dismiss) var dismiss
-
-  @State var isSaving = false
-  @State var document: SaveDocument?
-
-  var body: some View {
-    VStack {
-      if settings.discoveryDisplayType == .timing {
-        Spacer()
-        HStack {
-          Text("updated every 10 seconds  ")
-          Spacer()
-        }
-      }
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      HStack {
-        if settings.discoveryDisplayType == .vitaHex {
-          ButtonX(title: "Save") {
-            document = SaveDocument(text: viewModel.hexDump(data!))
-            isSaving = true
-          }
-        }
-        Spacer()
-        ButtonX(title: "Close") { dismiss() }
-          .keyboardShortcut(.defaultAction)
-      }
-    }.border(.red)
+    Spacer()
+    HStack {
+      Text("updated every 10 seconds  ")
+      Spacer()
+    }
     
-    .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
-      switch result {
-      case .success(let url):
-        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
-      case .failure(let error):
-        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
-      }
+    Divider()
+      .frame(height: 2)
+      .background(Color.gray)
+    
+    HStack {
+      Spacer()
+      ButtonX(title: "Close") { dismiss() }
+        .keyboardShortcut(.defaultAction)
     }
   }
 }

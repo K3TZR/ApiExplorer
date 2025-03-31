@@ -51,8 +51,8 @@ struct GuiClientSubView: View {
               .gridColumnAlignment(.trailing)
             
             Text("LocalPtt")
-            Text(guiClient.isLocalPtt ? "Y" : "N")
-              .foregroundColor(guiClient.isLocalPtt ? .green : .red)
+            Text(guiClient.pttEnabled ? "Y" : "N")
+              .foregroundColor(guiClient.pttEnabled ? .green : .red)
               .gridColumnAlignment(.trailing)
             
             Text("ClientId")

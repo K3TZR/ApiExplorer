@@ -32,23 +32,7 @@ public struct BottomButtonsView: View {
             settings.gotoBottom.toggle()
           }
 
-//        ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
-        
         Spacer()
-        
-//        HStack(spacing: 5) {
-//          Text("Font: ")
-//          Text(settings.fontSize, format: .number)
-//            .frame(width: 20, alignment: .trailing)
-//          Button("+") {
-//            viewModel.fontFieldTapped()
-//          }
-//          .hidden()
-//          .keyboardShortcut("+", modifiers: [.command])
-//        }
-//        .help("CMD-+ to cnage font size")
-//        
-//        Spacer()
         
         HStack(spacing: 5) {
           ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
@@ -57,8 +41,6 @@ public struct BottomButtonsView: View {
             .onChange(of: settings.showPings) {
               if $1 == false { viewModel.messages.removePings() }
             }
-//          ToggleX(title: "Replies", isOn: $settings.showReplies)
-          ToggleX(title: "Alerts", isOn: $settings.alertOnError)
         }
         
         Spacer()
