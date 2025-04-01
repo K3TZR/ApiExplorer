@@ -100,7 +100,7 @@ private struct VitaHeaderView: View {
   }
   
   var body: some View {
-    VStack (alignment: .leading, spacing: 10) {
+    VStack (alignment: .leading, spacing: 5) {
       Divider()
         .frame(height: 2)
         .background(Color.gray)
@@ -230,7 +230,7 @@ private struct VitaPayloadView: View {
       .background(Color.gray)
     
     ScrollView {
-      VStack(spacing: 10) {
+      VStack(spacing: 5) {
         ForEach(viewModel.payloadProperties(data) , id: \.key) { property in
           HStack {
             Text(property.key)
@@ -268,7 +268,7 @@ private struct VitaHexView: View {
   @State var utf8 = false
   
   var body: some View {
-    VStack(alignment: .leading, spacing: 2) {
+    VStack(alignment: .leading, spacing: 5) {
       HStack {
         Text("Bytes: \(data.count.toHex())")
         Spacer()
@@ -294,21 +294,24 @@ private struct VitaHexView: View {
         .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
       }
       
+      HStack {
+        Text("--- Payload ---")
+        Spacer()
+        Toggle("UTF8", isOn: $utf8)
+      }
+
       ScrollView {
-        HStack {
-          Text("--- Payload ---")
-          Spacer()
-          Toggle("UTF8", isOn: $utf8)
-        }
         
-        ForEach(Array(viewModel.vitaPayload(data, utf8).enumerated()), id: \.offset) { index, string in
-          HStack {
-            Text(String(format: "%04X:", (index * 16) + 16))
-            Text(string)
-              .foregroundColor(.secondary)
+        VStack(spacing: 5) {
+          ForEach(Array(viewModel.vitaPayload(data, utf8).enumerated()), id: \.offset) { index, string in
+            HStack {
+              Text(String(format: "%04X:", (index * 16) + 16))
+              Text(string)
+                .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
           }
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
         }
       }
       
@@ -376,7 +379,7 @@ private struct TimingView: View {
   
   var body: some View {
     ScrollView {
-      VStack(spacing: 10) {
+      VStack(spacing: 5) {
         HStack {
           Text("Radio Name")
             .frame(width: 150, alignment: .leading)
@@ -396,7 +399,7 @@ private struct TimingView: View {
           .frame(height: 2)
           .background(Color.gray)
         
-        ForEach(viewModel.api.radios.sorted(by: {$0.packet.nickname < $1.packet.nickname})) { radio in
+        ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
           if radio.packet.source == .local {
             HStack{
               Text(radio.packet.nickname)
@@ -413,6 +416,7 @@ private struct TimingView: View {
                 .frame( width: 150, alignment: .trailing)
                 .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
             }
+            .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
           }
         }
         
