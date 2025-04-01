@@ -54,7 +54,7 @@ struct ApiView: View {
 
       BottomButtonsView()
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
+    .frame(maxWidth: .infinity, minHeight: 600, alignment: .leading)
     .padding(10)
     
     // initialize
@@ -143,7 +143,7 @@ struct ApiView: View {
 
 struct ObjectsMessagesSplitView: View {
 #if os(macOS)
-  @State private var topHeight: CGFloat = 600  // Initial height for the top view
+  @State private var topHeight: CGFloat = 200  // Initial height for the top view
   let minHeight: CGFloat = 200                 // Minimum height for sections
 #else
   @State private var topHeight: CGFloat = 200  // Initial height for the top view
@@ -181,7 +181,7 @@ struct ObjectsMessagesSplitView: View {
           )
         
         MessagesView()
-          .frame(maxHeight: .infinity)
+          .frame(minHeight: 100, maxHeight: .infinity)
           .frame(maxWidth: .infinity)
       }
       .frame(maxHeight: .infinity)
