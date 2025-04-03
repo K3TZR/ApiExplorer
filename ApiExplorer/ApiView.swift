@@ -54,7 +54,7 @@ struct ApiView: View {
 
       BottomButtonsView()
     }
-    .frame(maxWidth: .infinity, minHeight: 600, alignment: .leading)
+    .frame(minWidth: 900, maxWidth: .infinity, minHeight: 600, alignment: .leading)
     .padding(10)
     
     // initialize
@@ -142,13 +142,17 @@ struct ApiView: View {
 // MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
-#if os(macOS)
-  @State private var topHeight: CGFloat = 200  // Initial height for the top view
-  let minHeight: CGFloat = 200                 // Minimum height for sections
-#else
-  @State private var topHeight: CGFloat = 200  // Initial height for the top view
-  let minHeight: CGFloat = 100                 // Minimum height for sections
-#endif
+//#if os(macOS)
+//  func topHeight(_ geometryHeight: CGFloat) -> CGFloat {
+//    2 * (geometryHeight/3)
+//  }
+//  func BottomHeight(_ geometryHeight: CGFloat) -> CGFloat {
+//    geometryHeight/3
+//  }
+//#else
+//  @State private var topHeight: CGFloat = 200  // Initial height for the top view
+//  let minHeight: CGFloat = 100                 // Minimum height for sections
+//#endif
 
   var body: some View {
     
@@ -156,32 +160,32 @@ struct ObjectsMessagesSplitView: View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         ObjectsView()
-          .frame(height: topHeight)
+          .frame(height: 2 * (geometry.size.height/3))
           .frame(maxWidth: .infinity)
         
         Divider()
           .frame(height: 3)
-          .background(Color.blue)
-#if os(macOS)
-          .onHover { hovering in
-            NSCursor.resizeUpDown.push()
-            if !hovering {
-              NSCursor.pop()
-            }
-          }
-#endif
-          .gesture(
-            DragGesture()
-              .onChanged { value in
-                let newHeight = topHeight + value.translation.height
-                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
-                  topHeight = newHeight
-                }
-              }
-          )
+          .background(Color.gray)
+//#if os(macOS)
+//          .onHover { hovering in
+//            NSCursor.resizeUpDown.push()
+//            if !hovering {
+//              NSCursor.pop()
+//            }
+//          }
+//#endif
+//          .gesture(
+//            DragGesture()
+//              .onChanged { value in
+//                let newHeight = topHeight + value.translation.height
+//                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
+//                  topHeight = newHeight
+//                }
+//              }
+//          )
         
         MessagesView()
-          .frame(minHeight: 100, maxHeight: .infinity)
+          .frame(height: geometry.size.height/3)
           .frame(maxWidth: .infinity)
       }
       .frame(maxHeight: .infinity)

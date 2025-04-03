@@ -29,7 +29,6 @@ public struct ObjectsView: View {
         RadioClientTesterSplitView()
           .textSelection(.enabled)
           .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
-          .padding(.horizontal, 10)
 
       } else {
         ObjectsEmptyView()
@@ -49,7 +48,7 @@ private struct ObjectsEmptyView: View {
       Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
       Spacer()
       Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-      if settings.isGui == false {
+      if settings.isNonGui {
         Spacer()
         Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
       }
@@ -62,14 +61,14 @@ private struct RadioClientTesterSplitView: View {
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(SettingsModel.self) private var settings
-
-#if os(macOS)
-  @State private var topHeight: CGFloat = 200  // Initial height for the top view
-  let minHeight: CGFloat = 100                 // Minimum height for sections
-#else
-  @State private var topHeight: CGFloat = 50  // Initial height for the top view
-  let minHeight: CGFloat = 25                 // Minimum height for sections
-#endif
+  
+//#if os(macOS)
+//  @State private var topHeight: CGFloat = 200  // Initial height for the top view
+//  let minHeight: CGFloat = 100                 // Minimum height for sections
+//#else
+//  @State private var topHeight: CGFloat = 50  // Initial height for the top view
+//  let minHeight: CGFloat = 25                 // Minimum height for sections
+//#endif
 
   var radio: Radio? {
     if let selection = viewModel.api.activeSelection {
@@ -84,40 +83,43 @@ private struct RadioClientTesterSplitView: View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         RadioSubView(radio: radio)
-          .frame(height: topHeight)
+          .frame(height: geometry.size.height/2)
           .frame(maxWidth: .infinity)
-        
+//          .border(.green)
+
         Divider()
           .frame(height: 3)
-          .background(Color.blue)
-        #if os(macOS)
-          .onHover { hovering in
-            NSCursor.resizeUpDown.push()
-            if !hovering {
-              NSCursor.pop()
-            }
-          }
-        #endif
-          .gesture(
-            DragGesture()
-              .onChanged { value in
-                let newHeight = topHeight + value.translation.height
-                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
-                  topHeight = newHeight
-                }
-              }
-          )
+          .background(Color.gray)
+//        #if os(macOS)
+//          .onHover { hovering in
+//            NSCursor.resizeUpDown.push()
+//            if !hovering {
+//              NSCursor.pop()
+//            }
+//          }
+//        #endif
+//          .gesture(
+//            DragGesture()
+//              .onChanged { value in
+//                let newHeight = topHeight + value.translation.height
+//                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
+//                  topHeight = newHeight
+//                }
+//              }
+//          )
         
         GuiClientSubView()
+          .frame(height: geometry.size.height/2)
           .frame(maxWidth: .infinity)
+//          .border(.red)
 
-        if settings.isGui == false {
-          TesterSubView()
-            .frame(height: 50)
-            .frame(maxWidth: .infinity)
-        }
+//        if settings.isNonGui{
+//          TesterSubView()
+//            .frame(height: 50)
+//            .frame(maxWidth: .infinity)
+//        }
       }
-      .frame(maxHeight: .infinity)
+//      .frame(maxHeight: .infinity)
     }
   }
 }

@@ -36,8 +36,10 @@ public class SettingsModel {
     gotoBottom = _settings.bool(forKey: "gotoBottom")
     guiClientId = _settings.string(forKey: "guiClientId") ?? ""
     ignoreGps = _settings.bool(forKey: "ignoreGps")
-    isGui = _settings.bool(forKey: "isGui")
-    localEnabled = _settings.bool(forKey: "localEnabled")
+    isNonGui = _settings.bool(forKey: "isNonGui")
+//    isGui = _settings.bool(forKey: "isGui")
+    localDisabled = _settings.bool(forKey: "localDisabled")
+//    localEnabled = _settings.bool(forKey: "localEnabled")
     lowBandwidthConnect = _settings.bool(forKey: "lowBandwidthConnect")
     lowBandwidthDax = _settings.bool(forKey: "lowBandwidthDax")
     messageFilter = MessagesModel.Filter(rawValue: _settings.string(forKey: "messageFilter") ?? "all") ?? .all
@@ -55,7 +57,6 @@ public class SettingsModel {
     //    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
-//    smartlinkPreviousIdToken = _settings.string(forKey: "smartlinkPreviousIdToken") ?? ""
     smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken")
     smartlinkUser = _settings.string(forKey: "smartlinkUser") ?? ""
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
@@ -85,9 +86,11 @@ public class SettingsModel {
   public var fontSize: Int { didSet { _settings.set(fontSize, forKey: "fontSize") }}
   public var gotoBottom: Bool { didSet { _settings.set(gotoBottom, forKey: "gotoBottom") }}
   public var guiClientId: String { didSet { _settings.set(guiClientId, forKey: "guiClientId") }}
-  public var ignoreGps: Bool { didSet { _settings.set(isGui, forKey: "ignoreGps") }}
-  public var isGui: Bool { didSet { _settings.set(isGui, forKey: "isGui") }}
-  public var localEnabled: Bool { didSet { _settings.set(localEnabled, forKey: "localEnabled") }}
+  public var ignoreGps: Bool { didSet { _settings.set(ignoreGps, forKey: "ignoreGps") }}
+  public var isNonGui: Bool { didSet { _settings.set(isNonGui, forKey: "isNonGui") }}
+//  public var isGui: Bool { didSet { _settings.set(isGui, forKey: "isGui") }}
+  public var localDisabled: Bool { didSet { _settings.set(localDisabled, forKey: "localDisabled") }}
+//  public var localEnabled: Bool { didSet { _settings.set(localEnabled, forKey: "localEnabled") }}
   public var lowBandwidthConnect: Bool { didSet { _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect") }}
   public var lowBandwidthDax: Bool { didSet { _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax") }}
   public var messageFilter: MessagesModel.Filter { didSet { _settings.set(messageFilter.rawValue, forKey: "messageFilter") }}
@@ -102,10 +105,8 @@ public class SettingsModel {
   public var showPings: Bool { didSet { _settings.set(showPings, forKey: "showPings") }}
   public var showReplies: Bool { didSet { _settings.set(showReplies, forKey: "showReplies") }}
   public var showTimes: Bool { didSet { _settings.set(showTimes, forKey: "showTimes") }}
-  //  public var smartlinkIdToken: String { didSet { _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken") }}
   public var smartlinkEnabled: Bool { didSet { _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled") }}
   public var smartlinkLoginRequired: Bool { didSet { _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired") }}
-//  public var smartlinkPreviousIdToken: String { didSet { _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken") }}
   public var smartlinkRefreshToken: String? { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
   public var smartlinkUser: String { didSet { _settings.set(smartlinkUser, forKey: "smartlinkUser") }}
   public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
@@ -139,8 +140,10 @@ public class SettingsModel {
     _settings.set(gotoBottom, forKey: "gotoBottom")
     _settings.set(guiClientId, forKey: "guiClientId")
     _settings.set(ignoreGps, forKey: "ignoreGps")
-    _settings.set(isGui, forKey: "isGui")
-    _settings.set(localEnabled, forKey: "localEnabled")
+    _settings.set(isNonGui, forKey: "isNonGui")
+//    _settings.set(isGui, forKey: "isGui")
+    _settings.set(localDisabled, forKey: "localDisabled")
+//    _settings.set(localEnabled, forKey: "localEnabled")
     _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect")
     _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax")
     _settings.set(messageFilter.rawValue, forKey: "messageFilter")
@@ -155,10 +158,8 @@ public class SettingsModel {
     _settings.set(showPings, forKey: "showPings")
     _settings.set(showReplies, forKey: "showReplies")
     _settings.set(showTimes, forKey: "showTimes")
-    //    _settings.set(smartlinkIdToken, forKey: "smartlinkIdToken")
     _settings.set(smartlinkEnabled, forKey: "smartlinkEnabled")
     _settings.set(smartlinkLoginRequired, forKey: "smartlinkLoginRequired")
-//    _settings.set(smartlinkPreviousIdToken, forKey: "smartlinkPreviousIdToken")
     _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken")
     _settings.set(smartlinkUser, forKey: "smartlinkUser")
     _settings.set(stationName, forKey: "stationName")

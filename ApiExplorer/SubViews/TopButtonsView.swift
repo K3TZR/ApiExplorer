@@ -18,7 +18,7 @@ public struct TopButtonsView: View {
   @Environment(SettingsModel.self) private var settings
 
   private var startButtonDisabled: Bool {
-    return !(settings.directEnabled || settings.localEnabled || settings.smartlinkEnabled)
+    return !(settings.directEnabled || !settings.localDisabled || settings.smartlinkEnabled)
   }
 
   public var body: some View {
@@ -38,7 +38,7 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      ToggleX(title: "Gui", isOn: $settings.isGui)
+      ToggleY(title: "Gui", isOn: $settings.isNonGui)
 //        .frame(width: 60, alignment: .leading)
         .disabled(viewModel.isConnected)
 
@@ -50,8 +50,8 @@ public struct TopButtonsView: View {
           .onChange(of: settings.directEnabled) {
             viewModel.directButtonChanged($1)
           }
-        ToggleX(title: "Local", isOn: $settings.localEnabled)
-          .onChange(of: settings.localEnabled) {
+        ToggleY(title: "Local", isOn: $settings.localDisabled)
+          .onChange(of: settings.localDisabled) {
             viewModel.localButtonChanged($1)
           }
         ToggleX(title: "Smartlink", isOn: $settings.smartlinkEnabled)
@@ -71,7 +71,7 @@ public struct TopButtonsView: View {
       }
       .frame(width: 180)
       .labelsHidden()
-      .disabled(settings.isGui == false)
+      .disabled(settings.isNonGui == true)
       .onChange(of: settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
@@ -80,13 +80,13 @@ public struct TopButtonsView: View {
       
       HStack(spacing: 10) {
         ToggleX(title: "Rx Audio", isOn: $settings.remoteRxAudioEnabled)
-          .disabled(settings.isGui == false)
+          .disabled(settings.isNonGui == true)
           .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
         ToggleX(title: "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
-          .disabled(settings.isGui == false)
+          .disabled(settings.isNonGui == true)
           .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }

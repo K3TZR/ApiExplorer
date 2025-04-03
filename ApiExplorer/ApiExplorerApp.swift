@@ -49,12 +49,20 @@ struct ApiExplorerApp: App {
       ApiView()
         .environment(viewModel)
         .environment(SettingsModel.shared)
-#if os(iOS)
-        .onAppear {
-            UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
-        }
-#endif
     }
+#if os(macOS)
+    .commands {
+        CommandGroup(replacing: .newItem) {
+            Button("Font") {
+              var currentSize = SettingsModel.shared.fontSize
+              currentSize += 1
+              SettingsModel.shared.fontSize = currentSize.bracket(8, 14)
+            }
+            .keyboardShortcut("+", modifiers: .command)
+        }
+    }
+#endif
+    
 #if os(macOS)
     Settings {
       SettingsView()

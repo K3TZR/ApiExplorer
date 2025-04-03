@@ -99,9 +99,9 @@ struct RadioSubView: View {
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
             }
           }
-          Divider()
-            .frame(height: 2)
-            .background(Color.gray)
+//          Divider()
+//            .frame(height: 2)
+//            .background(Color.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         

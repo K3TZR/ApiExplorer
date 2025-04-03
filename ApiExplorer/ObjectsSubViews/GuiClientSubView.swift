@@ -27,8 +27,8 @@ struct GuiClientSubView: View {
   
   var body: some View {
     
-    ForEach(guiClients, id: \.id) { guiClient in
-      VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: 0) {
+      ForEach(guiClients, id: \.id) { guiClient in
         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
           GridRow {
             Text(guiClient.station)
@@ -61,15 +61,19 @@ struct GuiClientSubView: View {
               .gridColumnAlignment(.trailing)
           }
         }
-        Divider()
-          .frame(height: 2)
-          .background(Color.gray)
-      }
-      .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-          
+        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+
+//        Divider()
+//          .frame(height: 2)
+//          .background(Color.gray)
+
       GuiClientDetailView(handle: guiClient.handle.handle!)
+      }
+          
     }
-    .frame(minHeight: 50)
+    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+
+//    .frame(minHeight: 50)
   }
 }
 
