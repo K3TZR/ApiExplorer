@@ -107,6 +107,9 @@ struct RadioSubView: View {
         
         DetailView(filter: settings.radioObjectFilter, radio: radio)
       }
+    } else {
+      Text("RADIO Objects will be displayed here")
+        .frame(maxWidth: .infinity)
     }
   }
 }

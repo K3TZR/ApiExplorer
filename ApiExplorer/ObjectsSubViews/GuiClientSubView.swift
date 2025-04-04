@@ -13,67 +13,72 @@ import ApiPackage
 // MARK: - View
 
 struct GuiClientSubView: View {
+  let radio: Radio?
   
   @Environment(ViewModel.self) private var viewModel
   
-  private var guiClients: [GuiClient] {
-    if let radioId = viewModel.api.activeSelection?.radioId {
-      if let radio = viewModel.api.radios.first(where: { $0.id == radioId }) {
-        return radio.guiClients
-      }
-    }
-    return []
-  }
+//  private var guiClients: [GuiClient] {
+//    if let radioId = viewModel.api.activeSelection?.radioId {
+//      if let radio = viewModel.api.radios.first(where: { $0.id == radioId }) {
+//        return radio.guiClients
+//      }
+//    }
+//    return []
+//  }
   
   var body: some View {
     
-    VStack(alignment: .leading, spacing: 0) {
-      ForEach(guiClients, id: \.id) { guiClient in
-        Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
-          GridRow {
-            Text(guiClient.station)
-              .foregroundColor(.yellow)
-              .font(.title)
-              .frame(width: 200, alignment: .leading)
-              .truncationMode(.tail)
-              .lineLimit(1)   // This is critical
-              .clipped()
-              .help(guiClient.station)
-            
-            Text("Handle")
-            Text(guiClient.handle)
-              .foregroundColor(.secondary)
-              .gridColumnAlignment(.trailing)
-            
-            Text("Program")
-            Text("\(guiClient.program)")
-              .foregroundColor(.secondary)
-              .gridColumnAlignment(.trailing)
-            
-            Text("LocalPtt")
-            Text(guiClient.pttEnabled ? "Y" : "N")
-              .foregroundColor(guiClient.pttEnabled ? .green : .red)
-              .gridColumnAlignment(.trailing)
-            
-            Text("ClientId")
-            Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
-              .foregroundColor(.secondary)
-              .gridColumnAlignment(.trailing)
+    if let radio {
+      VStack(alignment: .leading, spacing: 0) {
+        ForEach(radio.guiClients, id: \.id) { guiClient in
+          Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+            GridRow {
+              Text(guiClient.station)
+                .foregroundColor(.yellow)
+                .font(.title)
+                .frame(width: 200, alignment: .leading)
+                .truncationMode(.tail)
+                .lineLimit(1)   // This is critical
+                .clipped()
+                .help(guiClient.station)
+              
+              Text("Handle")
+              Text(guiClient.handle)
+                .foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
+              
+              Text("Program")
+              Text("\(guiClient.program)")
+                .foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
+              
+              Text("LocalPtt")
+              Text(guiClient.pttEnabled ? "Y" : "N")
+                .foregroundColor(guiClient.pttEnabled ? .green : .red)
+                .gridColumnAlignment(.trailing)
+              
+              Text("ClientId")
+              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+                .foregroundColor(.secondary)
+                .gridColumnAlignment(.trailing)
+            }
           }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-
-//        Divider()
-//          .frame(height: 2)
-//          .background(Color.gray)
-
-      GuiClientDetailView(handle: guiClient.handle.handle!)
-      }
+          .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
+          //        Divider()
+          //          .frame(height: 2)
+          //          .background(Color.gray)
+          
+          GuiClientDetailView(handle: guiClient.handle.handle!)
+        }
+        
+      }
+      .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+    } else {
+      Text("STATION Objects will be displayed here")
+        .frame(maxWidth: .infinity)
     }
-    .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-
-//    .frame(minHeight: 50)
+    //    .frame(minHeight: 50)
   }
 }
 
@@ -118,9 +123,9 @@ private struct GuiClientDetailView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Preview
 
-#Preview {
-  GuiClientSubView()
-    .environment(ViewModel())
-  
-    .frame(width: 1250)
-}
+//#Preview {
+//  GuiClientSubView()
+//    .environment(ViewModel())
+//  
+//    .frame(width: 1250)
+//}

@@ -25,37 +25,37 @@ public struct ObjectsView: View {
         FilterStationObjectsView()
       }
       
-      if viewModel.isConnected {
+//      if viewModel.isConnected {
         RadioClientTesterSplitView()
           .textSelection(.enabled)
           .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
 
-      } else {
-        ObjectsEmptyView()
-      }
+//      } else {
+//        ObjectsEmptyView()
+//      }
     }
   }
 }
   
-private struct ObjectsEmptyView: View {
-
-  @Environment(SettingsModel.self) private var settings
-
-  var body: some View {
-    
-    VStack(alignment: .center) {
-      Spacer()
-      Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
-      Spacer()
-      Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
-      if settings.isNonGui {
-        Spacer()
-        Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
-      }
-      Spacer()
-    }
-  }
-}
+//private struct ObjectsEmptyView: View {
+//
+//  @Environment(SettingsModel.self) private var settings
+//
+//  var body: some View {
+//    
+//    VStack(alignment: .center) {
+//      Spacer()
+//      Text("RADIO Objects will be displayed here").frame(maxWidth: .infinity)
+//      Spacer()
+//      Text("STATION Objects will be displayed here").frame(maxWidth: .infinity)
+//      if settings.isNonGui {
+//        Spacer()
+//        Text("ApiExplorer Objects will be displayed here").frame(maxWidth: .infinity)
+//      }
+//      Spacer()
+//    }
+//  }
+//}
 
 private struct RadioClientTesterSplitView: View {
   
@@ -108,7 +108,7 @@ private struct RadioClientTesterSplitView: View {
 //              }
 //          )
         
-        GuiClientSubView()
+        GuiClientSubView(radio: radio)
           .frame(height: geometry.size.height/2)
           .frame(maxWidth: .infinity)
 //          .border(.red)
