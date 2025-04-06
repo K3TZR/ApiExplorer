@@ -143,13 +143,11 @@ private struct SliceDetailView: View {
           .frame(width: 110, alignment: .trailing)
         
         Text("ID")
-        
         Text(slice.id.hex)
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
         
-        Text("Freq")
-        
+        Text("Freq")        
         Text("\(slice.frequency)")
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)        

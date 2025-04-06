@@ -76,7 +76,8 @@ public final class MessagesModel: TcpProcessor {
   }
 
   public func removePings() {
-    filteredMessages.removeAll { $0.text.contains("|ping") }
+    _messages.removeAll { $0.text.contains("|ping") }
+    reFilter()
   }
   
   public func start(_ clearOnStart: Bool) {

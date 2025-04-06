@@ -34,7 +34,17 @@ struct MemorySubView: View {
             Text("\(memory.id)")
             
             Text(memory.name)
+              .truncationMode(.tail)
+              .lineLimit(1)   // This is critical
+              .clipped()
+              .help(memory.name)
+
             Text(memory.group.isEmpty ? "none" : memory.group)
+              .truncationMode(.tail)
+              .lineLimit(1)   // This is critical
+              .clipped()
+              .help(memory.group.isEmpty ? "none" : memory.group)
+
             Text(memory.owner)
             Text("\(memory.frequency)")
             Text(memory.mode)

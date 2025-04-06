@@ -54,7 +54,7 @@ struct ApiView: View {
 
       BottomButtonsView()
     }
-    .frame(minWidth: 900, maxWidth: .infinity, minHeight: 600, alignment: .leading)
+    .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
     .padding(10)
     
     // initialize
@@ -81,7 +81,6 @@ struct ApiView: View {
         SmartlinkLoginView()
       case .settings:
         SettingsView()
-//          .frame(width: 400)
       }
     }
 
@@ -107,10 +106,12 @@ struct ApiView: View {
       Button("Gui Clients") {
         viewModel.activeSheet = .guiClients
       }
-      Label( "Settings", systemImage: "gearshape")
-        .onTapGesture {
-          viewModel.activeSheet = .settings
-        }.disabled(viewModel.api.activeSelection != nil)
+      if viewModel.api.activeSelection == nil {
+        Label( "Settings", systemImage: "gearshape")
+          .onTapGesture {
+            viewModel.activeSheet = .settings
+          }
+      }
     }
 #endif
 
