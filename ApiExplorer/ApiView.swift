@@ -54,7 +54,9 @@ struct ApiView: View {
 
       BottomButtonsView()
     }
+#if os(macOS)
     .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
+#endif
     .padding(10)
     
     // initialize
@@ -143,47 +145,18 @@ struct ApiView: View {
 // MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
-//#if os(macOS)
-//  func topHeight(_ geometryHeight: CGFloat) -> CGFloat {
-//    2 * (geometryHeight/3)
-//  }
-//  func BottomHeight(_ geometryHeight: CGFloat) -> CGFloat {
-//    geometryHeight/3
-//  }
-//#else
-//  @State private var topHeight: CGFloat = 200  // Initial height for the top view
-//  let minHeight: CGFloat = 100                 // Minimum height for sections
-//#endif
 
   var body: some View {
     
-    // Custom resizable vertical split, works for both macOS and iOS
     GeometryReader { geometry in
-      VStack(spacing: 0) {
+      VStack(spacing: 10) {
         ObjectsView()
-          .frame(height: 2 * (geometry.size.height/3))
+          .frame(height: (2 * (geometry.size.height/3)) - 20)
           .frame(maxWidth: .infinity)
         
         Divider()
           .frame(height: 3)
           .background(Color.gray)
-//#if os(macOS)
-//          .onHover { hovering in
-//            NSCursor.resizeUpDown.push()
-//            if !hovering {
-//              NSCursor.pop()
-//            }
-//          }
-//#endif
-//          .gesture(
-//            DragGesture()
-//              .onChanged { value in
-//                let newHeight = topHeight + value.translation.height
-//                if newHeight > minHeight && newHeight < geometry.size.height - minHeight {
-//                  topHeight = newHeight
-//                }
-//              }
-//          )
         
         MessagesView()
           .frame(height: geometry.size.height/3)

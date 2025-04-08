@@ -38,19 +38,11 @@ struct MessagesView: View {
   
   var body: some View {
     
-    VStack(alignment: .leading) {
+    VStack(alignment: .leading, spacing: 10) {
       FilterView()
       
       if viewModel.messages.filteredMessages.count == 0 {
-        VStack(alignment: .leading) {
-          Spacer()
-          HStack {
-            Spacer()
-            Text("TCP Messages will be displayed here")
-            Spacer()
-          }
-          Spacer()
-        }
+        Spacer()
         
       } else {
         ScrollView([.vertical]) {
@@ -89,13 +81,16 @@ private struct FilterView: View {
     @Bindable var settings = settings
     
     HStack {
-      Picker("Tcp Messages", selection: $settings.messageFilter) {
+      Text("TCP Messages")
+        .frame(width: 120, alignment: .leading) // Fixed width label
+      
+      Picker("", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
       }
       .pickerStyle(MenuPickerStyle())
-      .frame(width: 300)
+      .frame(width: 180) // Optional: fix width for the dropdown
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
       }
@@ -112,6 +107,26 @@ private struct FilterView: View {
     }
   }
 }
+
+
+
+//HStack {
+//  Text("TCP Messages")
+//    .frame(width: 120, alignment: .leading) // Fixed width label
+//
+//  Picker("", selection: $settings.messageFilter) {
+//    ForEach(MessagesModel.Filter.allCases, id: \.self) {
+//      Text($0.rawValue).tag($0)
+//    }
+//  }
+//  .pickerStyle(MenuPickerStyle())
+//  .frame(width: 180) // Optional: fix width for the dropdown
+//}
+
+
+
+
+
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview

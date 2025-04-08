@@ -13,15 +13,10 @@ import ApiPackage
 // MARK: - View
 
 struct RadioSubView: View {
-    let radio: Radio?
+  let radio: Radio?
   
   @Environment(ViewModel.self) var viewModel
   @Environment(SettingsModel.self) private var settings
-
-//  var radio: Radio? {
-//    let parts = viewModel.api.activeSelection!.split(separator: "|")
-//    return viewModel.api.radios.first(where: {$0.id == parts[0] + "|" + parts[1] })
-//  }
   
   var body: some View {
     
@@ -99,17 +94,13 @@ struct RadioSubView: View {
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
             }
           }
-//          Divider()
-//            .frame(height: 2)
-//            .background(Color.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
         DetailView(filter: settings.radioObjectFilter, radio: radio)
       }
     } else {
-      Text("RADIO Objects will be displayed here")
-        .frame(maxWidth: .infinity)
+      Spacer()
     }
   }
 }
@@ -126,28 +117,47 @@ private struct DetailView: View {
       VStack(alignment: .leading) {
         switch filter {
         case .all:
+          AmplifierSubView(radio: radio)
           AtuSubView(radio: radio)
           BandSettingSubView()
+          CwxSubView()
           EqualizerSubView()
           GpsSubView(radio: radio)
           InterlockSubView()
           ListsView(radio: radio)
           MemorySubView()
           MeterSubView()
+//          MiscView()
           NetworkSubView()
+//          ProfilesSubView()
           TnfSubView()
           TransmitSubView()
+//          UsbCableSubView()
+//          WanSubView()
+//          WaveformSubView(radio: radio)
+//          XvtrsSubView()
+          
+        case .amplifiers:   AmplifierSubView(radio: radio)
         case .atu:          AtuSubView(radio: radio)
         case .bandSettings: BandSettingSubView()
+        case .cwx:          CwxSubView()
         case .equalizers:   EqualizerSubView()
         case .gps:          GpsSubView(radio: radio)
         case .interlocks:   InterlockSubView()
         case .lists:        ListsView(radio: radio)
         case .memories:     MemorySubView()
         case .meters:       MeterSubView()
+//        case .misc:         MiscSubView()
         case .network:      NetworkSubView()
+//        case .profiles:     ProfilesSubView()
         case .tnf:          TnfSubView()
         case .transmit:     TransmitSubView()
+//        case .usbCable:     UsbCableSubView()
+//        case .wan:          WanSubView()
+//        case .waveforms:    WaveformSubView(radio: radio)
+//        case .xvtrs:        XvtrsSubView()
+        case .misc, .profiles, .usbCable, .wan, .waveforms, .xvtrs:
+          EmptyView()
         }
       }
     }

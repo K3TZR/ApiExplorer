@@ -17,15 +17,6 @@ struct GuiClientSubView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
-//  private var guiClients: [GuiClient] {
-//    if let radioId = viewModel.api.activeSelection?.radioId {
-//      if let radio = viewModel.api.radios.first(where: { $0.id == radioId }) {
-//        return radio.guiClients
-//      }
-//    }
-//    return []
-//  }
-  
   var body: some View {
     
     if let radio {
@@ -65,20 +56,14 @@ struct GuiClientSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
-          //        Divider()
-          //          .frame(height: 2)
-          //          .background(Color.gray)
-          
           GuiClientDetailView(handle: guiClient.handle.handle!)
         }
         
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
     } else {
-      Text("STATION Objects will be displayed here")
-        .frame(maxWidth: .infinity)
+      Spacer()
     }
-    //    .frame(minHeight: 50)
   }
 }
 
@@ -102,7 +87,7 @@ private struct GuiClientDetailView: View {
           
           //      case .amplifiers:        AmplifierSubView()
           //      case .cwx:               CwxSubView()
-        case .interlock:         InterlockSubView()
+          //      case .interlock:         InterlockSubView()
           //      case .memories:          MemorySubView()
           //      case .meters:            MeterSubView(sliceId: nil, sliceClientHandle: nil, handle: handle)
           //      case .network:           NetworkSubView()
