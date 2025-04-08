@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9F9C65762D6B89F900E7F025 /* ApiPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C65752D6B89F900E7F025 /* ApiPackage */; };
+		9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9FA7E4D02DA59CC2007DFB88 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,7 @@
 		9F9C64A12D68F9D800E7F025 /* ApiExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C64AB2D68F9D800E7F025 /* ApiExplorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C65782D6CC1E400E7F025 /* ApiPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ApiPackage; path = ../Packages/ApiPackage; sourceTree = SOURCE_ROOT; };
+		9FA7E4D02DA59CC2007DFB88 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -81,6 +83,7 @@
 		9F9C64872D68F9D700E7F025 = {
 			isa = PBXGroup;
 			children = (
+				9FA7E4D02DA59CC2007DFB88 /* README.md */,
 				9F9C65782D6CC1E400E7F025 /* ApiPackage */,
 				9F9C64922D68F9D700E7F025 /* ApiExplorer */,
 				9F9C64A42D68F9D800E7F025 /* ApiExplorerTests */,
@@ -223,6 +226,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,7 +410,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				DEVELOPMENT_TEAM = EE5B8TYXGA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -436,7 +440,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				DEVELOPMENT_TEAM = EE5B8TYXGA;
 				ENABLE_HARDENED_RUNTIME = YES;
