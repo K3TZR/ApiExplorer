@@ -5,6 +5,7 @@
 ##### Built on:
 *  macOS 15.4
 *  Xcode 16.3
+*  SWIFT 5.0
 
 ##### Runs on:  
 * macOS 14.0 and higher
