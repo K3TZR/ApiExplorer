@@ -154,10 +154,6 @@ struct ObjectsMessagesSplitView: View {
           .frame(height: (2 * (geometry.size.height/3)) - 20)
           .frame(maxWidth: .infinity)
         
-        Divider()
-          .frame(height: 3)
-          .background(Color.gray)
-        
         MessagesView()
           .frame(height: geometry.size.height/3)
           .frame(maxWidth: .infinity)

@@ -57,8 +57,11 @@ struct GuiClientSubView: View {
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
           GuiClientDetailView(handle: guiClient.handle.handle!)
+
+          Divider()
+            .frame(height: 2)
+            .background(Color.gray)
         }
-        
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
     } else {

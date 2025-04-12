@@ -127,9 +127,8 @@ private struct DetailView: View {
           ListsView(radio: radio)
           MemorySubView()
           MeterSubView()
-//          MiscView()
           NetworkSubView()
-//          ProfilesSubView()
+          ProfileSubView()
           TnfSubView()
           TransmitSubView()
 //          UsbCableSubView()
@@ -147,16 +146,15 @@ private struct DetailView: View {
         case .lists:        ListsView(radio: radio)
         case .memories:     MemorySubView()
         case .meters:       MeterSubView()
-//        case .misc:         MiscSubView()
         case .network:      NetworkSubView()
-//        case .profiles:     ProfilesSubView()
+        case .profiles:     ProfileSubView()
         case .tnf:          TnfSubView()
         case .transmit:     TransmitSubView()
 //        case .usbCable:     UsbCableSubView()
 //        case .wan:          WanSubView()
 //        case .waveforms:    WaveformSubView(radio: radio)
 //        case .xvtrs:        XvtrsSubView()
-        case .misc, .profiles, .usbCable, .wan, .waveforms, .xvtrs:
+        case .usbCable, .wan, .waveforms, .xvtrs:
           EmptyView()
         }
       }

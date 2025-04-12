@@ -436,9 +436,9 @@ public class ViewModel {
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log?.info("ApiExplorer: connection attempt SUCCEEDED for \(selection.radioId)")
+      log?.info("ApiExplorer: connection SUCCEEDED, ID <\(selection.radioId)>")
     } else {
-      log?.errorExt("ApiExplorer: connection attempt FAILED for \(selection.radioId)")
+      log?.errorExt("ApiExplorer: connection FAILED, ID <\(selection.radioId)>")
     }
   }
   
@@ -456,7 +456,7 @@ public class ViewModel {
       }
       
     } else {
-      log?.errorExt("ApiExplorer: Radio not found for ID \(selection.radioId)")
+      log?.errorExt("ApiExplorer: Radio not found, ID <\(selection.radioId)>")
     }
   }
   

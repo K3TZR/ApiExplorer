@@ -27,12 +27,12 @@ public struct ObjectsView: View {
   public var body: some View {
     @Bindable var settings = settings
     
-    // Custom resizable vertical split, works for macOS and iOS
+    // Custom vertical split, works for macOS and iOS
     GeometryReader { geometry in
       VStack(alignment: .leading, spacing: 10) {
         HStack {
           Text("RADIO Objects")
-            .frame(width: 120, alignment: .leading) // Fixed width label
+            .frame(width: 120, alignment: .leading)
 
           Picker("", selection: $settings.radioObjectFilter) {
             ForEach(RadioObjectFilter.allCases, id: \.self) {
@@ -40,7 +40,7 @@ public struct ObjectsView: View {
             }
           }
           .pickerStyle(MenuPickerStyle())
-          .frame(width: 180) // Optional: fix width for the dropdown
+          .frame(width: 180)
         }
         
         RadioSubView(radio: radio)
@@ -48,7 +48,7 @@ public struct ObjectsView: View {
           .frame(maxWidth: .infinity)
         
         Divider()
-          .frame(height: 3)
+          .frame(height: 2)
           .background(Color.gray)
         
         HStack {
@@ -182,7 +182,6 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
   case lists
   case memories
   case meters
-  case misc
   case network
   case profiles
   case tnf
@@ -196,17 +195,5 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
 public enum StationObjectFilter: String, CaseIterable, Sendable {
   case all
   case noMeters = "w/o meters"
-//  case amplifiers
-//  case cwx
-//  case interlock
-//  case memories
-//  case meters
-//  case misc
-//  case network
-//  case profiles
   case streams
-//  case usbCable
-//  case wan
-//  case waveforms
-//  case xvtrs
 }
