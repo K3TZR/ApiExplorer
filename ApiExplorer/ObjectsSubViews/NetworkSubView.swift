@@ -68,7 +68,7 @@ private struct DetailView: View {
         Text(throttledStats[6].errors.formatted(.number))
         Text(errorPerCent(throttledStats[6].errors, throttledStats[6].packets).formatted(.percent.precision(.fractionLength(4))))
       }
-      .foregroundColor(.secondary)
+//      .foregroundColor(.secondary)
       .gridColumnAlignment(.trailing)
     }
     
@@ -80,7 +80,7 @@ private struct DetailView: View {
         Text(throttledStats[8].errors.formatted(.number))
         Text(errorPerCent(throttledStats[8].errors, throttledStats[6].packets).formatted(.percent.precision(.fractionLength(4))))
       }
-      .foregroundColor(.secondary)
+//      .foregroundColor(.secondary)
       .gridColumnAlignment(.trailing)
     }
 
@@ -92,7 +92,7 @@ private struct DetailView: View {
         Text(throttledStats[9].errors.formatted(.number))
         Text(errorPerCent(throttledStats[9].errors, throttledStats[9].packets).formatted(.percent.precision(.fractionLength(4))))
       }
-      .foregroundColor(.secondary)
+//      .foregroundColor(.secondary)
       .gridColumnAlignment(.trailing)
     }
 

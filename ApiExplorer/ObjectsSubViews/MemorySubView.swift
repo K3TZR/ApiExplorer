@@ -27,7 +27,7 @@ struct MemorySubView: View {
         }
         
       } else {
-        ForEach(viewModel.api.memories) { memory in
+        ForEach(viewModel.api.memories.sorted(by: {$0.id < $1.id})) { memory in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
 
@@ -64,7 +64,7 @@ struct MemorySubView: View {
             Text("\(memory.digitalLowerOffset)")
             Text("\(memory.digitalUpperOffset)")
           }
-          .foregroundColor(.secondary)
+//          .foregroundColor(.secondary)
         }
       }
     }

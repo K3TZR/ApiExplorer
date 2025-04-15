@@ -1,8 +1,8 @@
 //
-//  TnfSubView.swift
-//  Api6000/SubViews
+//  UsbCableSubView.swift
+//  ApiExplorer
 //
-//  Created by Douglas Adams on 1/23/22.
+//  Created by Douglas Adams on 4/12/25.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ import ApiPackage
 // ----------------------------------------------------------------------------
 // MARK: - View
 
-struct TnfSubView: View {
+struct UsbCableSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
@@ -28,26 +28,26 @@ struct TnfSubView: View {
   var body: some View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
-      if viewModel.api.tnfs.count > 0 {
+      if viewModel.api.usbCables.count > 0 {
         HeaderView()
         
-        ForEach(viewModel.api.tnfs, id: \.id) { tnf in
-          GridRow {
-            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-            
-            Text(tnf.id.formatted(.number))
-            Text(tnf.frequency, format: .number)
-            Text(tnf.width, format: .number)
-            Text(depthName(tnf.depth))
-            Text(tnf.permanent ? "Y" : "N")
-              .foregroundColor(tnf.permanent ? .green : .red)
-          }
+//        ForEach(viewModel.api.usbCables, id: \.id) { cable in
+//          GridRow {
+//            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+//            
+//            Text(tnf.id.formatted(.number))
+//            Text(tnf.frequency, format: .number)
+//            Text(tnf.width, format: .number)
+//            Text(depthName(tnf.depth))
+//            Text(tnf.permanent ? "Y" : "N")
+//              .foregroundColor(tnf.permanent ? .green : .red)
+//          }
 //          .foregroundColor(.secondary)
-        }
+//        }
         
       } else {
         GridRow {
-          Text("TNFS")
+          Text("USB Cables")
             .frame(width: 110, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
@@ -63,16 +63,16 @@ private struct HeaderView: View {
   var body: some View {
     
     GridRow {
-      Text("TNFS")
+      Text("USB Cables")
         .frame(width: 110, alignment: .leading)
 
-      Text("ID")
+      Text("Name")
         .frame(width: 50, alignment: .leading)
 
-      Text("Frequency")
-      Text("Width")
-      Text("Depth")
-      Text("Permanent")
+      Text("Serial")
+      Text("Enabled")
+      Text("Logging")
+      Text("Type")
     }
   }
 }
@@ -81,7 +81,7 @@ private struct HeaderView: View {
 // MARK: - Preview
 
 #Preview {
-  TnfSubView()    
+  UsbCableSubView()
     .environment(ViewModel())
   
     .frame(minWidth: 1000)

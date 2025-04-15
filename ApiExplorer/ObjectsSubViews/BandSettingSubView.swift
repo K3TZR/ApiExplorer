@@ -21,11 +21,11 @@ struct BandSettingSubView: View {
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
       if viewModel.api.bandSettings.count > 0 {
-        ForEach(viewModel.api.bandSettings.sorted(by: {$0.name > $1.name})) { bandSetting in
+        ForEach(viewModel.api.bandSettings.sorted(by: {Int($0.name) ?? 0 < Int($1.name) ?? 0})) { bandSetting in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             
-            Text(bandSetting.name == 999 ? " GEN" : String(format: "%#4d", bandSetting.name))
+            Text(bandSetting.name)
             Text(bandSetting.rfPower, format: .number)
             Text(bandSetting.tunePower, format: .number)
             Text("\(bandSetting.inhibit ? "ON" : "OFF")").foregroundColor(bandSetting.inhibit ? .green : .red)

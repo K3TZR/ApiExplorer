@@ -21,7 +21,7 @@ struct MeterSubView: View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       HeadingView()
-      ForEach(viewModel.api.meters ) { meter in
+      ForEach(viewModel.api.meters.sorted(by: {$0.id < $1.id})) { meter in
         DetailView(meter: meter)
       }
     }
@@ -82,7 +82,7 @@ private struct DetailView: View {
       Text(meter.desc)
         .gridColumnAlignment(.leading)
     }
-    .foregroundColor(.secondary)
+//    .foregroundColor(.secondary)
   }
 }
 

@@ -23,7 +23,7 @@ struct CwxSubView: View {
     Grid(alignment: .leading, horizontalSpacing: 10) {
       GridRow {
         Text("CWX")
-          .frame(width: 100, alignment: .leading)
+          .frame(width: 110, alignment: .leading)
         
         Text("Delay")
         Text(cwx.breakInDelay, format: .number).foregroundColor(.secondary)

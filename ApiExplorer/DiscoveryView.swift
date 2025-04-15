@@ -64,7 +64,6 @@ public struct DiscoveryView: View {
           if settings.discoveryDisplayType == .vitaHeader { VitaHeaderView(data: data)}
           if settings.discoveryDisplayType == .vitaPayload { VitaPayloadView(data: data)}
           if settings.discoveryDisplayType == .vitaByteMap { VitaHexView(data: data)}
-          //          if settings.discoveryDisplayType == .vitaByteMapOld { VitaHexViewOld(data: data)}
         } else {
           Spacer()
           EmptyView()
@@ -80,7 +79,7 @@ public struct DiscoveryView: View {
               .keyboardShortcut(.defaultAction)
           }
         }
-      case .timing: TimingView()
+      case .timing: TimingView(start: Date())
       }
     }
     .monospaced()
@@ -344,9 +343,12 @@ private struct VitaHexView: View {
 }
 
 private struct TimingView: View {
-  
+  let start: Date
+
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
+  
+  @State var ticks = 0
   
   func formatMinutesAndSeconds(from date: Date) -> String {
     let formatter = DateFormatter()
@@ -377,68 +379,82 @@ private struct TimingView: View {
     }
   }
   
+  
   var body: some View {
-    ScrollView {
-      VStack(spacing: 5) {
-        HStack {
-          Text("Radio Name")
-            .frame(width: 150, alignment: .leading)
-          
-          Spacer()
-          
-          Text("Average")
-            .frame(width: 150, alignment: .trailing)
-          
-          Spacer()
-          
-          Text("Peak")
-            .frame(width: 150, alignment: .trailing)
+    
+
+    VStack {
+      HStack {
+        Text("Radio Name")
+          .frame(width: 150, alignment: .leading)
+        
+        Spacer()
+        
+        Text("Average")
+          .frame(width: 150, alignment: .trailing)
+        
+        Spacer()
+        
+        Text("Peak")
+          .frame(width: 150, alignment: .trailing)
+      }
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      TimelineView(.periodic(from: Date(), by: 10)) { context in
+        
+        ScrollView {
+          VStack(spacing: 5) {
+            ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
+              if radio.packet.source == .local {
+                HStack{
+                  Text(radio.packet.nickname)
+                    .frame(width: 150, alignment: .leading)
+                  
+                  Spacer()
+                  
+                  Text(average(radio.intervals))
+                    .frame( width: 150, alignment: .trailing)
+                  
+                  Spacer()
+                  
+                  Text(peak(radio.intervals))
+                    .frame( width: 150, alignment: .trailing)
+                    .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
+                }
+                .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
+              }
+            }
+          }
+        }
+        
+        Spacer()
+        VStack {
+          HStack {
+            Text(Int(context.date.timeIntervalSince(start)), format: .number).bold()
+            Text("Seconds")
+            Spacer()
+            Text("Peak > 10").bold()
+            Text("seconds shown in")
+            Text("RED").foregroundColor(.red).bold()
+          }
+//          HStack {
+//            Spacer()
+//          }
         }
         
         Divider()
           .frame(height: 2)
           .background(Color.gray)
         
-        ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
-          if radio.packet.source == .local {
-            HStack{
-              Text(radio.packet.nickname)
-                .frame(width: 150, alignment: .leading)
-              
-              Spacer()
-              
-              Text(average(radio.intervals))
-                .frame( width: 150, alignment: .trailing)
-              
-              Spacer()
-              
-              Text(peak(radio.intervals))
-                .frame( width: 150, alignment: .trailing)
-                .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
-            }
-            .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
-          }
+        HStack {
+          Spacer()
+          ButtonX(title: "Close") { dismiss() }
+            .keyboardShortcut(.defaultAction)
         }
-        
       }
-    }
-    
-    Spacer()
-    
-    Spacer()
-    HStack {
-      Text("updated every 10 seconds  ")
-      Spacer()
-    }
-    
-    Divider()
-      .frame(height: 2)
-      .background(Color.gray)
-    
-    HStack {
-      Spacer()
-      ButtonX(title: "Close") { dismiss() }
-        .keyboardShortcut(.defaultAction)
     }
   }
 }

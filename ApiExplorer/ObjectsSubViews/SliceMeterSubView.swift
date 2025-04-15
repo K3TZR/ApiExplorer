@@ -100,7 +100,7 @@ private struct DetailView: View {
       Text(meter.desc)
         .gridColumnAlignment(.leading)
     }
-    .foregroundColor(.secondary)
+//    .foregroundColor(.secondary)
 
   }
 }

@@ -26,17 +26,17 @@ struct ProfileSubView: View {
       if viewModel.api.profiles.count > 0 {
         HeaderView()
         
-        ForEach(viewModel.api.profiles, id: \.id) { profile in
+        ForEach(viewModel.api.profiles.sorted(by: {$0.id < $1.id}), id: \.id) { profile in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
               .frame(width: 110)
 
             Text(name(profile.id).uppercased())
             Text("\(profile.current.isEmpty ? "-none-" : profile.current)")
-              .foregroundColor(profile.current.isEmpty ? .red : .secondary)
+              .foregroundColor(profile.current.isEmpty ? .red : nil)
             Text(profile.list.joined(separator: ", "))
           }
-          .foregroundColor(.secondary)
+//          .foregroundColor(.secondary)
         }
         
       } else {

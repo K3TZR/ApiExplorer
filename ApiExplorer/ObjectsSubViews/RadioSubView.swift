@@ -132,9 +132,9 @@ private struct DetailView: View {
           TnfSubView()
           TransmitSubView()
 //          UsbCableSubView()
-//          WanSubView()
+          WanSubView()
 //          WaveformSubView(radio: radio)
-//          XvtrsSubView()
+          XvtrSubView()
           
         case .amplifiers:   AmplifierSubView(radio: radio)
         case .atu:          AtuSubView(radio: radio)
@@ -151,10 +151,10 @@ private struct DetailView: View {
         case .tnf:          TnfSubView()
         case .transmit:     TransmitSubView()
 //        case .usbCable:     UsbCableSubView()
-//        case .wan:          WanSubView()
+        case .wan:          WanSubView()
 //        case .waveforms:    WaveformSubView(radio: radio)
-//        case .xvtrs:        XvtrsSubView()
-        case .usbCable, .wan, .waveforms, .xvtrs:
+        case .xvtrs:        XvtrSubView()
+        case .usbCable, .waveforms:
           EmptyView()
         }
       }

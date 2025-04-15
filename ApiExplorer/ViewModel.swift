@@ -230,6 +230,9 @@ public class ViewModel {
             activeSheet = .smartlinkLogin
           }
         }
+      } else {
+        // did not connect, force a Login
+        activeSheet = .smartlinkLogin
       }
       
     } else {

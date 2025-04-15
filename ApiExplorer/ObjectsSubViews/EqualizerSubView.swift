@@ -38,7 +38,7 @@ struct EqualizerSubView: View {
           Text(eq.hz4000.formatted(.number))
           Text(eq.hz8000.formatted(.number))
         }
-        .foregroundColor(.secondary)
+//        .foregroundColor(.secondary)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)

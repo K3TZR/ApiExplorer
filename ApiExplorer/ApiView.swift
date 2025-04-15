@@ -11,7 +11,7 @@ import SwiftUI
 import ApiPackage
 
 public enum ActiveSheet: Identifiable {
-  case discovery, guiClients, multiflex, picker, smartlinkLogin, settings
+  case pings, discovery, guiClients, multiflex, picker, smartlinkLogin, settings
   
   public var id: Int { hashValue }
 }
@@ -67,6 +67,9 @@ struct ApiView: View {
     // Sheets
     .sheet(item: $viewModel.activeSheet) { sheet in
       switch sheet {
+      case .pings:
+        PingsView(start: Date())
+          .frame(width: 400, height: 180)
       case .discovery:
         DiscoveryView()
           .frame(width: 500, height: 600)
@@ -101,6 +104,13 @@ struct ApiView: View {
           .foregroundColor(.blue)
           .padding(10)
           .border(Color.blue, width: 2)
+      }
+      if viewModel.api.activeSelection != nil {
+        Button("Pings") {
+          viewModel.api.pingIntervalIndex = 0
+          viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
+          viewModel.activeSheet = .pings
+        }
       }
       Button("Discovery") {
         viewModel.activeSheet = .discovery
