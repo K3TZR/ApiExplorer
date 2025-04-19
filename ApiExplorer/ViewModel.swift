@@ -42,7 +42,7 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
-  private var _settings = SettingsModel.shared
+  private var _settings = SettingsModel()
   private var _smartlinkIdToken: String?
   
   private let kDomain             = "https://frtest.auth0.com/"
@@ -107,7 +107,7 @@ public class ViewModel {
   
   public func onAppear() {
     if initialized == false {
-      log?.debug("ApiExplorer: application started")
+      Task { await AppLog.debug("ApiExplorer: application started")}
       
       // initialize the Messages model
       messages.reFilter()
@@ -253,15 +253,15 @@ public class ViewModel {
     Task {
       var tokens: Tokens?
       
-      tokens = await api.listenerSmartlink?.requestTokens(user, password)
-      if api.listenerSmartlink!.connect(tokens!) {
-        _settings.smartlinkRefreshToken = tokens!.refreshToken
-        _smartlinkIdToken = tokens!.idToken
-      } else {
+//      tokens = await api.listenerSmartlink?.requestTokens(user, password)
+//      if api.listenerSmartlink!.connect(tokens!) {
+//        _settings.smartlinkRefreshToken = tokens!.refreshToken
+//        _smartlinkIdToken = tokens!.idToken
+//      } else {
         alertInfo = AlertInfo("Smartlink tokens", "FAILED for user: \(user)")
         _settings.smartlinkEnabled = false
         showAlert = true
-      }
+//      }
     }
   }
   
@@ -433,15 +433,15 @@ public class ViewModel {
       } catch {
         // connection attempt failed
         await api.disconnect()
-        log?.errorExt("\(error.localizedDescription)")
+        Task { await AppLog.error("\(error.localizedDescription)") }
         return false
       }
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      log?.info("ApiExplorer: connection SUCCEEDED, ID <\(selection.radioId)>")
+      Task { await AppLog.info("ApiExplorer: connection SUCCEEDED, ID <\(selection.radioId)>") }
     } else {
-      log?.errorExt("ApiExplorer: connection FAILED, ID <\(selection.radioId)>")
+      Task { await AppLog.error("ApiExplorer: connection FAILED, ID <\(selection.radioId)>") }
     }
   }
   
@@ -459,7 +459,7 @@ public class ViewModel {
       }
       
     } else {
-      log?.errorExt("ApiExplorer: Radio not found, ID <\(selection.radioId)>")
+      Task { await AppLog.error("ApiExplorer: Radio not found, ID <\(selection.radioId)>") }
     }
   }
   

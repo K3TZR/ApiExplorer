@@ -334,9 +334,9 @@ private struct VitaHexView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
       switch result {
       case .success(let url):
-        log?.info("ApiExplorer: Broadcast Exported to \(String(describing: url))")
+        Task { await AppLog.info("ApiExplorer: Broadcast Exported to \(String(describing: url))") }
       case .failure(let error):
-        log?.warningExt("ApiExplorer: Broadcast Export failed, \(error)")
+        Task { await AppLog.warning("ApiExplorer: Broadcast Export failed, \(error)") }
       }
     }
   }
@@ -465,5 +465,5 @@ private struct TimingView: View {
 #Preview("DiscoveryView") {
   DiscoveryView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
 }

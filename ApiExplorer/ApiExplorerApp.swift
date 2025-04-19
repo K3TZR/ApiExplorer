@@ -48,15 +48,15 @@ struct ApiExplorerApp: App {
     WindowGroup("ApiExplorer  (v" + Version().string + ")") {
       ApiView()
         .environment(viewModel)
-        .environment(SettingsModel.shared)
+        .environment(SettingsModel())
     }
 #if os(macOS)
     .commands {
         CommandGroup(replacing: .newItem) {
             Button("Font") {
-              var currentSize = SettingsModel.shared.fontSize
+              var currentSize = SettingsModel().fontSize
               currentSize += 1
-              SettingsModel.shared.fontSize = currentSize.bracket(8, 14)
+              SettingsModel().fontSize = currentSize.bracket(8, 14)
             }
             .keyboardShortcut("+", modifiers: .command)
         }
@@ -67,7 +67,7 @@ struct ApiExplorerApp: App {
     Settings {
       SettingsView()
         .environment(viewModel)
-        .environment(SettingsModel.shared)
+        .environment(SettingsModel())
     }
 #endif
   }
@@ -86,11 +86,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   
   func applicationWillFinishLaunching(_ notification: Notification) {
     // setup logging
-    log = Logger(subsystem: "net.k3tzr.ApiExplorer", category: "Application")
+//    log = Logger(subsystem: "net.k3tzr.ApiExplorer", category: "Application")
   }
   
   func applicationWillTerminate(_ notification: Notification) {
-    log?.info("ApiExplorer (macOS): application terminated")
+    Task { await AppLog.info("ApiExplorer (macOS): application terminated") }
   }
   
   func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

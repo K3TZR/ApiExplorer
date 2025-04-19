@@ -122,5 +122,5 @@ public struct SettingsView: View {
   SettingsView()
   
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
 }

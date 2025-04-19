@@ -134,5 +134,5 @@ private struct FilterView: View {
 #Preview {
   MessagesView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
 }

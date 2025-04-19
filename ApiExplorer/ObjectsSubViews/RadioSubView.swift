@@ -168,7 +168,7 @@ private struct DetailView: View {
 #Preview {
   RadioSubView(radio: nil)
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
   
     .frame(minWidth: 1000)
 }

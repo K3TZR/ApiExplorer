@@ -164,7 +164,7 @@ public struct ObjectsView: View {
 #Preview {
   ObjectsView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
 }
 
 // ----------------------------------------------------------------------------

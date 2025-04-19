@@ -145,7 +145,7 @@ struct ApiView: View {
 #Preview {
   ApiView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
   
     .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   .padding()

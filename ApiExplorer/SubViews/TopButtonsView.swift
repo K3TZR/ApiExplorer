@@ -102,7 +102,7 @@ public struct TopButtonsView: View {
 #Preview {
   TopButtonsView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
   
     .frame(width: 1000)
 }

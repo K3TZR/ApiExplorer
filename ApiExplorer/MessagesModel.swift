@@ -36,7 +36,7 @@ public final class MessagesModel: TcpProcessor {
   // MARK: - Private properties
 
   private var _messages = [TcpMessage]()
-  private var _settings = SettingsModel.shared
+  private var _settings = SettingsModel()
   private var _startTime: Date?
 
   // ----------------------------------------------------------------------------

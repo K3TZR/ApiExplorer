@@ -62,9 +62,9 @@ public struct BottomButtonsView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.log") { result in
       switch result {
       case .success(let url):
-        log?.info("ApiExplorer: Log Exported to \(url)")
+        Task { await ApiLog.info("ApiExplorer: Log Exported to \(url)") }
       case .failure(let error):
-        log?.warningExt("ApiExplorer: Log Export failed, \(error)")
+        Task { await ApiLog.warning("ApiExplorer: Log Export failed, \(error)") }
       }
     }
   }
@@ -76,7 +76,7 @@ public struct BottomButtonsView: View {
 #Preview {
   BottomButtonsView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
   
     .frame(width: 1000)
 }

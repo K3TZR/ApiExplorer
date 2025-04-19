@@ -14,8 +14,9 @@ public class SettingsModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
   
-  public static var shared = SettingsModel()
-  private init(_ settings: UserDefaults = UserDefaults.standard) {
+//  public static var shared = SettingsModel()
+//  private init(_ settings: UserDefaults = UserDefaults.standard) {
+    public init(_ settings: UserDefaults = UserDefaults.standard) {
     _settings = settings
     
     // read values from UserDefaults

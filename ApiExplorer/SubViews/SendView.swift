@@ -67,7 +67,7 @@ public struct SendView: View {
 #Preview {
   SendView()
     .environment(ViewModel())
-    .environment(SettingsModel.shared)
+    .environment(SettingsModel())
   
     .frame(width: 1000)
 }
