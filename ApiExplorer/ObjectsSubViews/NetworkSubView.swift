@@ -108,7 +108,7 @@ private struct DetailView: View {
 
 #Preview {
   NetworkSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 
     .frame(minWidth: 1000)
 }

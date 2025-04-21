@@ -18,7 +18,8 @@ struct ApiExplorerApp: App {
 @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #endif
 
-  @State var viewModel = ViewModel()
+//  @State var settingsModel = SettingsModel()
+  @State var viewModel = ViewModel(SettingsModel())
 
   /// Struct to hold a Semantic Version number
   private struct Version {
@@ -48,15 +49,15 @@ struct ApiExplorerApp: App {
     WindowGroup("ApiExplorer  (v" + Version().string + ")") {
       ApiView()
         .environment(viewModel)
-        .environment(SettingsModel())
+//        .environment(viewModel.settingsModel)
     }
 #if os(macOS)
     .commands {
         CommandGroup(replacing: .newItem) {
             Button("Font") {
-              var currentSize = SettingsModel().fontSize
+              var currentSize = viewModel.settings.fontSize
               currentSize += 1
-              SettingsModel().fontSize = currentSize.bracket(8, 14)
+              viewModel.settings.fontSize = currentSize.bracket(8, 14)
             }
             .keyboardShortcut("+", modifiers: .command)
         }
@@ -67,7 +68,7 @@ struct ApiExplorerApp: App {
     Settings {
       SettingsView()
         .environment(viewModel)
-        .environment(SettingsModel())
+//        .environment(settingsModel)
     }
 #endif
   }

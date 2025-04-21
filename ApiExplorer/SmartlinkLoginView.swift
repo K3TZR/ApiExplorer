@@ -13,14 +13,13 @@ import SwiftUI
 public struct SmartlinkLoginView: View {
   
   @Environment(ViewModel.self) var viewModel
-  @Environment(SettingsModel.self) private var settings
 //  @Environment(\.dismiss) var dismiss
   
   @State var password = ""
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
 
     VStack(spacing: 10) {
       Text( "Smartlink Login" ).font( .title2 )
@@ -67,5 +66,5 @@ public struct SmartlinkLoginView: View {
 
 #Preview() {
   SmartlinkLoginView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }

@@ -73,7 +73,7 @@ private struct HeadingView: View {
 
 #Preview {
   EqualizerSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

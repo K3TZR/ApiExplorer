@@ -44,7 +44,7 @@ struct CwxSubView: View {
 
 #Preview {
   CwxSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1250)
 }

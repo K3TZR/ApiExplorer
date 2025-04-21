@@ -16,14 +16,14 @@ import ApiPackage
 public struct BottomButtonsView: View {
 
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   @State private var isSaving: Bool = false
   @State private var document: SaveDocument?
 
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
 
     VStack(alignment: .leading) {
       HStack( spacing: 10) {
@@ -75,8 +75,7 @@ public struct BottomButtonsView: View {
 
 #Preview {
   BottomButtonsView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
 }

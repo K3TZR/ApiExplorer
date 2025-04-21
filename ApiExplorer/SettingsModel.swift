@@ -14,8 +14,6 @@ public class SettingsModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
   
-//  public static var shared = SettingsModel()
-//  private init(_ settings: UserDefaults = UserDefaults.standard) {
     public init(_ settings: UserDefaults = UserDefaults.standard) {
     _settings = settings
     
@@ -33,14 +31,13 @@ public class SettingsModel {
     defaultNonGui = _settings.getStruct(forKey: "defaultNonGui", as: PickerSelection.self)
     directEnabled = _settings.bool(forKey: "directEnabled")
     discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: "discoveryDisplayType") ?? "fields") ?? .vitaHeader
+    discoveryPort = _settings.integer(forKey: "discoveryPort")
     fontSize = _settings.integer(forKey: "fontSize")
     gotoBottom = _settings.bool(forKey: "gotoBottom")
     guiClientId = _settings.string(forKey: "guiClientId") ?? ""
     ignoreGps = _settings.bool(forKey: "ignoreGps")
     isNonGui = _settings.bool(forKey: "isNonGui")
-//    isGui = _settings.bool(forKey: "isGui")
     localDisabled = _settings.bool(forKey: "localDisabled")
-//    localEnabled = _settings.bool(forKey: "localEnabled")
     lowBandwidthConnect = _settings.bool(forKey: "lowBandwidthConnect")
     lowBandwidthDax = _settings.bool(forKey: "lowBandwidthDax")
     messageFilter = MessagesModel.Filter(rawValue: _settings.string(forKey: "messageFilter") ?? "all") ?? .all
@@ -55,7 +52,6 @@ public class SettingsModel {
     showPings = _settings.bool(forKey: "showPings")
     showReplies = _settings.bool(forKey: "showReplies")
     showTimes = _settings.bool(forKey: "showTimes")
-    //    smartlinkIdToken = _settings.string(forKey: "smartlinkIdToken") ?? ""
     smartlinkEnabled = _settings.bool(forKey: "smartlinkEnabled")
     smartlinkLoginRequired = _settings.bool(forKey: "smartlinkLoginRequired")
     smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken")
@@ -66,6 +62,7 @@ public class SettingsModel {
     
     if fontSize < 12 || fontSize > 18 { fontSize = 12 }
     if mtuValue == 0 { mtuValue = 1250 }
+    if discoveryPort == 0 { discoveryPort = 4992 }
   }
   
   // ----------------------------------------------------------------------------
@@ -84,14 +81,13 @@ public class SettingsModel {
   public var defaultNonGui: PickerSelection? { didSet { _settings.setStruct(defaultNonGui, forKey: "defaultNonGui") }}
   public var directEnabled: Bool { didSet { _settings.set(directEnabled, forKey: "directEnabled") }}
   public var discoveryDisplayType: DiscoveryDisplayType { didSet { _settings.set(discoveryDisplayType.rawValue, forKey: "discoveryDisplayType") }}
+  public var discoveryPort: Int { didSet { _settings.set(discoveryPort, forKey: "discoveryPort") }}
   public var fontSize: Int { didSet { _settings.set(fontSize, forKey: "fontSize") }}
   public var gotoBottom: Bool { didSet { _settings.set(gotoBottom, forKey: "gotoBottom") }}
   public var guiClientId: String { didSet { _settings.set(guiClientId, forKey: "guiClientId") }}
   public var ignoreGps: Bool { didSet { _settings.set(ignoreGps, forKey: "ignoreGps") }}
   public var isNonGui: Bool { didSet { _settings.set(isNonGui, forKey: "isNonGui") }}
-//  public var isGui: Bool { didSet { _settings.set(isGui, forKey: "isGui") }}
   public var localDisabled: Bool { didSet { _settings.set(localDisabled, forKey: "localDisabled") }}
-//  public var localEnabled: Bool { didSet { _settings.set(localEnabled, forKey: "localEnabled") }}
   public var lowBandwidthConnect: Bool { didSet { _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect") }}
   public var lowBandwidthDax: Bool { didSet { _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax") }}
   public var messageFilter: MessagesModel.Filter { didSet { _settings.set(messageFilter.rawValue, forKey: "messageFilter") }}
@@ -137,14 +133,13 @@ public class SettingsModel {
     _settings.setStruct(defaultNonGui, forKey: "defaultNonGui")
     _settings.set(directEnabled, forKey: "directEnabled")
     _settings.set(discoveryDisplayType.rawValue, forKey: "discoveryDisplayType")
+    _settings.set(discoveryPort, forKey: "discoveryPort")
     _settings.set(fontSize, forKey: "fontSize")
     _settings.set(gotoBottom, forKey: "gotoBottom")
     _settings.set(guiClientId, forKey: "guiClientId")
     _settings.set(ignoreGps, forKey: "ignoreGps")
     _settings.set(isNonGui, forKey: "isNonGui")
-//    _settings.set(isGui, forKey: "isGui")
     _settings.set(localDisabled, forKey: "localDisabled")
-//    _settings.set(localEnabled, forKey: "localEnabled")
     _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect")
     _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax")
     _settings.set(messageFilter.rawValue, forKey: "messageFilter")

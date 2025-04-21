@@ -16,7 +16,7 @@ struct RadioSubView: View {
   let radio: Radio?
   
   @Environment(ViewModel.self) var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -97,7 +97,7 @@ struct RadioSubView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
-        DetailView(filter: settings.radioObjectFilter, radio: radio)
+        DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
       }
     } else {
       Spacer()
@@ -167,8 +167,7 @@ private struct DetailView: View {
 
 #Preview {
   RadioSubView(radio: nil)
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

@@ -13,7 +13,7 @@ import SwiftUI
 struct MessagesView: View {
 
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   @MainActor func textLine( _ text: String) -> AttributedString {
     var attString = AttributedString(text)
@@ -24,8 +24,8 @@ struct MessagesView: View {
     if text.prefix(2) == "S0" { attString.foregroundColor = .systemOrange }                      // S0
     
     // highlight any filterText value
-    if !settings.messageFilterText.isEmpty {
-      if let range = attString.range(of: settings.messageFilterText, options: [.caseInsensitive]) {
+    if !viewModel.settings.messageFilterText.isEmpty {
+      if let range = attString.range(of: viewModel.settings.messageFilterText, options: [.caseInsensitive]) {
         attString[range].underlineStyle = .single
         attString[range].foregroundColor = .yellow
         //        attString[range].font = NSFont(name: "System", size: 16)
@@ -49,17 +49,17 @@ struct MessagesView: View {
           LazyVStack(alignment: .leading) {
             ForEach(viewModel.messages.filteredMessages.reversed(), id: \.id) { tcpMessage in
               HStack(alignment: .top) {
-                if settings.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
-                Text(textLine(tcpMessage.text + "\(settings.newLineBetweenMessages ? "\n" : "")"))
+                if viewModel.settings.showTimes { Text(tcpMessage.interval, format: .number.precision(.fractionLength(6))) }
+                Text(textLine(tcpMessage.text + "\(viewModel.settings.newLineBetweenMessages ? "\n" : "")"))
               }
               .textSelection(.enabled)
-              .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
+              .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
             }
           }
         }
         .scrollPosition(id: $id)
         
-        .onChange(of: settings.gotoBottom) {
+        .onChange(of: viewModel.settings.gotoBottom) {
           if $1 {
             self.id = viewModel.messages.filteredMessages.first?.id
           } else {
@@ -74,15 +74,15 @@ struct MessagesView: View {
 private struct FilterView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     @Bindable var viewModelBinding = viewModel
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
     
     HStack {
       Text("TCP Messages")
-        .frame(width: 120, alignment: .leading) // Fixed width label
+        .frame(width: 130, alignment: .leading) // Fixed width label
       
       Picker("", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
@@ -133,6 +133,5 @@ private struct FilterView: View {
 
 #Preview {
   MessagesView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
 }

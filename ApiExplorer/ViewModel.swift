@@ -16,9 +16,10 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
   
-  public init() {
-    messages = MessagesModel()
+  public init(_ settings: SettingsModel) {
+    messages = MessagesModel(settings)
     api = ApiModel()
+    self.settings = settings
   }
   
   // ----------------------------------------------------------------------------
@@ -27,6 +28,7 @@ public class ViewModel {
   // models
   public let messages: MessagesModel
   public let api: ApiModel
+  public let settings: SettingsModel
   
   // transient properties
   public var activeSheet: ActiveSheet?
@@ -42,7 +44,6 @@ public class ViewModel {
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
-  private var _settings = SettingsModel()
   private var _smartlinkIdToken: String?
   
   private let kDomain             = "https://frtest.auth0.com/"
@@ -52,19 +53,19 @@ public class ViewModel {
   // MARK: - Public action methods
   
   public func clearTextButtonTapped() {
-    _settings.commandToSend = ""
+    settings.commandToSend = ""
   }
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
     alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
-    _settings.daxSelection = .none
+    settings.daxSelection = .none
     showAlert = true
   }
   
   public func directButtonChanged(_ enabled: Bool) {
     alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
     showAlert = true
-    _settings.directEnabled = false
+    settings.directEnabled = false
 //    if enabled {
 //      _settings.localDisabled = true
 //      _settings.smartlinkEnabled = false
@@ -78,7 +79,7 @@ public class ViewModel {
 //  }
   
   public func guiButtonTapped() {
-    _settings.isNonGui.toggle()
+    settings.isNonGui.toggle()
   }
   
   public func localButtonChanged(_ enabled: Bool) {
@@ -87,9 +88,14 @@ public class ViewModel {
       api.listenerLocal = nil
       api.removeRadios(.local)
     } else {
-      _settings.directEnabled = false
+      settings.directEnabled = false
       api.listenerLocal = ListenerLocal(api)
-      Task { await api.listenerLocal!.start() }
+      let port = UInt16(settings.discoveryPort)
+      
+      print("----->>>>>", port)
+      print("----->>>>>", settings.discoveryPort)
+
+      Task { await api.listenerLocal!.start(port: port) }
     }
   }
   
@@ -113,18 +119,18 @@ public class ViewModel {
       messages.reFilter()
       
       // start Local if enabled
-      if !_settings.localDisabled {
+      if !settings.localDisabled {
         localButtonChanged(false)
       }
       
      // start Smartlink if enabled
-      if _settings.smartlinkEnabled {
+      if settings.smartlinkEnabled {
         smartlinkButtonChanged(true)
       }
       
       // make sure we have a Client Id
-      if _settings.guiClientId.isEmpty {
-        _settings.guiClientId = UUID().uuidString
+      if settings.guiClientId.isEmpty {
+        settings.guiClientId = UUID().uuidString
       }
 
       // mark as initialized
@@ -140,17 +146,17 @@ public class ViewModel {
   
   public func pickerDefaultButtonTapped(_ selection: PickerSelection) {
     // set / reset the default
-    if _settings.isNonGui {
-      if _settings.defaultNonGui == selection {
-        _settings.defaultNonGui = nil
+    if settings.isNonGui {
+      if settings.defaultNonGui == selection {
+        settings.defaultNonGui = nil
       } else {
-        _settings.defaultNonGui = selection
+        settings.defaultNonGui = selection
       }
     } else {
-      if _settings.defaultGui == selection {
-        _settings.defaultGui = nil
+      if settings.defaultGui == selection {
+        settings.defaultGui = nil
       } else {
-        _settings.defaultGui = selection
+        settings.defaultGui = selection
       }
     }
   }
@@ -185,10 +191,18 @@ public class ViewModel {
   }
   
   public func sendButtonTapped() {
-    _settings.commandsArray.append(_settings.commandToSend.lowercased())
+    settings.commandsArray.append(settings.commandToSend.lowercased())
     // send command to the radio
-    api.sendTcp(_settings.commandToSend.lowercased())
-    if _settings.clearOnSend { clearTextButtonTapped() }
+    api.sendTcp(settings.commandToSend.lowercased())
+    if settings.clearOnSend { clearTextButtonTapped() }
+  }
+  
+  public func toggleDiscoveryPort() {
+    if settings.discoveryPort == 4992 {
+      settings.discoveryPort = 14992
+    } else {
+      settings.discoveryPort = 4992
+    }
   }
   
   public func settingsDidDismiss() {
@@ -198,9 +212,9 @@ public class ViewModel {
   public func smartlinkButtonChanged(_ enabled: Bool)  {
     if enabled {
       // disable direct, it is incompatable with other connection types
-      _settings.directEnabled = false
+      settings.directEnabled = false
 
-      guard _settings.smartlinkLoginRequired  == false else {
+      guard settings.smartlinkLoginRequired  == false else {
         activeSheet = .smartlinkLogin
         return
       }
@@ -210,18 +224,18 @@ public class ViewModel {
       // is the previous IdToken still valid?
       if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
         // YES, connect using the IdToken
-        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, _settings.smartlinkRefreshToken)) {
+        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, settings.smartlinkRefreshToken)) {
           // did not connect, force a Login
           activeSheet = .smartlinkLogin
         }
         
       // NO, try using the RefreshToken
-      } else if _settings.smartlinkRefreshToken != nil {
+      } else if settings.smartlinkRefreshToken != nil {
         Task {
           // Can we get an IdToken using the RefreshToken?
-          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: _settings.smartlinkRefreshToken!) {
+          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: settings.smartlinkRefreshToken!) {
             // YES, connect using the IdToken
-            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, _settings.smartlinkRefreshToken)) {
+            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, settings.smartlinkRefreshToken)) {
               // did not connect, force a Login
               activeSheet = .smartlinkLogin
             }
@@ -245,7 +259,7 @@ public class ViewModel {
   
   public func smartlinkCancelButtonTapped() {
     activeSheet = nil
-    _settings.smartlinkEnabled = false
+    settings.smartlinkEnabled = false
   }
   
   public func smartlinkLoginButtonTapped(_ user: String, _ password: String) {
@@ -259,7 +273,7 @@ public class ViewModel {
 //        _smartlinkIdToken = tokens!.idToken
 //      } else {
         alertInfo = AlertInfo("Smartlink tokens", "FAILED for user: \(user)")
-        _settings.smartlinkEnabled = false
+        settings.smartlinkEnabled = false
         showAlert = true
 //      }
     }
@@ -273,8 +287,8 @@ public class ViewModel {
     if isConnected {
       Task { await connectionStop() }
       
-    } else if _settings.useDefaultEnabled {
-      if let selection = _settings.isNonGui ? _settings.defaultNonGui : _settings.defaultGui {
+    } else if settings.useDefaultEnabled {
+      if let selection = settings.isNonGui ? settings.defaultNonGui : settings.defaultGui {
         connectionStart(selection)
       } else {
         activeSheet = .picker
@@ -413,19 +427,19 @@ public class ViewModel {
   // MARK: - Private supporting methods
   
   private func connect(_ selection: PickerSelection) async {
-    messages.start(_settings.clearOnStart)
+    messages.start(settings.clearOnStart)
     
     // attempt to connect to the selected Radio / Station
     // try to connect
     let connectTask = Task {
       do {
         try await api.connect(selection: selection,
-                              isGui: !_settings.isNonGui,
+                              isGui: !settings.isNonGui,
                               programName: "ApiExplorer",
-                              mtuValue: _settings.mtuValue,
-                              guiClientId: UUID(uuidString: _settings.guiClientId)!,
-                              lowBandwidthDax: _settings.lowBandwidthDax,
-                              lowBandwidthConnect: _settings.lowBandwidthConnect,
+                              mtuValue: settings.mtuValue,
+                              guiClientId: UUID(uuidString: settings.guiClientId)!,
+                              lowBandwidthDax: settings.lowBandwidthDax,
+                              lowBandwidthConnect: settings.lowBandwidthConnect,
                               testDelegate: messages)
         // connection succesful
         return true
@@ -433,15 +447,15 @@ public class ViewModel {
       } catch {
         // connection attempt failed
         await api.disconnect()
-        Task { await AppLog.error("\(error.localizedDescription)") }
+        await AppLog.error("ApiExplorer/connect: \(error.localizedDescription)")
         return false
       }
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      Task { await AppLog.info("ApiExplorer: connection SUCCEEDED, ID <\(selection.radioId)>") }
+      Task { await AppLog.info("ApiExplorer/connect: SUCCEEDED, ID <\(selection.radioId)>") }
     } else {
-      Task { await AppLog.error("ApiExplorer: connection FAILED, ID <\(selection.radioId)>") }
+      Task { await AppLog.error("ApiExplorer/connect: FAILED, ID <\(selection.radioId)>") }
     }
   }
   
@@ -451,7 +465,7 @@ public class ViewModel {
       api.activeSelection = selection
       
       // handle Multiflex
-      if !_settings.isNonGui && radio.guiClients.count > 0 {
+      if !settings.isNonGui && radio.guiClients.count > 0 {
         activeSheet = .multiflex
         
       } else {
@@ -465,7 +479,7 @@ public class ViewModel {
   
   private func connectionStop() async {
     api.activeSelection = nil
-    messages.stop(_settings.clearOnStop)
+    messages.stop(settings.clearOnStop)
     await api.disconnect()
     isConnected = false
   }

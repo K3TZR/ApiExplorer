@@ -40,7 +40,7 @@ struct ListsView: View {
 
 #Preview {
   ListsView(radio: nil)
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
 }

@@ -15,7 +15,7 @@ import ApiPackage
 public struct ObjectsView: View {
 
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   var radio: Radio? {
     if let selection = viewModel.api.activeSelection {
@@ -25,14 +25,14 @@ public struct ObjectsView: View {
   }
 
   public var body: some View {
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
     
     // Custom vertical split, works for macOS and iOS
     GeometryReader { geometry in
       VStack(alignment: .leading, spacing: 10) {
         HStack {
           Text("RADIO Objects")
-            .frame(width: 120, alignment: .leading)
+            .frame(width: 130, alignment: .leading)
 
           Picker("", selection: $settings.radioObjectFilter) {
             ForEach(RadioObjectFilter.allCases, id: \.self) {
@@ -53,7 +53,7 @@ public struct ObjectsView: View {
         
         HStack {
           Text("STATION Objects")
-            .frame(width: 120, alignment: .leading) // Fixed width label
+            .frame(width: 130, alignment: .leading) // Fixed width label
           
           Picker("", selection: $settings.stationObjectFilter) {
             ForEach(StationObjectFilter.allCases, id: \.self) {
@@ -163,8 +163,7 @@ public struct ObjectsView: View {
 
 #Preview {
   ObjectsView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
 }
 
 // ----------------------------------------------------------------------------

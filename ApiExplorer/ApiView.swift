@@ -22,7 +22,7 @@ public enum ActiveSheet: Identifiable {
 struct ApiView: View {      
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   var isMultiflex: Bool {
     if let selection = viewModel.api.activeSelection {
@@ -105,8 +105,11 @@ struct ApiView: View {
           .padding(10)
           .border(Color.blue, width: 2)
       }
-      if viewModel.api.activeSelection != nil {
-        Button("Pings") {
+      Button("Pings") {
+        if viewModel.api.activeSelection == nil {
+          viewModel.alertInfo = AlertInfo("No Selection", "Please select a radio first")
+          viewModel.showAlert = true
+        } else {
           viewModel.api.pingIntervalIndex = 0
           viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
           viewModel.activeSheet = .pings
@@ -118,24 +121,27 @@ struct ApiView: View {
       Button("Gui Clients") {
         viewModel.activeSheet = .guiClients
       }
-      if viewModel.api.activeSelection == nil {
-        Label( "Settings", systemImage: "gearshape")
-          .onTapGesture {
+      Label( "Settings", systemImage: "gearshape")
+        .onTapGesture {
+          if viewModel.api.activeSelection == nil {
             viewModel.activeSheet = .settings
+          } else {
+            viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
+            viewModel.showAlert = true
           }
+        }
       }
-    }
 #endif
 
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
       .receive(on: RunLoop.main)) { note in
-        if settings.alertOnError {
+        if viewModel.settings.alertOnError {
           viewModel.alertInfo = note.object! as? AlertInfo
           viewModel.showAlert = true
         }
     }
-    .preferredColorScheme(settings.darkMode ? .dark : .light)
+    .preferredColorScheme(viewModel.settings.darkMode ? .dark : .light)
   }
 }
 
@@ -144,8 +150,7 @@ struct ApiView: View {
 
 #Preview {
   ApiView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
   .padding()

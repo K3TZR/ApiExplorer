@@ -16,7 +16,7 @@ import ApiPackage
 public struct DiscoveryView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
   
   @State var radioSelection: String?
@@ -30,7 +30,7 @@ public struct DiscoveryView: View {
   
   public var body: some View {
     @Bindable var viewModel = viewModel
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
     
     VStack(alignment: .center) {
       Text("Discovery Broadcasts").font(.title)
@@ -345,6 +345,7 @@ private struct VitaHexView: View {
 private struct TimingView: View {
   let start: Date
 
+//  @Environment(SettingsModel.self) private var settings
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
@@ -381,7 +382,7 @@ private struct TimingView: View {
   
   
   var body: some View {
-    
+    @Bindable var settings = viewModel.settings
 
     VStack {
       HStack {
@@ -450,6 +451,10 @@ private struct TimingView: View {
           .background(Color.gray)
         
         HStack {
+          Text("Port")
+          Text(viewModel.settings.discoveryPort, format: .number)
+            .frame(width: 120)
+          
           Spacer()
           ButtonX(title: "Close") { dismiss() }
             .keyboardShortcut(.defaultAction)
@@ -464,6 +469,5 @@ private struct TimingView: View {
 
 #Preview("DiscoveryView") {
   DiscoveryView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
 }

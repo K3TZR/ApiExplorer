@@ -91,7 +91,7 @@ private struct DetailView: View {
 
 #Preview {
   MeterSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 
     .frame(width: 1000)
 }

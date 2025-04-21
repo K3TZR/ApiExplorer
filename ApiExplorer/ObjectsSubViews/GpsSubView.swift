@@ -78,7 +78,7 @@ private struct HeadingView: View {
 
 #Preview {
   GpsSubView(radio: nil)
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 
     .frame(width: 1000)
 }

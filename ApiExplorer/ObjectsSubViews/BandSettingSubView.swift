@@ -79,7 +79,7 @@ private struct HeadingView: View {
 
 #Preview {
   BandSettingSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1250)
 }

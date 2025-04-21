@@ -15,7 +15,7 @@ import ApiPackage
 public struct PickerView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   @State var selectedRadioId: String? = nil
   @State var selectedStation: String = ""
@@ -30,10 +30,10 @@ public struct PickerView: View {
       
       HeaderView()
       
-      if (!settings.isNonGui && viewModel.api.radios.count == 0) || (settings.isNonGui && guiClients.count == 0) {
+      if (!viewModel.settings.isNonGui && viewModel.api.radios.count == 0) || (viewModel.settings.isNonGui && guiClients.count == 0) {
         NothingView()
       }
-      else if !settings.isNonGui {
+      else if !viewModel.settings.isNonGui {
         GuiView(selectedRadioId: $selectedRadioId)
       }
       else {
@@ -49,19 +49,19 @@ public struct PickerView: View {
 private struct HeaderView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
     HStack {
       Spacer()
-      Text("Select a \(settings.isNonGui ? "STATION" : "RADIO")")
+      Text("Select a \(viewModel.settings.isNonGui ? "STATION" : "RADIO")")
         .font(.title)
       Spacer()
     }
     
     HStack(spacing: 0) {
-      Text("\(settings.isNonGui ? "Station" : "Radio")")
+      Text("\(viewModel.settings.isNonGui ? "Station" : "Radio")")
         .frame(width: 200, alignment: .leading)
       
       Text("Type")
@@ -70,7 +70,7 @@ private struct HeaderView: View {
       Text("Status")
         .frame(width: 100, alignment: .leading)
       
-      Text("\(settings.isNonGui  ?  "Radio" : "Station(s)")")
+      Text("\(viewModel.settings.isNonGui  ?  "Radio" : "Station(s)")")
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
     }
     .padding(.leading, 10)
@@ -85,7 +85,7 @@ private struct HeaderView: View {
 private struct NothingView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -93,7 +93,7 @@ private struct NothingView: View {
       Spacer()
       HStack {
         Spacer()
-        Text("----------  NO \(settings.isNonGui ? "STATIONS" : "RADIOS") FOUND  ----------")
+        Text("----------  NO \(viewModel.settings.isNonGui ? "STATIONS" : "RADIOS") FOUND  ----------")
           .foregroundColor(.red)
         Spacer()
       }
@@ -106,7 +106,7 @@ private struct GuiView: View {
   let selectedRadioId: Binding<String?>
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -129,7 +129,7 @@ private struct GuiView: View {
             .truncationMode(.middle)
         }
         .font(.title3)
-        .foregroundColor(settings.defaultGui?.radioId == radio.id ? .red : nil)
+        .foregroundColor(viewModel.settings.defaultGui?.radioId == radio.id ? .red : nil)
       }
     }
     .listStyle(.plain)
@@ -142,7 +142,7 @@ private struct NonGuiView: View {
   let guiClients: [GuiClient]
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -168,7 +168,7 @@ private struct NonGuiView: View {
                   .truncationMode(.middle)
               }
               .font(.title3)
-              .foregroundColor(settings.defaultNonGui == PickerSelection(radio.id, guiClient.station, nil) ? .red : nil)
+              .foregroundColor(viewModel.settings.defaultNonGui == PickerSelection(radio.id, guiClient.station, nil) ? .red : nil)
               .overlay(
                 Rectangle()
                   .foregroundColor(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.2) : Color.clear)
@@ -190,7 +190,7 @@ private struct FooterView: View {
   let selectedRadioId: Binding<String?>
   let selectedStation: Binding<String>
   
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
@@ -217,7 +217,7 @@ private struct FooterView: View {
       Spacer()
       
       ButtonX(title: "Default") {
-        viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isNonGui ? selectedStation.wrappedValue : settings.stationName, nil))
+        viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isNonGui ? selectedStation.wrappedValue : viewModel.settings.stationName, nil))
       }
       .disabled(selectedRadioId.wrappedValue == nil)
       
@@ -230,7 +230,7 @@ private struct FooterView: View {
       
       ButtonX(title: "Connect") {
         //        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue! + "|" + "\(settings.isGui ? settings.stationName : selectedStation.wrappedValue)")
-        viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, settings.isNonGui ? selectedStation.wrappedValue : settings.stationName, nil))
+        viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isNonGui ? selectedStation.wrappedValue : viewModel.settings.stationName, nil))
       }
       .keyboardShortcut(.defaultAction)
       .disabled(selectedRadioId.wrappedValue == nil)
@@ -243,5 +243,5 @@ private struct FooterView: View {
 
 #Preview("Picker") {
   PickerView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }

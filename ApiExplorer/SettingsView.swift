@@ -15,11 +15,11 @@ import ApiPackage
 
 public struct SettingsView: View {
   
-  @Environment(SettingsModel.self) private var settings
+  @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
   public var body: some View {
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
 
     VStack {
 
@@ -53,6 +53,25 @@ public struct SettingsView: View {
         GridRow {
           Text("Clear messages on Stop")
           Toggle("", isOn: $settings.clearOnStop)
+        }
+        
+        GridRow {
+          Text("Discovert Port")
+          HStack {
+            Picker("", selection: $settings.discoveryPort) {
+              Text(4992, format: .number)
+                .tag(4992)
+              Text(14992, format: .number)
+                .tag(14992)
+            }
+            .labelsHidden()
+            .frame(width: 75)
+            .onChange(of: settings.discoveryPort) {
+              settings.localDisabled = true
+            }
+            Text("-- Must Restart Local --")
+              .frame(alignment: .leading)
+          }
         }
         
         GridRow {
@@ -120,7 +139,5 @@ public struct SettingsView: View {
 
 #Preview("SettingsView") {
   SettingsView()
-  
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
 }

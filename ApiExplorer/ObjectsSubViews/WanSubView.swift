@@ -75,7 +75,7 @@ struct WanSubView: View {
 
 #Preview {
   WanSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

@@ -70,7 +70,7 @@ struct AtuSubView: View {
 
 #Preview {
   AtuSubView(radio: nil)
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
 }

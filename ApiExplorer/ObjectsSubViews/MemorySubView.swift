@@ -108,7 +108,7 @@ private struct HeadingView: View {
 
 #Preview {
   MemorySubView()  
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1250)
 }

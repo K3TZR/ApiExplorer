@@ -128,5 +128,5 @@ public struct PingsView: View {
 
 #Preview("PingsView") {
   PingsView(start: Date())
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }

@@ -204,7 +204,7 @@ private struct SliceDetailView: View {
 
 #Preview {
   PanadapterSubView(handle: 1, showMeters: true)
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

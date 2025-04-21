@@ -75,7 +75,7 @@ private struct HeaderView: View {
 
 #Preview {
   XvtrSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

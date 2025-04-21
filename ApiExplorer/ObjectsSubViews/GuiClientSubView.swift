@@ -74,13 +74,13 @@ private struct GuiClientDetailView: View {
   let handle: UInt32
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
     ScrollView([.vertical]) {
       VStack(alignment: .leading) {
-        switch settings.stationObjectFilter {
+        switch viewModel.settings.stationObjectFilter {
           
         case .all:
           PanadapterSubView(handle: handle, showMeters: true)
@@ -113,7 +113,7 @@ private struct GuiClientDetailView: View {
 
 //#Preview {
 //  GuiClientSubView()
-//    .environment(ViewModel())
+//    .environment(ViewModel(SettingsModel()))
 //  
 //    .frame(width: 1250)
 //}

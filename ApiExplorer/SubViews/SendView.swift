@@ -21,10 +21,10 @@ extension View {
 public struct SendView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   public var body: some View {
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
 
     HStack {
       ButtonX(title: "Send") { viewModel.sendButtonTapped() }
@@ -66,8 +66,7 @@ public struct SendView: View {
 
 #Preview {
   SendView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
 }

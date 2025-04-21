@@ -107,7 +107,7 @@ private struct CwView: View {
   
 #Preview {
   TransmitSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 
     .frame(minWidth: 1000)
 }

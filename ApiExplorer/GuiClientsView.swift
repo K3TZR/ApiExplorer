@@ -134,5 +134,5 @@ private struct FooterView: View {
 
 #Preview("GuiClientsView") {
   GuiClientsView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }

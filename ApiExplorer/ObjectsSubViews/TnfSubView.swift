@@ -82,7 +82,7 @@ private struct HeaderView: View {
 
 #Preview {
   TnfSubView()    
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

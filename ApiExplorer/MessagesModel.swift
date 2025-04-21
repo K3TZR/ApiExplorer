@@ -14,7 +14,9 @@ import ApiPackage
 @Observable
 public final class MessagesModel: TcpProcessor {
   
-  public init() {}
+  public init(_ settings: SettingsModel) {
+    _settings = settings
+  }
 
   // ----------------------------------------------------------------------------
   // MARK: - Public properties
@@ -36,7 +38,7 @@ public final class MessagesModel: TcpProcessor {
   // MARK: - Private properties
 
   private var _messages = [TcpMessage]()
-  private var _settings = SettingsModel()
+  private let _settings: SettingsModel
   private var _startTime: Date?
 
   // ----------------------------------------------------------------------------

@@ -82,7 +82,7 @@ private struct HeaderView: View {
 
 #Preview {
   UsbCableSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

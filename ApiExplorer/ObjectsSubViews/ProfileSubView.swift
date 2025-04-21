@@ -73,7 +73,7 @@ private struct HeaderView: View {
 
 #Preview {
   ProfileSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }

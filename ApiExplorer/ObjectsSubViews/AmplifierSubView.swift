@@ -70,7 +70,7 @@ private struct HeadingView: View {
 
 #Preview {
   AmplifierSubView(radio: nil)
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 
     .frame(width: 1250)
 }

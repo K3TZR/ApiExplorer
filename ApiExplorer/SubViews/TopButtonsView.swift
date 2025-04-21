@@ -15,14 +15,14 @@ import ApiPackage
 public struct TopButtonsView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  @Environment(SettingsModel.self) private var settings
+//  @Environment(SettingsModel.self) private var settings
 
   private var startButtonDisabled: Bool {
-    return !(settings.directEnabled || !settings.localDisabled || settings.smartlinkEnabled)
+    return !(viewModel.settings.directEnabled || !viewModel.settings.localDisabled || viewModel.settings.smartlinkEnabled)
   }
 
   public var body: some View {
-    @Bindable var settings = settings
+    @Bindable var settings = viewModel.settings
 
     HStack(spacing: 0) {
       // Connection initiation
@@ -101,8 +101,7 @@ public struct TopButtonsView: View {
 
 #Preview {
   TopButtonsView()
-    .environment(ViewModel())
-    .environment(SettingsModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
 }

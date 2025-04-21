@@ -73,6 +73,6 @@ public struct MultiflexView: View {
 
 #Preview() {
   MultiflexView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }
 

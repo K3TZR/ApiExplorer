@@ -44,5 +44,5 @@ public struct NotImplementedView: View {
 
 #Preview() {
   NotImplementedView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
 }

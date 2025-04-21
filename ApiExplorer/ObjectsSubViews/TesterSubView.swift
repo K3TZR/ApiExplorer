@@ -44,7 +44,7 @@ struct TesterSubView: View {
 
 #Preview {
   TesterSubView()
-    .environment(ViewModel())
+    .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)
 }
