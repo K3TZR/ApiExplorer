@@ -14,8 +14,16 @@ public class SettingsModel {
   // ----------------------------------------------------------------------------
   // MARK: - Initialization
   
-    public init(_ settings: UserDefaults = UserDefaults.standard) {
+  public init(_ settings: UserDefaults = UserDefaults.standard) {
     _settings = settings
+    
+    _settings.register(defaults: [
+      "discoveryPort": 4992,
+      "fontSize": 12,
+      "isGui": true,
+      "localEnabled": true,
+      "mtuValue": 1250,
+    ])
     
     // read values from UserDefaults
     alertOnError = _settings.bool(forKey: "alertOnError")
@@ -36,8 +44,8 @@ public class SettingsModel {
     gotoBottom = _settings.bool(forKey: "gotoBottom")
     guiClientId = _settings.string(forKey: "guiClientId") ?? ""
     ignoreGps = _settings.bool(forKey: "ignoreGps")
-    isNonGui = _settings.bool(forKey: "isNonGui")
-    localDisabled = _settings.bool(forKey: "localDisabled")
+    isGui = _settings.bool(forKey: "isGui")
+    localEnabled = _settings.bool(forKey: "localEnabled")
     lowBandwidthConnect = _settings.bool(forKey: "lowBandwidthConnect")
     lowBandwidthDax = _settings.bool(forKey: "lowBandwidthDax")
     messageFilter = MessagesModel.Filter(rawValue: _settings.string(forKey: "messageFilter") ?? "all") ?? .all
@@ -59,10 +67,6 @@ public class SettingsModel {
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
-    
-    if fontSize < 12 || fontSize > 18 { fontSize = 12 }
-    if mtuValue == 0 { mtuValue = 1250 }
-    if discoveryPort == 0 { discoveryPort = 4992 }
   }
   
   // ----------------------------------------------------------------------------
@@ -86,8 +90,8 @@ public class SettingsModel {
   public var gotoBottom: Bool { didSet { _settings.set(gotoBottom, forKey: "gotoBottom") }}
   public var guiClientId: String { didSet { _settings.set(guiClientId, forKey: "guiClientId") }}
   public var ignoreGps: Bool { didSet { _settings.set(ignoreGps, forKey: "ignoreGps") }}
-  public var isNonGui: Bool { didSet { _settings.set(isNonGui, forKey: "isNonGui") }}
-  public var localDisabled: Bool { didSet { _settings.set(localDisabled, forKey: "localDisabled") }}
+  public var isGui: Bool { didSet { _settings.set(isGui, forKey: "isGui") }}
+  public var localEnabled: Bool { didSet {  _settings.set(localEnabled, forKey: "localEnabled") }}
   public var lowBandwidthConnect: Bool { didSet { _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect") }}
   public var lowBandwidthDax: Bool { didSet { _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax") }}
   public var messageFilter: MessagesModel.Filter { didSet { _settings.set(messageFilter.rawValue, forKey: "messageFilter") }}
@@ -138,8 +142,8 @@ public class SettingsModel {
     _settings.set(gotoBottom, forKey: "gotoBottom")
     _settings.set(guiClientId, forKey: "guiClientId")
     _settings.set(ignoreGps, forKey: "ignoreGps")
-    _settings.set(isNonGui, forKey: "isNonGui")
-    _settings.set(localDisabled, forKey: "localDisabled")
+    _settings.set(isGui, forKey: "isGui")
+    _settings.set(localEnabled, forKey: "localEnabled")
     _settings.set(lowBandwidthConnect, forKey: "lowBandwidthConnect")
     _settings.set(lowBandwidthDax, forKey: "lowBandwidthDax")
     _settings.set(messageFilter.rawValue, forKey: "messageFilter")

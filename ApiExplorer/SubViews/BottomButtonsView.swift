@@ -120,27 +120,27 @@ public struct ToggleX: View {
   }
 }
 
-public struct ToggleY: View {
-  let title: String
-  let isOn: Binding<Bool>
-  
-  public var body: some View {
-
-#if os(macOS)
-    Toggle(title, isOn: Binding(
-      get: { !isOn.wrappedValue },
-      set: { isOn.wrappedValue = !$0 }
-  ))
-      .toggleStyle(ButtonToggleStyle())
-#else
-    Toggle(title, isOn: isOn)
-      .toggleStyle(ButtonToggleStyle())
-      .border(Color.gray, width: 0.5)
-      .background(isOn.wrappedValue ? Color.blue.opacity(0.5) : Color.clear)
-      .foregroundColor(isOn.wrappedValue ? Color.white : Color.blue)
-#endif
-  }
-}
+//public struct ToggleY: View {
+//  let title: String
+//  let isOn: Binding<Bool>
+//  
+//  public var body: some View {
+//
+//#if os(macOS)
+//    Toggle(title, isOn: Binding(
+//      get: { !isOn.wrappedValue },
+//      set: { isOn.wrappedValue = !$0 }
+//  ))
+//      .toggleStyle(ButtonToggleStyle())
+//#else
+//    Toggle(title, isOn: isOn)
+//      .toggleStyle(ButtonToggleStyle())
+//      .border(Color.gray, width: 0.5)
+//      .background(isOn.wrappedValue ? Color.blue.opacity(0.5) : Color.clear)
+//      .foregroundColor(isOn.wrappedValue ? Color.white : Color.blue)
+//#endif
+//  }
+//}
 
 
 public struct StepperX: View {

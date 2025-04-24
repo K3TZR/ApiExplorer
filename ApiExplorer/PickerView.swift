@@ -30,10 +30,10 @@ public struct PickerView: View {
       
       HeaderView()
       
-      if (!viewModel.settings.isNonGui && viewModel.api.radios.count == 0) || (viewModel.settings.isNonGui && guiClients.count == 0) {
+      if (viewModel.settings.isGui && viewModel.api.radios.count == 0) || (!viewModel.settings.isGui && guiClients.count == 0) {
         NothingView()
       }
-      else if !viewModel.settings.isNonGui {
+      else if viewModel.settings.isGui {
         GuiView(selectedRadioId: $selectedRadioId)
       }
       else {
@@ -55,13 +55,13 @@ private struct HeaderView: View {
     
     HStack {
       Spacer()
-      Text("Select a \(viewModel.settings.isNonGui ? "STATION" : "RADIO")")
+      Text("Select a \(viewModel.settings.isGui ? "RADIO" : "STATION")")
         .font(.title)
       Spacer()
     }
     
     HStack(spacing: 0) {
-      Text("\(viewModel.settings.isNonGui ? "Station" : "Radio")")
+      Text("\(viewModel.settings.isGui ? "Radio" : "Station")")
         .frame(width: 200, alignment: .leading)
       
       Text("Type")
@@ -70,7 +70,7 @@ private struct HeaderView: View {
       Text("Status")
         .frame(width: 100, alignment: .leading)
       
-      Text("\(viewModel.settings.isNonGui  ?  "Radio" : "Station(s)")")
+      Text("\(viewModel.settings.isGui  ?  "Station(s)" : "Radio")")
         .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
     }
     .padding(.leading, 10)
@@ -93,7 +93,7 @@ private struct NothingView: View {
       Spacer()
       HStack {
         Spacer()
-        Text("----------  NO \(viewModel.settings.isNonGui ? "STATIONS" : "RADIOS") FOUND  ----------")
+        Text("----------  NO \(viewModel.settings.isGui ? "RADIOS" : "STATIONS") FOUND  ----------")
           .foregroundColor(.red)
         Spacer()
       }
@@ -217,7 +217,7 @@ private struct FooterView: View {
       Spacer()
       
       ButtonX(title: "Default") {
-        viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isNonGui ? selectedStation.wrappedValue : viewModel.settings.stationName, nil))
+        viewModel.pickerDefaultButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isGui ? viewModel.settings.stationName : selectedStation.wrappedValue, nil))
       }
       .disabled(selectedRadioId.wrappedValue == nil)
       
@@ -230,7 +230,7 @@ private struct FooterView: View {
       
       ButtonX(title: "Connect") {
         //        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue! + "|" + "\(settings.isGui ? settings.stationName : selectedStation.wrappedValue)")
-        viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isNonGui ? selectedStation.wrappedValue : viewModel.settings.stationName, nil))
+        viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isGui ? viewModel.settings.stationName : selectedStation.wrappedValue, nil))
       }
       .keyboardShortcut(.defaultAction)
       .disabled(selectedRadioId.wrappedValue == nil)

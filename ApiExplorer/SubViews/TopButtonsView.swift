@@ -18,7 +18,7 @@ public struct TopButtonsView: View {
 //  @Environment(SettingsModel.self) private var settings
 
   private var startButtonDisabled: Bool {
-    return !(viewModel.settings.directEnabled || !viewModel.settings.localDisabled || viewModel.settings.smartlinkEnabled)
+    return !(viewModel.settings.directEnabled || viewModel.settings.localEnabled || viewModel.settings.smartlinkEnabled)
   }
 
   public var body: some View {
@@ -38,7 +38,7 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      ToggleY(title: "Gui", isOn: $settings.isNonGui)
+      ToggleX(title: "Gui", isOn: $settings.isGui)
 //        .frame(width: 60, alignment: .leading)
         .disabled(viewModel.isConnected)
 
@@ -47,16 +47,16 @@ public struct TopButtonsView: View {
       // Connection types
       HStack(spacing: 5) {
         ToggleX(title: "Direct", isOn: $settings.directEnabled)
-          .onChange(of: settings.directEnabled) {
-            viewModel.directButtonChanged($1)
+          .onChange(of: settings.directEnabled) { oldValue, newValue in
+            viewModel.directButtonChanged(newValue)
           }
-        ToggleY(title: "Local", isOn: $settings.localDisabled)
-          .onChange(of: settings.localDisabled) {
-            viewModel.localButtonChanged($1)
+        ToggleX(title: "Local", isOn: $settings.localEnabled)
+          .onChange(of: settings.localEnabled) { oldValue, newValue in
+            viewModel.localButtonChanged(newValue)
           }
         ToggleX(title: "Smartlink", isOn: $settings.smartlinkEnabled)
-          .onChange(of: settings.smartlinkEnabled) {
-            viewModel.smartlinkButtonChanged($1)
+          .onChange(of: settings.smartlinkEnabled) { oldValue, newValue in
+            viewModel.smartlinkButtonChanged(newValue)
           }
       }
 //      .frame(width: 180)
@@ -71,7 +71,7 @@ public struct TopButtonsView: View {
       }
       .frame(width: 180)
       .labelsHidden()
-      .disabled(settings.isNonGui == true)
+      .disabled(settings.isGui == false)
       .onChange(of: settings.daxSelection) {
         viewModel.daxSelectionChanged($0, $1)
       }
@@ -80,13 +80,13 @@ public struct TopButtonsView: View {
       
       HStack(spacing: 10) {
         ToggleX(title: "Rx Audio", isOn: $settings.remoteRxAudioEnabled)
-          .disabled(settings.isNonGui == true)
+          .disabled(settings.isGui == false)
           .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
         ToggleX(title: "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
-          .disabled(settings.isNonGui == true)
+          .disabled(settings.isGui == false)
           .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }

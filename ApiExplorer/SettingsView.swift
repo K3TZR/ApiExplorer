@@ -67,7 +67,7 @@ public struct SettingsView: View {
             .labelsHidden()
             .frame(width: 75)
             .onChange(of: settings.discoveryPort) {
-              settings.localDisabled = true
+              settings.localEnabled = false
             }
             Text("-- Must Restart Local --")
               .frame(alignment: .leading)

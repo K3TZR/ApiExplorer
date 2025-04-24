@@ -63,9 +63,16 @@ public class ViewModel {
   }
   
   public func directButtonChanged(_ enabled: Bool) {
-    alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
-    showAlert = true
-    settings.directEnabled = false
+
+    print(UserDefaults.standard.dictionaryRepresentation())
+    if let bundleID = Bundle.main.bundleIdentifier {
+        UserDefaults.standard.removePersistentDomain(forName: bundleID)
+    }
+    print(UserDefaults.standard.dictionaryRepresentation())
+
+//    alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
+//    showAlert = true
+//    settings.directEnabled = false
 //    if enabled {
 //      _settings.localDisabled = true
 //      _settings.smartlinkEnabled = false
@@ -79,7 +86,7 @@ public class ViewModel {
 //  }
   
   public func guiButtonTapped() {
-    settings.isNonGui.toggle()
+    settings.isGui.toggle()
   }
   
   public func localButtonChanged(_ enabled: Bool) {
@@ -90,11 +97,7 @@ public class ViewModel {
     } else {
       settings.directEnabled = false
       api.listenerLocal = ListenerLocal(api)
-      let port = UInt16(settings.discoveryPort)
-      
-      print("----->>>>>", port)
-      print("----->>>>>", settings.discoveryPort)
-
+      let port = UInt16(settings.discoveryPort)      
       Task { await api.listenerLocal!.start(port: port) }
     }
   }
@@ -119,8 +122,8 @@ public class ViewModel {
       messages.reFilter()
       
       // start Local if enabled
-      if !settings.localDisabled {
-        localButtonChanged(false)
+      if settings.localEnabled {
+        localButtonChanged(true)
       }
       
      // start Smartlink if enabled
@@ -146,17 +149,17 @@ public class ViewModel {
   
   public func pickerDefaultButtonTapped(_ selection: PickerSelection) {
     // set / reset the default
-    if settings.isNonGui {
-      if settings.defaultNonGui == selection {
-        settings.defaultNonGui = nil
-      } else {
-        settings.defaultNonGui = selection
-      }
-    } else {
+    if settings.isGui {
       if settings.defaultGui == selection {
         settings.defaultGui = nil
       } else {
         settings.defaultGui = selection
+      }
+    } else {
+      if settings.defaultNonGui == selection {
+        settings.defaultNonGui = nil
+      } else {
+        settings.defaultNonGui = selection
       }
     }
   }
@@ -288,7 +291,7 @@ public class ViewModel {
       Task { await connectionStop() }
       
     } else if settings.useDefaultEnabled {
-      if let selection = settings.isNonGui ? settings.defaultNonGui : settings.defaultGui {
+      if let selection = settings.isGui ? settings.defaultGui : settings.defaultNonGui {
         connectionStart(selection)
       } else {
         activeSheet = .picker
@@ -434,7 +437,7 @@ public class ViewModel {
     let connectTask = Task {
       do {
         try await api.connect(selection: selection,
-                              isGui: !settings.isNonGui,
+                              isGui: settings.isGui,
                               programName: "ApiExplorer",
                               mtuValue: settings.mtuValue,
                               guiClientId: UUID(uuidString: settings.guiClientId)!,
@@ -465,7 +468,7 @@ public class ViewModel {
       api.activeSelection = selection
       
       // handle Multiflex
-      if !settings.isNonGui && radio.guiClients.count > 0 {
+      if settings.isGui && radio.guiClients.count > 0 {
         activeSheet = .multiflex
         
       } else {

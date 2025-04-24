@@ -88,6 +88,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   func applicationWillFinishLaunching(_ notification: Notification) {
     // setup logging
 //    log = Logger(subsystem: "net.k3tzr.ApiExplorer", category: "Application")
+//    UserDefaults.standard.register(defaults: [
+//      "discoveryPort":4992,
+//      "fontSize": 12,
+//      "isGui": true,
+//      "localEnabled": true,
+//      "mtuValue": 1250,
+//    ])
+
   }
   
   func applicationWillTerminate(_ notification: Notification) {
@@ -106,11 +114,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+//    UserDefaults.standard.register(defaults: [
+//      "discoveryPort":4992,
+//      "fontSize": 12,
+//      "isGui": true,
+//      "localEnabled": true,
+//      "mtuValue": 1250,
+//    ])
+
     return true
   }
   
   func applicationWillTerminate(_ application: UIApplication) {
-    log?.info("ApiExplorer (iOS): application terminated")
+    Task { await AppLog.info("ApiExplorer (iOS): application terminated") }
   }
 }
 #endif
