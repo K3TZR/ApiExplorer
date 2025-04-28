@@ -67,6 +67,7 @@ public class SettingsModel {
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
+    viewMode = ViewMode(rawValue: _settings.string(forKey: "viewMode") ?? "standard") ?? .standard
   }
   
   // ----------------------------------------------------------------------------
@@ -113,7 +114,8 @@ public class SettingsModel {
   public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
   public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
   public var useDefaultEnabled: Bool { didSet { _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled") }}
-  
+  public var viewMode: ViewMode { didSet { _settings.set(viewMode.rawValue, forKey: "viewMode") }}
+
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
@@ -165,6 +167,7 @@ public class SettingsModel {
     _settings.set(stationName, forKey: "stationName")
     _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter")
     _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled")
+    _settings.set(viewMode.rawValue, forKey: "viewMode")
   }
   
   public func reset(_ name: String = Bundle.main.bundleIdentifier!) {

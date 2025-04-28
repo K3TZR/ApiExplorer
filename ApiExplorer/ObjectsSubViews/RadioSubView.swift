@@ -14,9 +14,9 @@ import ApiPackage
 
 struct RadioSubView: View {
   let radio: Radio?
-  
+  let viewMode: ViewMode
+
   @Environment(ViewModel.self) var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -97,7 +97,9 @@ struct RadioSubView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
-        DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
+        if viewMode == .standard || viewMode == .objects {
+          DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
+        }
       }
     } else {
       Spacer()
@@ -166,7 +168,7 @@ private struct DetailView: View {
 // MARK: - Preview
 
 #Preview {
-  RadioSubView(radio: nil)
+  RadioSubView(radio: nil, viewMode: .standard)
     .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)

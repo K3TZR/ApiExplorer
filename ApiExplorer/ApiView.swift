@@ -16,14 +16,18 @@ public enum ActiveSheet: Identifiable {
   public var id: Int { hashValue }
 }
 
+public enum ViewMode: String {
+  case messages = "rectangle.portrait.bottomhalf.filled"
+  case objects = "rectangle.portrait.tophalf.filled"
+  case standard = "rectangle.portrait"
+}
 // ----------------------------------------------------------------------------
 // MARK: - View
 
-struct ApiView: View {      
+struct ApiView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
-
+  
   var isMultiflex: Bool {
     if let selection = viewModel.api.activeSelection {
       if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
@@ -32,26 +36,26 @@ struct ApiView: View {
     }
     return false
   }
-
+  
   var body: some View {
     @Bindable var viewModel = viewModel
-
+    
     // primary view
     VStack(alignment: .leading, spacing: 10) {
       TopButtonsView()
-
+      
       SendView()
-
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-
-      ObjectsMessagesSplitView()
       
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
+      ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
       BottomButtonsView()
     }
 #if os(macOS)
@@ -88,51 +92,67 @@ struct ApiView: View {
         SettingsView()
       }
     }
-
+    
     // Alerts
     .alert((viewModel.alertInfo?.title ?? "Alert"), isPresented: $viewModel.showAlert) {
       Button("OK", role: .cancel) { }
     } message: {
       Text(viewModel.alertInfo?.message ?? "")
     }
-
+    
     // Toolbar
 #if os(macOS)
     .toolbar {
-      if isMultiflex {
-        Text("MultiFlex")
-          .foregroundColor(.blue)
-          .padding(10)
-          .border(Color.blue, width: 2)
-      }
-      Button("Pings") {
-        if viewModel.api.activeSelection == nil {
-          viewModel.alertInfo = AlertInfo("No Selection", "Please select a radio first")
-          viewModel.showAlert = true
-        } else {
-          viewModel.api.pingIntervalIndex = 0
-          viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
-          viewModel.activeSheet = .pings
+      // Left side
+      ToolbarItem(placement: .navigation) {
+        Button(action: {
+          viewModel.toggleViewMode()
+        }) {
+          Image(systemName: viewModel.settings.viewMode.rawValue)
         }
       }
-      Button("Discovery") {
-        viewModel.activeSheet = .discovery
-      }
-      Button("Gui Clients") {
-        viewModel.activeSheet = .guiClients
-      }
-      Label( "Settings", systemImage: "gearshape")
-        .onTapGesture {
+      
+      // Middle items (automatic placement)
+      ToolbarItemGroup {
+        if isMultiflex {
+          Text("MultiFlex")
+            .foregroundColor(.blue)
+            .padding(10)
+            .border(Color.blue, width: 2)
+        }
+        
+        Button("Pings") {
+          if viewModel.api.activeSelection == nil {
+            viewModel.alertInfo = AlertInfo("No Selection", "Please select a radio first")
+            viewModel.showAlert = true
+          } else {
+            viewModel.api.pingIntervalIndex = 0
+            viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
+            viewModel.activeSheet = .pings
+          }
+        }
+        
+        Button("Discovery") {
+          viewModel.activeSheet = .discovery
+        }
+        
+        Button("Gui Clients") {
+          viewModel.activeSheet = .guiClients
+        }
+        
+        Button(action: {
           if viewModel.api.activeSelection == nil {
             viewModel.activeSheet = .settings
           } else {
             viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
             viewModel.showAlert = true
           }
+        }) {
+          Label("Settings", systemImage: "gearshape")
         }
       }
-#endif
-
+    }#endif
+    
     // LogAlert Notification (an Error or Warning occurred)
     .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
       .receive(on: RunLoop.main)) { note in
@@ -140,8 +160,8 @@ struct ApiView: View {
           viewModel.alertInfo = note.object! as? AlertInfo
           viewModel.showAlert = true
         }
-    }
-    .preferredColorScheme(viewModel.settings.darkMode ? .dark : .light)
+      }
+      .preferredColorScheme(viewModel.settings.darkMode ? .dark : .light)
   }
 }
 
@@ -153,27 +173,30 @@ struct ApiView: View {
     .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
-  .padding()
+    .padding()
 }
 
 // ----------------------------------------------------------------------------
 // MARK: - Custom Split View
 
 struct ObjectsMessagesSplitView: View {
-
+  let viewMode: ViewMode
+  
   var body: some View {
     
-    GeometryReader { geometry in
-      VStack(spacing: 10) {
-        ObjectsView()
-          .frame(height: (2 * (geometry.size.height/3)) - 20)
-          .frame(maxWidth: .infinity)
+    VStack(spacing: 10) {
+      ObjectsView(viewMode: viewMode)
+        .frame(maxWidth: .infinity)
+      
+      if viewMode == .standard || viewMode == .messages {
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
         
         MessagesView()
-          .frame(height: geometry.size.height/3)
           .frame(maxWidth: .infinity)
       }
-      .frame(maxHeight: .infinity)
     }
+    .frame(maxHeight: .infinity)
   }
 }

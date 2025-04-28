@@ -14,7 +14,8 @@ import ApiPackage
 
 struct GuiClientSubView: View {
   let radio: Radio?
-  
+  let viewMode: ViewMode
+
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
@@ -56,11 +57,15 @@ struct GuiClientSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
-          GuiClientDetailView(handle: guiClient.handle.handle!)
-
-          Divider()
-            .frame(height: 2)
-            .background(Color.gray)
+          if viewMode == .standard || viewMode == .objects {
+            GuiClientDetailView(handle: guiClient.handle.handle!)
+            
+            if radio.guiClients.last != guiClient {
+              Divider()
+                .frame(height: 2)
+                .background(Color.gray)
+            }
+          }
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
@@ -74,7 +79,6 @@ private struct GuiClientDetailView: View {
   let handle: UInt32
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     

@@ -13,7 +13,6 @@ import SwiftUI
 struct MessagesView: View {
 
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
 
   @MainActor func textLine( _ text: String) -> AttributedString {
     var attString = AttributedString(text)
@@ -74,7 +73,6 @@ struct MessagesView: View {
 private struct FilterView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     @Bindable var viewModelBinding = viewModel

@@ -15,7 +15,6 @@ import ApiPackage
 public struct PickerView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   @State var selectedRadioId: String? = nil
   @State var selectedStation: String = ""
@@ -49,7 +48,6 @@ public struct PickerView: View {
 private struct HeaderView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -85,7 +83,6 @@ private struct HeaderView: View {
 private struct NothingView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -106,7 +103,6 @@ private struct GuiView: View {
   let selectedRadioId: Binding<String?>
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -142,7 +138,6 @@ private struct NonGuiView: View {
   let guiClients: [GuiClient]
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   
   var body: some View {
     
@@ -190,7 +185,6 @@ private struct FooterView: View {
   let selectedRadioId: Binding<String?>
   let selectedStation: Binding<String>
   
-//  @Environment(SettingsModel.self) private var settings
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   

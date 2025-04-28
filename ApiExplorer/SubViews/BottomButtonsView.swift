@@ -16,7 +16,6 @@ import ApiPackage
 public struct BottomButtonsView: View {
 
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
 
   @State private var isSaving: Bool = false
   @State private var document: SaveDocument?

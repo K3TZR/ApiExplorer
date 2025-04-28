@@ -16,7 +16,6 @@ import ApiPackage
 public struct DiscoveryView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
   @Environment(\.dismiss) var dismiss
   
   @State var radioSelection: String?
@@ -345,7 +344,6 @@ private struct VitaHexView: View {
 private struct TimingView: View {
   let start: Date
 
-//  @Environment(SettingsModel.self) private var settings
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   

@@ -18,7 +18,6 @@ struct ApiExplorerApp: App {
 @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #endif
 
-//  @State var settingsModel = SettingsModel()
   @State var viewModel = ViewModel(SettingsModel())
 
   /// Struct to hold a Semantic Version number
@@ -49,7 +48,6 @@ struct ApiExplorerApp: App {
     WindowGroup("ApiExplorer  (v" + Version().string + ")") {
       ApiView()
         .environment(viewModel)
-//        .environment(viewModel.settingsModel)
     }
 #if os(macOS)
     .commands {
@@ -68,7 +66,6 @@ struct ApiExplorerApp: App {
     Settings {
       SettingsView()
         .environment(viewModel)
-//        .environment(settingsModel)
     }
 #endif
   }
@@ -86,15 +83,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   }
   
   func applicationWillFinishLaunching(_ notification: Notification) {
-    // setup logging
-//    log = Logger(subsystem: "net.k3tzr.ApiExplorer", category: "Application")
-//    UserDefaults.standard.register(defaults: [
-//      "discoveryPort":4992,
-//      "fontSize": 12,
-//      "isGui": true,
-//      "localEnabled": true,
-//      "mtuValue": 1250,
-//    ])
 
   }
   
@@ -114,14 +102,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-//    UserDefaults.standard.register(defaults: [
-//      "discoveryPort":4992,
-//      "fontSize": 12,
-//      "isGui": true,
-//      "localEnabled": true,
-//      "mtuValue": 1250,
-//    ])
-
     return true
   }
   

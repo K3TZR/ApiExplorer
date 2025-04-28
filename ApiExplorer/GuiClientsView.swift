@@ -53,35 +53,11 @@ public struct GuiClientsView: View {
           let sortedGuiClients = guiClients.sorted(by: { $0.1.station < $1.1.station })
           ForEach(sortedGuiClients, id: \.1.clientId) { (name, guiClient) in
             GridRow {
-              Text(name)
-              
+              Text(name)              
               Text(guiClient.station)
-              //#else
-              //              HStack(spacing: 5) {
-              //                Text(guiClient.station)
-              //                Button(action: {
-              //                  showInfo.toggle()
-              //                }) {
-              //                  Image(systemName: "info.circle")
-              //                    .foregroundColor(.blue)
-              //                }
-              //                .popover(isPresented: $showInfo) {
-              //                  VStack(spacing: 0) {
-              //                    Text("Client ID")
-              //                    Divider()
-              //                      .frame(height: 2)
-              //                      .background(Color.gray)
-              //                    Text(guiClient.clientId?.uuidString ?? "Unknown")
-              //                      .padding()
-              //                  }
-              //                }
-              //              }
-              //#endif
               Text(guiClient.program)
-              
               Text(guiClient.handle)
-              
-              Text(guiClient.clientId?.uuidString ?? "Unknown")
+                            Text(guiClient.clientId?.uuidString ?? "Unknown")
             }
           }
         }

@@ -63,27 +63,14 @@ public class ViewModel {
   }
   
   public func directButtonChanged(_ enabled: Bool) {
-
-    print(UserDefaults.standard.dictionaryRepresentation())
-    if let bundleID = Bundle.main.bundleIdentifier {
-        UserDefaults.standard.removePersistentDomain(forName: bundleID)
-    }
-    print(UserDefaults.standard.dictionaryRepresentation())
-
-//    alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
-//    showAlert = true
-//    settings.directEnabled = false
+    alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
+    showAlert = true
+    settings.directEnabled = false
 //    if enabled {
-//      _settings.localDisabled = true
-//      _settings.smartlinkEnabled = false
+//      settings.localEnabled = true
+//      settings.smartlinkEnabled = false
 //    }
   }
-  
-//  public func fontFieldTapped() {
-//    var currentSize = _settings.fontSize
-//    currentSize += 1
-//    _settings.fontSize = currentSize.bracket(8, 14)
-//  }
   
   public func guiButtonTapped() {
     settings.isGui.toggle()
@@ -91,14 +78,14 @@ public class ViewModel {
   
   public func localButtonChanged(_ enabled: Bool) {
     if enabled {
+      settings.directEnabled = false
+      api.listenerLocal = ListenerLocal(api)
+      let port = UInt16(settings.discoveryPort)
+      Task { await api.listenerLocal!.start(port: port) }
+    } else {
       api.listenerLocal?.stop()
       api.listenerLocal = nil
       api.removeRadios(.local)
-    } else {
-      settings.directEnabled = false
-      api.listenerLocal = ListenerLocal(api)
-      let port = UInt16(settings.discoveryPort)      
-      Task { await api.listenerLocal!.start(port: port) }
     }
   }
   
@@ -200,14 +187,6 @@ public class ViewModel {
     if settings.clearOnSend { clearTextButtonTapped() }
   }
   
-  public func toggleDiscoveryPort() {
-    if settings.discoveryPort == 4992 {
-      settings.discoveryPort = 14992
-    } else {
-      settings.discoveryPort = 4992
-    }
-  }
-  
   public func settingsDidDismiss() {
     // no action required
   }
@@ -270,15 +249,15 @@ public class ViewModel {
     Task {
       var tokens: Tokens?
       
-//      tokens = await api.listenerSmartlink?.requestTokens(user, password)
-//      if api.listenerSmartlink!.connect(tokens!) {
-//        _settings.smartlinkRefreshToken = tokens!.refreshToken
-//        _smartlinkIdToken = tokens!.idToken
-//      } else {
+      tokens = await api.listenerSmartlink?.requestTokens(user, password)
+      if api.listenerSmartlink!.connect(tokens!) {
+        settings.smartlinkRefreshToken = tokens!.refreshToken
+        _smartlinkIdToken = tokens!.idToken
+      } else {
         alertInfo = AlertInfo("Smartlink tokens", "FAILED for user: \(user)")
         settings.smartlinkEnabled = false
         showAlert = true
-//      }
+      }
     }
   }
   
@@ -301,7 +280,26 @@ public class ViewModel {
       activeSheet = .picker
     }
   }
-    
+
+  public func toggleDiscoveryPort() {
+    if settings.discoveryPort == 4992 {
+      settings.discoveryPort = 14992
+    } else {
+      settings.discoveryPort = 4992
+    }
+  }
+  
+  public func toggleViewMode() {
+    switch settings.viewMode {
+    case .messages:
+      settings.viewMode = .standard
+    case .objects:
+      settings.viewMode = .messages
+    case .standard:
+      settings.viewMode = .objects
+    }  }
+  
+
   // ----------------------------------------------------------------------------
   // MARK: - Public supporting methods
   
@@ -359,60 +357,6 @@ public class ViewModel {
     string += "\n\n --- Payload ---\n"
     return string + vitaPayload(data, utf8).joined(separator: "\n")
   }
-
-  
-//  public func hexDump(_ data: Data) -> String {
-//    let len = data.count
-//    var bytes = [UInt8](repeating: 0x00, count: len)
-//
-//    (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
-//    
-//    var string = "  \(String(format: "%4d", len ))  00 01 02 03 04 05 06 07   08 09 0A 0B 0C 0D 0E 0F\n"
-//    string += " bytes    -------------------------------------------------\n\n"
-//    
-//    string += "----- HEADER (Hex) -----\n"
-//    
-//    var address = 0
-//    string += address.toHex() + "   "
-//    for i in 1...28 {
-//      string += String(format: "%02X", bytes[i-1]) + " "
-//      if (i % 8) == 0 { string += "  " }
-//      if (i % 16) == 0 {
-//        string += "\n"
-//        address += 16
-//        string += address.toHex() + "   "
-//      }
-//    }
-//
-//    string += "\n\n----- PAYLOAD (Hex) -----\n"
-//      
-//    
-//    string += address.toHex() + "                                         "
-//    for i in 29...len {
-//      string += String(format: "%02X", bytes[i-1]) + " "
-//      if (i % 8) == 0 { string += "  " }
-//      if (i % 16) == 0 {
-//        string += "\n"
-//        address += 16
-//        string += address.toHex() + "   "
-//      }
-//    }
-//
-//    string += "\n\n----- PAYLOAD (UTF8) -----\n"
-//      
-//    address = 16
-//    string += address.toHex() + "                                         "
-//    for i in 29...len {
-//      string += String(decoding: bytes[i-1...i-1], as: UTF8.self) + "  "
-//      if (i % 8) == 0 { string += "  " }
-//      if (i % 16) == 0 {
-//        string += "\n"
-//        address += 16
-//        string += address.toHex() + "   "
-//      }
-//    }
-//    return string
-//  }
   
   public func payloadProperties(_ data: Data) -> KeyValuesArrayIndexed {
     //    let len = 552
@@ -486,132 +430,6 @@ public class ViewModel {
     await api.disconnect()
     isConnected = false
   }
-  
-  //  private func findRadio(radioId id: String) -> Radio? {
-  //    return objects.radios.first(where: {$0.id == id})
-  //  }
-  
-  //  private func findRadio(stationId id: String) -> (Radio, String)? {
-  //    // find the packet containing the Station
-  //    for radio in objects.radios {
-  //      for guiClient in radio.packet.guiClients where guiClient.id == id {
-  //        return (radio, guiClient.station)
-  //      }
-  //    }
-  //    return nil
-  //  }
-  
-  //  private func getDefault(_ isGui: Bool) -> String? {
-  //
-  //    guard settings.useDefaultEnabled else { return nil }
-  //    if isGui {
-  //      return settings.defaultGui
-  //
-  //    } else {
-  //      return settings.defaultNonGui
-  //    }
-  //  }
-  //  private func connectionStart(_ state: State)  -> Effect<SDRApi.Action> {
-  //    if state.appSettings.clearOnStart { MessagesModel.shared.clear(state.appSettings.messageFilter, state.appSettings.messageFilterText)}
-  //    if state.appSettings.directEnabled {
-  //      return .run { [state] in
-  //        // DIRECT Mode
-  //        if state.appSettings.isGui && !state.appSettings.directGuiIp.isEmpty {
-  //          let selection = "9999-9999-9999-9999" + state.appSettings.directGuiIp
-  //          await $0(.connect(selection, nil))
-  //
-  //        } else if !state.appSettings.directNonGuiIp.isEmpty {
-  //          let selection = "9999-9999-9999-9999" + state.appSettings.directNonGuiIp
-  //          await $0(.connect(selection, nil))
-  //
-  //        } else {
-  //          // no Ip Address for the current connection type
-  //          await $0(.showDirectSheet)
-  //        }
-  //      }
-  //
-  //    } else {
-  //      return .run { [state] in
-  //        if state.appSettings.useDefaultEnabled {
-  //          // LOCAL/SMARTLINK mode connection using the Default, is there a valid? Default
-  //          if await ListenerModel.shared.isValidDefault(for: state.appSettings.guiDefault, state.appSettings.nonGuiDefault, state.appSettings.isGui) {
-  //            // YES, valid default
-  //            if state.appSettings.isGui {
-  //              await $0(.multiflexStatus(state.appSettings.guiDefault))
-  //            } else {
-  //              await $0(.multiflexStatus(state.appSettings.nonGuiDefault))
-  //            }
-  //          } else {
-  //            // invalid default, open the Picker
-  //            await $0(.showPickerSheet)
-  //          }
-  //        }
-  //        else {
-  //          // default not in use, open the Picker
-  //          await $0(.showPickerSheet)
-  //        }
-  //      }
-  //    }
-  //  }
-  //
-  //  private func disconnect(_ state: State)  -> Effect<SDRApi.Action> {
-  //    if settings.clearOnStop { MessagesModel.shared.clear(state.appSettings.messageFilter, state.appSettings.messageFilterText) }
-  //    return .run {
-  //      await ObjectModel.shared.clientInitialized(false)
-  //      await ObjectModel.shared.disconnect()
-  //      await $0(.connectionStatus(.disconnected))
-  //    }
-  //  }
-
-  /// Validate an Id Token
-  /// - Parameter idToken:        the Id Token
-  /// - Returns:                  true / false
-//  private func isValid(_ idToken: IdToken?) -> Bool {
-//    if let token = idToken {
-//      if let jwt = try? decode(jwt: token) {
-//        let result = IDTokenValidation(issuer: kDomain, audience: kClientId).validate(jwt)
-//        if result == nil { return true }
-//      }
-//    }
-//    return false
-//  }
-
-//  private func smartlinkLoginOptions() {
-//    // start smartlink listener
-//    if _settings.smartlinkLoginRequired {
-//      // LOGIN required
-//      activeSheet = .smartlinkLogin
-//      
-//    } else if isValid(_smartlinkIdToken) && _settings.smartlinkRefreshToken.isEmpty == false {
-//      // use ID Token
-//      Task {
-//        if let tokens = await api.smartlinkListenerStart(idToken: _smartlinkIdToken!, refreshToken: _settings.smartlinkRefreshToken) {
-//          _settings.smartlinkRefreshToken = tokens.refreshToken
-//          _smartlinkIdToken = tokens.idToken
-//        } else {
-//          // show LOGIN sheet
-//          activeSheet = .smartlinkLogin
-//        }
-//      }
-//      
-//    } else if _settings.smartlinkRefreshToken.isEmpty == false {
-//      // use Refresh Token
-//      Task {
-//        if let tokens = await api.smartlinkListenerStart(refreshToken: _settings.smartlinkRefreshToken) {
-//          _settings.smartlinkRefreshToken = tokens.refreshToken
-//          _smartlinkIdToken = tokens.idToken
-//        } else {
-//          // show LOGIN sheet
-//          activeSheet = .smartlinkLogin
-//        }
-//      }
-//      
-//    } else {
-//      // IdToken and/or refreshToken failure
-//      // show LOGIN sheet
-//      activeSheet = .smartlinkLogin
-//    }
-//  }
 }
 
 // ----------------------------------------------------------------------------

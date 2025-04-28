@@ -50,11 +50,6 @@ public struct PingsView: View {
     }
   }
   
-//  func completion(_ intervals: [Double]) -> Int {
-//    let nonZero = intervals.filter {$0 != 0}
-//    return Int( (Double(nonZero.count) / Double(intervals.count)) * 100)
-//  }
-  
   public var body: some View {
     
     TimelineView(.periodic(from: Date(), by: 10)) { context in

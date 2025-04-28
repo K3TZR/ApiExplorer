@@ -15,15 +15,14 @@ import ApiPackage
 public struct TopButtonsView: View {
   
   @Environment(ViewModel.self) private var viewModel
-//  @Environment(SettingsModel.self) private var settings
-
+  
   private var startButtonDisabled: Bool {
     return !(viewModel.settings.directEnabled || viewModel.settings.localEnabled || viewModel.settings.smartlinkEnabled)
   }
-
+  
   public var body: some View {
     @Bindable var settings = viewModel.settings
-
+    
     HStack(spacing: 0) {
       // Connection initiation
       Button(viewModel.isConnected ? "Stop" : "Start") {
@@ -33,15 +32,13 @@ public struct TopButtonsView: View {
       .buttonStyle(.bordered)
 #endif
       .background(Color(.green).opacity(0.2))
-//      .frame(width: 60, alignment: .leading)
       .disabled(startButtonDisabled)
       
       Spacer()
       
       ToggleX(title: "Gui", isOn: $settings.isGui)
-//        .frame(width: 60, alignment: .leading)
         .disabled(viewModel.isConnected)
-
+      
       Spacer()
       
       // Connection types
@@ -59,7 +56,6 @@ public struct TopButtonsView: View {
             viewModel.smartlinkButtonChanged(newValue)
           }
       }
-//      .frame(width: 180)
       .disabled(viewModel.isConnected)
       
       Spacer()
@@ -92,7 +88,6 @@ public struct TopButtonsView: View {
           }
       }
     }
-//    .toggleStyle(.button)
   }
 }
 

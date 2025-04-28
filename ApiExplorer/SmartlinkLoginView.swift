@@ -13,7 +13,6 @@ import SwiftUI
 public struct SmartlinkLoginView: View {
   
   @Environment(ViewModel.self) var viewModel
-//  @Environment(\.dismiss) var dismiss
   
   @State var password = ""
   
