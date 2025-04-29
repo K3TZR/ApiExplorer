@@ -58,8 +58,8 @@ public class ViewModel {
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
     alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
-    settings.daxSelection = .none
     showAlert = true
+    settings.daxSelection = .none
   }
   
   public func directButtonChanged(_ enabled: Bool) {
@@ -163,21 +163,25 @@ public class ViewModel {
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
     showAlert = true
+    settings.remoteRxAudioCompressed = false
   }
   
   public func remoteRxAudioEnabledButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
     showAlert = true
+    settings.remoteRxAudioEnabled = false
   }
   
   public func remoteTxAudioEnabledButtonChanged() {
     alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
     showAlert = true
+    settings.remoteTxAudioEnabled = false
   }
   
   public func remoteTxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
     showAlert = true
+    settings.remoteTxAudioCompressed = false
   }
   
   public func sendButtonTapped() {
