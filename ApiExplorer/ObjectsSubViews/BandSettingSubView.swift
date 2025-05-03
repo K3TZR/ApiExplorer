@@ -18,7 +18,7 @@ struct BandSettingSubView: View {
   
   var body: some View {
 
-    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 20, verticalSpacing: 0) {
       HeadingView()
       if viewModel.api.bandSettings.count > 0 {
         ForEach(viewModel.api.bandSettings.sorted(by: {Int($0.name) ?? 0 < Int($1.name) ?? 0})) { bandSetting in
@@ -55,8 +55,8 @@ private struct HeadingView: View {
   var body: some View {
     
     GridRow {
-      Text("BAND SETTINGS")
-        .frame(width: 110, alignment: .leading)
+      Text("BAND SET")
+        .frame(width: 80, alignment: .leading)
 
       Text("Band")
       Text("Rf Power")

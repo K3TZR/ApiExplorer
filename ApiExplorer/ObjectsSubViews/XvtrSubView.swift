@@ -18,7 +18,7 @@ struct XvtrSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
       if viewModel.api.xvtrs.count > 0 {
         HeaderView()
         
@@ -39,8 +39,8 @@ struct XvtrSubView: View {
         
       } else {
         GridRow {
-          Text("XVTRs")
-            .frame(width: 110, alignment: .leading)
+          Text("XVTR")
+            .frame(width: 40, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
         }
@@ -55,8 +55,8 @@ private struct HeaderView: View {
   var body: some View {
     
     GridRow {
-      Text("XVTRs")
-        .frame(width: 110, alignment: .leading)
+      Text("XVTR")
+        .frame(width: 40, alignment: .leading)
 
       Text("Name")
         .frame(width: 50, alignment: .leading)

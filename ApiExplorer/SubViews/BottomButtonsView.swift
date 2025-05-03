@@ -26,9 +26,9 @@ public struct BottomButtonsView: View {
 
     VStack(alignment: .leading) {
       HStack( spacing: 10) {
-        Label( "", systemImage: "arrow.up.arrow.down.square").font(.title)
+        Label( "", systemImage: viewModel.settings.viewMode.rawValue).font(.title)
           .onTapGesture {
-            settings.gotoBottom.toggle()
+            viewModel.toggleViewMode()
           }
 
         Spacer()
@@ -36,6 +36,7 @@ public struct BottomButtonsView: View {
         HStack(spacing: 5) {
           ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
           ToggleX(title: "Times", isOn: $settings.showTimes)
+          ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
           ToggleX(title: "Pings", isOn: $settings.showPings)
             .onChange(of: settings.showPings) {
               if $1 == false { viewModel.messages.removePings() }

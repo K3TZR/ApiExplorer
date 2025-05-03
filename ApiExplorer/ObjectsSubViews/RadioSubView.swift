@@ -15,7 +15,7 @@ import ApiPackage
 struct RadioSubView: View {
   let radio: Radio?
   let viewMode: ViewMode
-
+  
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
@@ -99,6 +99,7 @@ struct RadioSubView: View {
         
         if viewMode == .standard || viewMode == .objects {
           DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
+            .border(.purple)
         }
       }
     } else {
@@ -114,7 +115,6 @@ private struct DetailView: View {
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
-    
     ScrollView([.vertical]) {
       VStack(alignment: .leading) {
         switch filter {
@@ -133,9 +133,9 @@ private struct DetailView: View {
           ProfileSubView()
           TnfSubView()
           TransmitSubView()
-//          UsbCableSubView()
+          //          UsbCableSubView()
           WanSubView()
-//          WaveformSubView(radio: radio)
+          //          WaveformSubView(radio: radio)
           XvtrSubView()
           
         case .amplifiers:   AmplifierSubView(radio: radio)
@@ -152,15 +152,17 @@ private struct DetailView: View {
         case .profiles:     ProfileSubView()
         case .tnf:          TnfSubView()
         case .transmit:     TransmitSubView()
-//        case .usbCable:     UsbCableSubView()
+          //        case .usbCable:     UsbCableSubView()
         case .wan:          WanSubView()
-//        case .waveforms:    WaveformSubView(radio: radio)
+          //        case .waveforms:    WaveformSubView(radio: radio)
         case .xvtrs:        XvtrSubView()
         case .usbCable, .waveforms:
           EmptyView()
         }
       }
+      .border(.blue)
     }
+    .border(.green)
   }
 }
 

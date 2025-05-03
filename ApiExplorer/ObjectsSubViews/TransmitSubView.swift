@@ -18,7 +18,7 @@ struct TransmitSubView: View {
 
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 0) {
       TransmitView(transmit: viewModel.api.transmit)
       CwView(transmit: viewModel.api.transmit)
     }
@@ -33,7 +33,7 @@ private struct TransmitView: View {
     
     GridRow {
       Text("PHONE")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 50, alignment: .leading)
       
       Text("Compander")
       Text("\(transmit.companderEnabled ? "ON" : "OFF")")
@@ -77,7 +77,7 @@ private struct CwView: View {
     
     GridRow {
       Text("CW")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 50, alignment: .leading)
       
       Text("Sidetone")
       Text("\(transmit.cwSidetoneEnabled ? "ON" : "OFF")")

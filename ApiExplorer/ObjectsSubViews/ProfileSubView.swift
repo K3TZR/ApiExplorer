@@ -22,14 +22,14 @@ struct ProfileSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 5) {
+    Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 0) {
       if viewModel.api.profiles.count > 0 {
         HeaderView()
         
         ForEach(viewModel.api.profiles.sorted(by: {$0.id < $1.id}), id: \.id) { profile in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-              .frame(width: 110)
+              .frame(width: 70)
 
             Text(name(profile.id).uppercased())
             Text("\(profile.current.isEmpty ? "-none-" : profile.current)")
@@ -42,7 +42,7 @@ struct ProfileSubView: View {
       } else {
         GridRow {
           Text("Profiles")
-            .frame(width: 110, alignment: .leading)
+            .frame(width: 70, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
         }
@@ -57,7 +57,7 @@ private struct HeaderView: View {
     
     GridRow {
       Text("Profiles")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 70, alignment: .leading)
 
       Text("ID")
         .frame(width: 50, alignment: .leading)

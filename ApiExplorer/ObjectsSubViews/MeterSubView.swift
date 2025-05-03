@@ -35,7 +35,7 @@ private struct HeadingView: View {
     
     GridRow {
       Text("METERS")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 80, alignment: .leading)
 
       Text("ID")
       Text("Group")
@@ -65,7 +65,7 @@ private struct DetailView: View {
     
     GridRow {
       Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 110)
+        .frame(width: 80)
 
       Text("\(meter.id)")
       

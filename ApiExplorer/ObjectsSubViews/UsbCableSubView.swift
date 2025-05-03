@@ -47,8 +47,8 @@ struct UsbCableSubView: View {
         
       } else {
         GridRow {
-          Text("USB Cables")
-            .frame(width: 110, alignment: .leading)
+          Text("UsbCable")
+            .frame(width: 80, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
         }
@@ -64,7 +64,7 @@ private struct HeaderView: View {
     
     GridRow {
       Text("USB Cables")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 80, alignment: .leading)
 
       Text("Name")
         .frame(width: 50, alignment: .leading)

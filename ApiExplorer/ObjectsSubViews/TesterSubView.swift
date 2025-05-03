@@ -18,8 +18,8 @@ struct TesterSubView: View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
       GridRow {
-        Text("ApiExplorer").foregroundColor(.blue)
-          .frame(width: 110, alignment: .leading)
+        Text("Explorer").foregroundColor(.blue)
+          .frame(width: 80, alignment: .leading)
           .font(.title)
         
         Text("Bound to Station")

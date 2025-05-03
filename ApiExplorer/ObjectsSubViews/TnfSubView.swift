@@ -27,7 +27,7 @@ struct TnfSubView: View {
 
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
       if viewModel.api.tnfs.count > 0 {
         HeaderView()
         
@@ -47,8 +47,8 @@ struct TnfSubView: View {
         
       } else {
         GridRow {
-          Text("TNFS")
-            .frame(width: 110, alignment: .leading)
+          Text("TNF")
+            .frame(width: 40, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
         }
@@ -63,8 +63,8 @@ private struct HeaderView: View {
   var body: some View {
     
     GridRow {
-      Text("TNFS")
-        .frame(width: 110, alignment: .leading)
+      Text("TNF")
+        .frame(width: 40, alignment: .leading)
 
       Text("ID")
         .frame(width: 50, alignment: .leading)

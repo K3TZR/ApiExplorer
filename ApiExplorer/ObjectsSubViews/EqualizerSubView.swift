@@ -18,7 +18,7 @@ struct EqualizerSubView: View {
 
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
       HeadingView()
       
       ForEach(viewModel.api.equalizers) { eq in
@@ -38,10 +38,9 @@ struct EqualizerSubView: View {
           Text(eq.hz4000.formatted(.number))
           Text(eq.hz8000.formatted(.number))
         }
-//        .foregroundColor(.secondary)
       }
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
+    .border(.red)
   }
 }
 
@@ -50,8 +49,8 @@ private struct HeadingView: View {
   var body: some View {
     
     GridRow {
-      Text("EQUALIZERS")
-        .frame(width: 110, alignment: .leading)
+      Text("EQ")
+        .frame(width: 40, alignment: .leading)
 
       Text("ID")
       Text("Enabled")
@@ -64,7 +63,6 @@ private struct HeadingView: View {
       Text("4000 Hz")
       Text("8000 Hz")
     }
-    .gridCellAnchor(.leading)
   }
 }
 

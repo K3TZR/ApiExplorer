@@ -47,10 +47,6 @@ public struct SendView: View {
         #endif
       }
   
-      ToggleX(title: "Clear on Send", isOn: $settings.clearOnSend)
-        .toggleStyle(.button)
-        .help("Clear the field after sending a command")
-      
       #if os(iOS)
       ButtonX(title: "Discovery") { viewModel.activeSheet = .discovery }
       ButtonX(title: "Gui Clients") { viewModel.activeSheet = .guiClients }

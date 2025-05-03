@@ -17,9 +17,9 @@ public enum ActiveSheet: Identifiable {
 }
 
 public enum ViewMode: String {
-  case messages = "rectangle.portrait.bottomhalf.filled"
-  case objects = "rectangle.portrait.tophalf.filled"
-  case standard = "rectangle.portrait"
+  case messages = "arrow.down.square"
+  case objects = "arrow.up.square"
+  case standard = "arrow.up.and.down.square"
 }
 // ----------------------------------------------------------------------------
 // MARK: - View
@@ -103,15 +103,6 @@ struct ApiView: View {
     // Toolbar
 #if os(macOS)
     .toolbar {
-      // Left side
-      ToolbarItem(placement: .navigation) {
-        Button(action: {
-          viewModel.toggleViewMode()
-        }) {
-          Image(systemName: viewModel.settings.viewMode.rawValue)
-        }
-      }
-      
       // Middle items (automatic placement)
       ToolbarItemGroup {
         if isMultiflex {

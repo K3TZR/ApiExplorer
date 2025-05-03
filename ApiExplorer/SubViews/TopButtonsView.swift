@@ -25,12 +25,9 @@ public struct TopButtonsView: View {
     
     HStack(spacing: 0) {
       // Connection initiation
-      Button(viewModel.isConnected ? "Stop" : "Start") {
+      ButtonX(title: viewModel.isConnected ? "Stop" : "Start") {
         viewModel.startButtonTapped()
       }
-#if os(iOS)
-      .buttonStyle(.bordered)
-#endif
       .background(Color(.green).opacity(0.2))
       .disabled(startButtonDisabled)
       

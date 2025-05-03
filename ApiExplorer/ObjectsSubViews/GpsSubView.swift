@@ -42,7 +42,7 @@ struct GpsSubView: View {
         } else {
           GridRow {
             Text("GPS")
-              .frame(width: 110, alignment: .leading)
+              .frame(width: 80, alignment: .leading)
 
             Text("----- NOT INSTALLED -----").foregroundColor(.red)
           }
@@ -58,7 +58,7 @@ private struct HeadingView: View {
   var body: some View {
     GridRow {
       Text("GPS")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 70, alignment: .leading)
 
       Text("Altitude")
       Text("Frequency Error")

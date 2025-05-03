@@ -20,19 +20,25 @@ struct CwxSubView: View {
     
     let cwx = viewModel.api.cwx
     
-    Grid(alignment: .leading, horizontalSpacing: 10) {
+    Grid(alignment: .leading, horizontalSpacing: 40) {
       GridRow {
         Text("CWX")
-          .frame(width: 110, alignment: .leading)
+          .frame(width: 40, alignment: .leading)
+                
+        HStack(spacing: 5){
+          Text("Delay")
+          Text(cwx.breakInDelay, format: .number).foregroundColor(.secondary)
+        }
         
-        Text("Delay")
-        Text(cwx.breakInDelay, format: .number).foregroundColor(.secondary)
+        HStack(spacing: 5){
+          Text("QSK")
+          Text("\(cwx.qskEnabled ? "ON" : "OFF")").foregroundColor(cwx.qskEnabled ? .green : .red)
+        }
         
-        Text("QSK")
-        Text("\(cwx.qskEnabled ? "ON" : "OFF")").foregroundColor(cwx.qskEnabled ? .green : .red)
-        
-        Text("Speed")
-        Text(cwx.wpm, format: .number).foregroundColor(.secondary)
+        HStack(spacing: 5){
+          Text("Speed")
+          Text(cwx.wpm, format: .number).foregroundColor(.secondary)
+        }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)

@@ -19,19 +19,20 @@ struct AtuSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 5) {
+    Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 5) {
       if let radio {
         if radio.atuPresent {
           let atu = viewModel.api.atu
           GridRow {
             Text("ATU")
-              .frame(width: 110, alignment: .leading)
+              .frame(width: 40, alignment: .leading)
+              .border(.red)
             
             HStack(spacing: 5){
               Text("ATU Enabled")
               Text(atu.enabled ? "Y" : "N")
                 .foregroundColor(atu.enabled ? .green : .red)
-            }
+            }.border(.green)
             
             HStack(spacing: 5){
               Text("Memories Enabled")
@@ -44,6 +45,7 @@ struct AtuSubView: View {
               Text(atu.usingMemory ? "Y" : "N")
                 .foregroundColor(atu.usingMemory ? .green : .red)
             }
+            
             HStack(spacing: 5){
               Text("Tune Status")
               Text(atu.status.rawValue)
@@ -54,7 +56,7 @@ struct AtuSubView: View {
         } else {
           GridRow {
             Text("ATU")
-              .frame(width: 100, alignment: .leading)
+              .frame(width: 80, alignment: .leading)
             
             Text("----- NONE -----").foregroundColor(.red)
           }

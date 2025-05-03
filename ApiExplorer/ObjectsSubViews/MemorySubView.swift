@@ -30,21 +30,23 @@ struct MemorySubView: View {
         ForEach(viewModel.api.memories.sorted(by: {$0.id < $1.id})) { memory in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-
+            
             Text("\(memory.id)")
             
             Text(memory.name)
+              .frame(width: 50)
               .truncationMode(.tail)
               .lineLimit(1)   // This is critical
               .clipped()
               .help(memory.name)
-
+            
             Text(memory.group.isEmpty ? "none" : memory.group)
+              .frame(width: 50)
               .truncationMode(.tail)
               .lineLimit(1)   // This is critical
               .clipped()
               .help(memory.group.isEmpty ? "none" : memory.group)
-
+            
             Text(memory.owner)
             Text("\(memory.frequency)")
             Text(memory.mode)
@@ -76,7 +78,7 @@ private struct HeadingView: View {
   var body: some View {
     GridRow {
       Text("MEMORIES")
-        .frame(width: 110, alignment: .leading)
+        .frame(width: 80, alignment: .leading)
       
       Text("ID")
       Text("Name")

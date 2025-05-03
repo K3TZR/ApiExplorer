@@ -82,7 +82,7 @@ private struct GuiClientDetailView: View {
   
   var body: some View {
     
-    ScrollView([.vertical]) {
+    ScrollView([.vertical, .horizontal]) {
       VStack(alignment: .leading) {
         switch viewModel.settings.stationObjectFilter {
           

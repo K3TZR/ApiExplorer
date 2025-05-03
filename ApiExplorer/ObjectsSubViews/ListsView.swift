@@ -17,10 +17,10 @@ struct ListsView: View {
   var body: some View {
    
     if let radio {
-      Grid(alignment: .leading, horizontalSpacing: 10) {
+      Grid(alignment: .leading, horizontalSpacing: 40) {
         GridRow {
           Text("LISTS")
-            .frame(width: 110, alignment: .leading)
+            .frame(width: 40, alignment: .leading)
           
           HStack(spacing: 5) {
             Text("Ant List")

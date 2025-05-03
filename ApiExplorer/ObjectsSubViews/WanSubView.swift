@@ -18,10 +18,10 @@ struct WanSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .leading, horizontalSpacing: 10) {
+    Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 0) {
       GridRow {
         Text("WAN")
-          .frame(width: 110, alignment: .leading)
+          .frame(width: 40, alignment: .leading)
         
         HStack(spacing: 5) {
           Text("Authenticated")
@@ -34,18 +34,23 @@ struct WanSubView: View {
           Text(viewModel.api.wan.serverConnected ? "Y" : "N")
             .foregroundColor(viewModel.api.wan.serverConnected ? .green : .red)
         }
-
+        
         HStack(spacing: 5) {
           Text("Public TLS Port")
           Text(viewModel.api.wan.publicTlsPort, format: .number)
             .foregroundColor(.secondary)
         }
-
+        
         HStack(spacing: 5) {
           Text("Public UDP Port")
           Text(viewModel.api.wan.publicUdpPort, format: .number)
             .foregroundColor(.secondary)
         }
+      }
+      
+      GridRow {
+        Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+          .frame(width: 40)
 
         HStack(spacing: 5) {
           Text("Public Upnp TLS Port")

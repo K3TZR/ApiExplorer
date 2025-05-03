@@ -20,10 +20,10 @@ public struct NetworkSubView: View {
   public var body: some View {
     
     VStack(alignment: .leading) {
-      Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+      Grid(alignment: .leading, horizontalSpacing: 40, verticalSpacing: 0) {
         GridRow {
-          Text("NETWORK")
-            .frame(width: 110, alignment: .leading)
+          Text("UDP")
+            .frame(width: 40, alignment: .leading)
           
           Text("Stream")
           Text("Packets")
