@@ -26,13 +26,12 @@ struct AtuSubView: View {
           GridRow {
             Text("ATU")
               .frame(width: 40, alignment: .leading)
-              .border(.red)
             
             HStack(spacing: 5){
               Text("ATU Enabled")
               Text(atu.enabled ? "Y" : "N")
                 .foregroundColor(atu.enabled ? .green : .red)
-            }.border(.green)
+            }
             
             HStack(spacing: 5){
               Text("Memories Enabled")

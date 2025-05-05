@@ -40,7 +40,6 @@ struct EqualizerSubView: View {
         }
       }
     }
-    .border(.red)
   }
 }
 

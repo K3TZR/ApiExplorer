@@ -99,7 +99,6 @@ struct RadioSubView: View {
         
         if viewMode == .standard || viewMode == .objects {
           DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
-            .border(.purple)
         }
       }
     } else {
@@ -160,9 +159,7 @@ private struct DetailView: View {
           EmptyView()
         }
       }
-      .border(.blue)
     }
-    .border(.green)
   }
 }
 
