@@ -57,7 +57,7 @@ struct GuiClientSubView: View {
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
-          if viewMode == .standard || viewMode == .objects {
+          if viewMode != .messages {
             GuiClientDetailView(handle: guiClient.handle.handle!)
             
             if radio.guiClients.last != guiClient {

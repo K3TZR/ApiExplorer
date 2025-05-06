@@ -19,7 +19,7 @@ public enum ActiveSheet: Identifiable {
 public enum ViewMode: String {
   case messages = "arrow.down.square"
   case objects = "arrow.up.square"
-  case standard = "arrow.up.and.down.square"
+  case all = "arrow.up.and.down.square"
 }
 // ----------------------------------------------------------------------------
 // MARK: - View
@@ -56,7 +56,7 @@ struct ApiView: View {
         .frame(height: 2)
         .background(Color.gray)
       
-      BottomButtonsView()
+      BottomButtonsView(viewMode: viewModel.settings.viewMode)
     }
 #if os(macOS)
     .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
@@ -176,15 +176,32 @@ struct ObjectsMessagesSplitView: View {
   var body: some View {
     
     VStack(spacing: 10) {
-      ObjectsView(viewMode: viewMode)
-        .frame(maxWidth: .infinity)
       
-      if viewMode == .standard || viewMode == .messages {
+      switch viewMode {
+      case .all:
+        ObjectsView(viewMode: viewMode)
+          .frame(maxWidth: .infinity)
+        
         Divider()
           .frame(height: 2)
           .background(Color.gray)
         
         MessagesView()
+          .frame(maxWidth: .infinity)
+        
+      case .messages:
+        ObjectsView(viewMode: viewMode)
+          .frame(maxWidth: .infinity)
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+
+        MessagesView()
+          .frame(maxWidth: .infinity)
+        
+      case .objects:
+        ObjectsView(viewMode: viewMode)
           .frame(maxWidth: .infinity)
       }
     }

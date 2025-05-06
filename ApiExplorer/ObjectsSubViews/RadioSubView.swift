@@ -78,7 +78,7 @@ struct RadioSubView: View {
             
             HStack(spacing: 5) {
               Text("Uptime")
-              Text("\(radio.uptime) (seconds)")
+              Text("\(radio.uptime)")
                 .foregroundColor(.secondary)
             }
             
@@ -93,11 +93,21 @@ struct RadioSubView: View {
               Text("\(radio.multiflexEnabled ? "Y" : "N")")
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
             }
+
+            HStack(spacing: 5) {
+              Text("Ant List")
+              Text(radio.antList.joined(separator: ", ")).foregroundColor(.secondary)
+            }
+            
+            HStack(spacing: 5) {
+              Text("Mic List")
+              Text(radio.micList.joined(separator: ", ")).foregroundColor(.secondary)
+            }
           }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
-        if viewMode == .standard || viewMode == .objects {
+        if viewMode != .messages {
           DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
         }
       }
@@ -125,7 +135,6 @@ private struct DetailView: View {
           EqualizerSubView()
           GpsSubView(radio: radio)
           InterlockSubView()
-          ListsView(radio: radio)
           MemorySubView()
           MeterSubView()
           NetworkSubView()
@@ -144,7 +153,6 @@ private struct DetailView: View {
         case .equalizers:   EqualizerSubView()
         case .gps:          GpsSubView(radio: radio)
         case .interlocks:   InterlockSubView()
-        case .lists:        ListsView(radio: radio)
         case .memories:     MemorySubView()
         case .meters:       MeterSubView()
         case .network:      NetworkSubView()
@@ -167,7 +175,7 @@ private struct DetailView: View {
 // MARK: - Preview
 
 #Preview {
-  RadioSubView(radio: nil, viewMode: .standard)
+  RadioSubView(radio: nil, viewMode: .all)
     .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)

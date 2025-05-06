@@ -296,10 +296,10 @@ public class ViewModel {
   public func toggleViewMode() {
     switch settings.viewMode {
     case .messages:
-      settings.viewMode = .standard
+      settings.viewMode = .all
     case .objects:
       settings.viewMode = .messages
-    case .standard:
+    case .all:
       settings.viewMode = .objects
     }  }
   

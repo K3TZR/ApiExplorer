@@ -67,7 +67,7 @@ public class SettingsModel {
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
     stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
-    viewMode = ViewMode(rawValue: _settings.string(forKey: "viewMode") ?? "standard") ?? .standard
+    viewMode = ViewMode(rawValue: _settings.string(forKey: "viewMode") ?? "standard") ?? .all
   }
   
   // ----------------------------------------------------------------------------

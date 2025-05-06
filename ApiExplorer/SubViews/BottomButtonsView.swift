@@ -14,6 +14,7 @@ import ApiPackage
 // MARK: - View
 
 public struct BottomButtonsView: View {
+  let viewMode: ViewMode
 
   @Environment(ViewModel.self) private var viewModel
 
@@ -33,26 +34,29 @@ public struct BottomButtonsView: View {
 
         Spacer()
         
-        HStack(spacing: 5) {
-          ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
-          ToggleX(title: "Times", isOn: $settings.showTimes)
-          ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
-          ToggleX(title: "Pings", isOn: $settings.showPings)
-            .onChange(of: settings.showPings) {
-              if $1 == false { viewModel.messages.removePings() }
-            }
+        if viewMode == .messages || viewMode == .all {
+          
+          HStack(spacing: 5) {
+            ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
+            ToggleX(title: "Times", isOn: $settings.showTimes)
+            ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
+            ToggleX(title: "Pings", isOn: $settings.showPings)
+              .onChange(of: settings.showPings) {
+                if $1 == false { viewModel.messages.removePings() }
+              }
+          }
+          
+          Spacer()
+          
+          ButtonX(title: "Save") {
+            document = SaveDocument(text: viewModel.messages.messagesText())
+            isSaving = true
+          }
+          
+          Spacer()
+          
+          ButtonX(title: "Clear") { viewModel.messages.clearButtonTapped() }
         }
-        
-        Spacer()
-        
-        ButtonX(title: "Save") {
-          document = SaveDocument(text: viewModel.messages.messagesText())
-          isSaving = true
-        }
-        
-        Spacer()
-        
-        ButtonX(title: "Clear") { viewModel.messages.clearButtonTapped() }
       }
       .frame(maxWidth: .infinity)
     }
@@ -74,7 +78,7 @@ public struct BottomButtonsView: View {
 // MARK: - Preview
 
 #Preview {
-  BottomButtonsView()
+  BottomButtonsView(viewMode: .all)
     .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)

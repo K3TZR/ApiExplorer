@@ -29,7 +29,7 @@ public struct ObjectsView: View {
     
     // Custom vertical split, works for macOS and iOS
     VStack(alignment: .leading, spacing: 10) {
-      if viewMode == .standard || viewMode == .objects {
+      if viewMode != .messages {
         HStack {
           Text("RADIO Objects")
             .frame(width: 130, alignment: .leading)
@@ -51,7 +51,7 @@ public struct ObjectsView: View {
         .frame(height: 2)
         .background(Color.gray)
       
-      if viewMode == .standard || viewMode == .objects {
+      if viewMode != .messages {
         HStack {
           Text("STATION Objects")
             .frame(width: 130, alignment: .leading) // Fixed width label
@@ -78,7 +78,7 @@ public struct ObjectsView: View {
 // MARK: - Preview
 
 #Preview {
-  ObjectsView(viewMode: .standard)
+  ObjectsView(viewMode: .all)
     .environment(ViewModel(SettingsModel()))
 }
 
@@ -94,7 +94,6 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
   case equalizers
   case gps
   case interlocks
-  case lists
   case memories
   case meters
   case network
