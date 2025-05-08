@@ -16,21 +16,20 @@ struct UsbCableSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
-  private func depthName(_ depth: UInt) -> String {
-    switch depth {
-    case 1: return "Normal"
-    case 2: return "Deep"
-    case 3: return "Very Deep"
-    default:  return "Invalid"
-    }
-  }
 
   var body: some View {
     
     Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
-      if viewModel.api.usbCables.count > 0 {
-        HeaderView()
-        
+//      if viewModel.api.usbCables.count > 0 {
+//        HeaderView()
+
+        GridRow {
+          Text("UsbCables")
+            .frame(width: 70, alignment: .leading)
+
+          Text("----- NOT IMPLEMENTED -----").foregroundColor(.red)
+        }
+
 //        ForEach(viewModel.api.usbCables, id: \.id) { cable in
 //          GridRow {
 //            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
@@ -45,14 +44,14 @@ struct UsbCableSubView: View {
 //          .foregroundColor(.secondary)
 //        }
         
-      } else {
-        GridRow {
-          Text("UsbCable")
-            .frame(width: 80, alignment: .leading)
-
-          Text("----- NONE -----").foregroundColor(.red)
-        }
-      }
+//      } else {
+//        GridRow {
+//          Text("UsbCable")
+//            .frame(width: 80, alignment: .leading)
+//
+//          Text("----- NONE -----").foregroundColor(.red)
+//        }
+//      }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
@@ -64,7 +63,7 @@ private struct HeaderView: View {
     
     GridRow {
       Text("USB Cables")
-        .frame(width: 80, alignment: .leading)
+        .frame(width: 70, alignment: .leading)
 
       Text("Name")
         .frame(width: 50, alignment: .leading)

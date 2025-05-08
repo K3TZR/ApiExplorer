@@ -18,7 +18,7 @@ struct EqualizerSubView: View {
 
   var body: some View {
     
-    Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
+    Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 0) {
       HeadingView()
       
       ForEach(viewModel.api.equalizers) { eq in
@@ -51,16 +51,18 @@ private struct HeadingView: View {
       Text("EQ")
         .frame(width: 40, alignment: .leading)
 
-      Text("ID")
-      Text("Enabled")
-      Text("63 Hz")
-      Text("125 Hz")
-      Text("250 Hz")
-      Text("500 Hz")
-      Text("1000 Hz")
-      Text("2000 Hz")
-      Text("4000 Hz")
-      Text("8000 Hz")
+      Group {
+        Text("ID")
+        Text("Enabled")
+        Text("63 Hz")
+        Text("125 Hz")
+        Text("250 Hz")
+        Text("500 Hz")
+        Text("1000 Hz")
+        Text("2000 Hz")
+        Text("4000 Hz")
+        Text("8000 Hz")
+      }.frame(width: 60)
     }
   }
 }

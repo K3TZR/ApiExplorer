@@ -104,7 +104,7 @@ public class ViewModel {
   public func onAppear() {
     if initialized == false {
       Task { await AppLog.debug("ApiExplorer: application started")}
-      
+            
       // initialize the Messages model
       messages.reFilter()
       

@@ -14,7 +14,7 @@ import ApiPackage
 
 struct PanadapterSubView: View {
   let handle: UInt32
-  let showMeters: Bool
+  let filters: Set<String>
   
   @Environment(ViewModel.self) var viewModel
   
@@ -28,7 +28,7 @@ struct PanadapterSubView: View {
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
-
+      
       
     } else {
       ForEach(viewModel.api.panadapters, id: \.id) { panadapter in
@@ -37,20 +37,24 @@ struct PanadapterSubView: View {
           
           VStack(alignment: .leading) {
             
-          // Panadapter
+            // Panadapter
             PanadapterDetailView(panadapter: panadapter)
             
-            // corresponding Waterfall
-            ForEach(viewModel.api.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
-              WaterfallDetailView(waterfall: waterfall)
+            if filters.contains(StationObjectFilter.waterfalls.rawValue) {
+              // corresponding Waterfall
+              ForEach(viewModel.api.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
+                WaterfallDetailView(waterfall: waterfall)
+              }
             }
             
-            // corresponding Slice(s)
-            ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
-              SliceDetailView(slice: slice)
-              
-              // slice meter(s)
-              if showMeters { SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
+            if filters.contains(StationObjectFilter.slices.rawValue) || filters.contains(StationObjectFilter.slicesMeters.rawValue) {
+              // corresponding Slice(s)
+              ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+                SliceDetailView(slice: slice)
+                if filters.contains(StationObjectFilter.slicesMeters.rawValue) {
+                  // slice meter(s)
+                  SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
+              }
             }
           }
           .padding(.bottom, 20)
@@ -71,7 +75,7 @@ private struct PanadapterDetailView: View {
       GridRow {
         Text("PANADAPTER")
           .frame(width: 110, alignment: .leading)
-
+        
         Text("ID")
         Text(panadapter.id.hex)
           .foregroundColor(.secondary)
@@ -101,27 +105,27 @@ private struct WaterfallDetailView: View {
       GridRow {
         Text("WATERFALL")
           .frame(width: 110, alignment: .trailing)
-
+        
         Text("ID")
         Text(waterfall.id.hex)
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-
+        
         Text("Auto Black")
         Text("\(waterfall.autoBlackEnabled ? "Y" : "N")")
           .foregroundColor(waterfall.autoBlackEnabled ? .green : .red)
           .gridColumnAlignment(.trailing)
-
+        
         Text("Color Gain")
         Text(waterfall.colorGain, format: .number)
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-
+        
         Text("Black Level")
         Text(waterfall.blackLevel, format: .number)
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-
+        
         Text("Duration")
         Text(waterfall.lineDuration, format: .number)
           .foregroundColor(.secondary)
@@ -147,10 +151,10 @@ private struct SliceDetailView: View {
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
         
-        Text("Freq")        
+        Text("Freq")
         Text("\(slice.frequency)")
           .foregroundColor(.secondary)
-          .gridColumnAlignment(.trailing)        
+          .gridColumnAlignment(.trailing)
         
         Text("Mode")
         Text("\(slice.mode)")
@@ -167,7 +171,7 @@ private struct SliceDetailView: View {
         
         Text("\(slice.txAnt)")
           .foregroundColor(.secondary)
-
+        
         Text("DAX_channel")
         Text("\(slice.daxChannel)")
           .foregroundColor(.secondary)
@@ -180,12 +184,12 @@ private struct SliceDetailView: View {
         Text("\(slice.filterLow)")
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-
+        
         Text("High")
         Text("\(slice.filterHigh)")
           .foregroundColor(.secondary)
           .gridColumnAlignment(.trailing)
-
+        
         Text("Active")
         Text("\(slice.active ? "Y" : "N")")
           .foregroundColor(slice.active ? .green : .red)
@@ -203,7 +207,7 @@ private struct SliceDetailView: View {
 // MARK: - Preview
 
 #Preview {
-  PanadapterSubView(handle: 1, showMeters: true)
+  PanadapterSubView(handle: 1, filters: [])
     .environment(ViewModel(SettingsModel()))
   
     .frame(minWidth: 1000)

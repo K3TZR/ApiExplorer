@@ -414,7 +414,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -422,6 +422,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationLandscapeRight;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -446,7 +447,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -454,6 +455,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationLandscapeRight;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

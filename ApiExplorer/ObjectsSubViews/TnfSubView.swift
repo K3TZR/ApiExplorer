@@ -47,7 +47,7 @@ struct TnfSubView: View {
         
       } else {
         GridRow {
-          Text("TNF")
+          Text("TNFs")
             .frame(width: 40, alignment: .leading)
 
           Text("----- NONE -----").foregroundColor(.red)
@@ -63,7 +63,7 @@ private struct HeaderView: View {
   var body: some View {
     
     GridRow {
-      Text("TNF")
+      Text("TNFs")
         .frame(width: 40, alignment: .leading)
 
       Text("ID")

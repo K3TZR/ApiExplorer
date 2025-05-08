@@ -23,42 +23,52 @@ struct GuiClientSubView: View {
     if let radio {
       VStack(alignment: .leading, spacing: 0) {
         ForEach(radio.guiClients, id: \.id) { guiClient in
-          Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+          Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
             GridRow {
               Text(guiClient.station)
                 .foregroundColor(.yellow)
-                .font(.title)
+                .bold()
+                .underline()
+//                .font(.title)
                 .frame(width: 200, alignment: .leading)
                 .truncationMode(.tail)
                 .lineLimit(1)   // This is critical
                 .clipped()
                 .help(guiClient.station)
               
-              Text("Handle")
-              Text(guiClient.handle)
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
+              HStack(spacing: 5) {
+                Text("Handle")
+                Text(guiClient.handle)
+                  .foregroundColor(.secondary)
+                  .gridColumnAlignment(.trailing)
+              }
               
-              Text("Program")
-              Text("\(guiClient.program)")
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
+              HStack(spacing: 5) {
+                Text("Program")
+                Text("\(guiClient.program)")
+                  .foregroundColor(.secondary)
+                  .gridColumnAlignment(.trailing)
+              }
               
-              Text("LocalPtt")
-              Text(guiClient.pttEnabled ? "Y" : "N")
-                .foregroundColor(guiClient.pttEnabled ? .green : .red)
-                .gridColumnAlignment(.trailing)
+              HStack(spacing: 5) {
+                Text("LocalPtt")
+                Text(guiClient.pttEnabled ? "Y" : "N")
+                  .foregroundColor(guiClient.pttEnabled ? .green : .red)
+                  .gridColumnAlignment(.trailing)
+              }
               
-              Text("ClientId")
-              Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
+              HStack(spacing: 5) {
+                Text("ClientId")
+                Text("\(guiClient.clientId == nil ? "Unknown" : guiClient.clientId!.uuidString)")
+                  .foregroundColor(.secondary)
+                  .gridColumnAlignment(.trailing)
+              }
             }
           }
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
           
           if viewMode != .messages {
-            GuiClientDetailView(handle: guiClient.handle.handle!)
+            GuiClientDetailView(filters: viewModel.settings.stationObjectFilters, handle: guiClient.handle.handle!)
             
             if radio.guiClients.last != guiClient {
               Divider()
@@ -76,6 +86,7 @@ struct GuiClientSubView: View {
 }
 
 private struct GuiClientDetailView: View {
+  let filters: Set<String>
   let handle: UInt32
   
   @Environment(ViewModel.self) private var viewModel
@@ -84,27 +95,8 @@ private struct GuiClientDetailView: View {
     
     ScrollView([.vertical, .horizontal]) {
       VStack(alignment: .leading) {
-        switch viewModel.settings.stationObjectFilter {
-          
-        case .all:
-          PanadapterSubView(handle: handle, showMeters: true)
-          
-        case .noMeters:
-          PanadapterSubView(handle: handle, showMeters: false)
-          
-          //      case .amplifiers:        AmplifierSubView()
-          //      case .cwx:               CwxSubView()
-          //      case .interlock:         InterlockSubView()
-          //      case .memories:          MemorySubView()
-          //      case .meters:            MeterSubView(sliceId: nil, sliceClientHandle: nil, handle: handle)
-          //      case .network:           NetworkSubView()
-          //      case .profiles:          ProfileSubView()
-          //      case .streams:           StreamSubView(handle: handle)
-          //      case .usbCable:          UsbCableSubView()
-          //      case .wan:               WanSubView()
-          //      case .waveforms:         WaveformSubView()
-          //      case .xvtrs:             XvtrSubView()
-        default:                Text("Unknown")
+        if filters.contains(StationObjectFilter.panadapters.rawValue) {
+          PanadapterSubView(handle: handle, filters: filters)
         }
       }
     }

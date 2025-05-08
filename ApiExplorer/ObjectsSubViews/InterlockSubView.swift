@@ -46,19 +46,19 @@ struct InterlockSubView: View {
         }
         
         HStack(spacing: 5){
-          Text("Acc Tx Enabled")
+          Text("Acc Tx")
           Text(interlock.accTxEnabled ? "Y" : "N")
             .foregroundColor(interlock.accTxEnabled ? .green : .red)
         }
         
         HStack(spacing: 5){
-          Text("Acc Tx Req Enabled")
+          Text("Acc Req")
           Text(interlock.accTxReqEnabled ? "Y" : "N")
             .foregroundColor(interlock.accTxReqEnabled ? .green : .red)
         }
         
         HStack(spacing: 5){
-          Text("Rca Tx Req Enabled")
+          Text("Rca Req")
           Text(interlock.rcaTxReqEnabled ? "Y" : "N")
             .foregroundColor(interlock.rcaTxReqEnabled ? .green : .red)
         }

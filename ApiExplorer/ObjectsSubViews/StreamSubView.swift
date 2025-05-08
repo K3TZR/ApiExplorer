@@ -13,7 +13,7 @@ import ApiPackage
 // ----------------------------------------------------------------------------
 // MARK: - View
 
-public struct NetworkSubView: View {
+public struct StreamSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
@@ -107,7 +107,7 @@ private struct DetailView: View {
 // MARK: - Preview
 
 #Preview {
-  NetworkSubView()
+  StreamSubView()
     .environment(ViewModel(SettingsModel()))
 
     .frame(minWidth: 1000)

@@ -52,7 +52,7 @@ public class SettingsModel {
     messageFilterText = _settings.string(forKey: "messageFilterText") ?? ""
     mtuValue = _settings.integer(forKey: "mtuValue")
     newLineBetweenMessages = _settings.bool(forKey: "newLineBetweenMessages")
-    radioObjectFilter = RadioObjectFilter(rawValue: _settings.string(forKey: "radioObjectFilter") ?? "all") ?? .all
+    radioObjectFilters = Set(_settings.stringArray(forKey: "radioObjectFilters") ?? ["none"])
     remoteRxAudioCompressed = _settings.bool(forKey: "remoteRxAudioCompressed")
     remoteRxAudioEnabled = _settings.bool(forKey: "remoteRxAudioEnabled")
     remoteTxAudioCompressed = _settings.bool(forKey: "remoteTxAudioCompressed")
@@ -65,7 +65,7 @@ public class SettingsModel {
     smartlinkRefreshToken = _settings.string(forKey: "smartlinkRefreshToken")
     smartlinkUser = _settings.string(forKey: "smartlinkUser") ?? ""
     stationName = _settings.string(forKey: "stationName") ?? "ApiExplorer"
-    stationObjectFilter = StationObjectFilter(rawValue: _settings.string(forKey: "stationObjectFilter") ?? "all") ?? .all
+    stationObjectFilters = Set(_settings.stringArray(forKey: "stationObjectFilters") ?? ["panadapters", "waterfalls", "slicesMeters"])
     useDefaultEnabled = _settings.bool(forKey: "useDefaultEnabled")
     viewMode = ViewMode(rawValue: _settings.string(forKey: "viewMode") ?? "standard") ?? .all
   }
@@ -99,7 +99,7 @@ public class SettingsModel {
   public var messageFilterText: String { didSet { _settings.set(messageFilterText, forKey: "messageFilterText") }}
   public var mtuValue: Int { didSet { _settings.set(mtuValue, forKey: "mtuValue") }}
   public var newLineBetweenMessages: Bool { didSet { _settings.set(newLineBetweenMessages, forKey: "newLineBetweenMessages") }}
-  public var radioObjectFilter: RadioObjectFilter { didSet { _settings.set(radioObjectFilter.rawValue, forKey: "radioObjectFilter") }}
+  public var radioObjectFilters: Set<String> { didSet { _settings.set(Array(radioObjectFilters), forKey: "radioObjectFilters") }}
   public var remoteRxAudioCompressed: Bool { didSet { _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed") }}
   public var remoteRxAudioEnabled: Bool { didSet { _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled") }}
   public var remoteTxAudioCompressed: Bool { didSet { _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed") }}
@@ -112,7 +112,7 @@ public class SettingsModel {
   public var smartlinkRefreshToken: String? { didSet { _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken") }}
   public var smartlinkUser: String { didSet { _settings.set(smartlinkUser, forKey: "smartlinkUser") }}
   public var stationName: String { didSet { _settings.set(stationName, forKey: "stationName") }}
-  public var stationObjectFilter: StationObjectFilter { didSet { _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter") }}
+  public var stationObjectFilters: Set<String> { didSet { _settings.set(Array(stationObjectFilters), forKey: "stationObjectFilters") }}
   public var useDefaultEnabled: Bool { didSet { _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled") }}
   public var viewMode: ViewMode { didSet { _settings.set(viewMode.rawValue, forKey: "viewMode") }}
 
@@ -152,7 +152,7 @@ public class SettingsModel {
     _settings.set(messageFilterText, forKey: "messageFilterText")
     _settings.set(mtuValue, forKey: "mtuValue")
     _settings.set(newLineBetweenMessages, forKey: "newLineBetweenMessages")
-    _settings.set(radioObjectFilter.rawValue, forKey: "radioObjectFilter")
+    _settings.set(radioObjectFilters, forKey: "radioObjectFilters")
     _settings.set(remoteRxAudioCompressed, forKey: "remoteRxAudioCompressed")
     _settings.set(remoteRxAudioEnabled, forKey: "remoteRxAudioEnabled")
     _settings.set(remoteTxAudioCompressed, forKey: "remoteTxAudioCompressed")
@@ -165,7 +165,7 @@ public class SettingsModel {
     _settings.set(smartlinkRefreshToken, forKey: "smartlinkRefreshToken")
     _settings.set(smartlinkUser, forKey: "smartlinkUser")
     _settings.set(stationName, forKey: "stationName")
-    _settings.set(stationObjectFilter.rawValue, forKey: "stationObjectFilter")
+    _settings.set(stationObjectFilters, forKey: "stationObjectFilters")
     _settings.set(useDefaultEnabled, forKey: "useDefaultEnabled")
     _settings.set(viewMode.rawValue, forKey: "viewMode")
   }
@@ -193,4 +193,3 @@ extension UserDefaults {
     return decodedObject
   }
 }
-

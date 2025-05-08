@@ -22,11 +22,13 @@ struct RadioSubView: View {
     
     if let radio {
       VStack(alignment: .leading, spacing: 0) {
-        Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 0) {
+        Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
           GridRow {
             Text(radio.packet.nickname)
               .frame(width: 200, alignment: .leading)
-              .font(.title)
+              .bold()
+              .underline()
+//              .font(.title)
               .foregroundColor(radio.packet.source == .local ? .green : .red)
               .gridColumnAlignment(.leading)
               .truncationMode(.tail)
@@ -35,12 +37,11 @@ struct RadioSubView: View {
               .help(radio.packet.nickname)
             
             HStack(spacing: 5) {
-              Text("Source")
-              Text(radio.packet.source.rawValue
-                .uppercased())
-              .foregroundColor(.secondary)
+              Text("Model")
+              Text(radio.packet.model)
+                .foregroundColor(.secondary)
             }
-            
+
             HStack(spacing: 5) {
               Text("ip")
               Text(radio.packet.publicIp)
@@ -50,26 +51,21 @@ struct RadioSubView: View {
             
             HStack(spacing: 5) {
               Text("FW")
-              Text(radio.packet.version + "\(radio.alpha ? "(alpha)" : "")")
+              Text(radio.packet.version)
                 .foregroundColor(radio.alpha ? .red : .secondary)
-            }
-            
-            HStack(spacing: 5) {
-              Text("Model")
-              Text(radio.packet.model)
-                .foregroundColor(.secondary)
             }
             
             HStack(spacing: 5) {
               Text("Serial")
               Text(radio.packet.serial)
                 .foregroundColor(.secondary)
-            }
-          }
+            }.gridCellColumns(2)
+       }
           
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             
+  
             HStack(spacing: 5) {
               Text("HW")
               Text(viewModel.api.hardwareVersion ?? "")
@@ -83,6 +79,16 @@ struct RadioSubView: View {
             }
             
             HStack(spacing: 5) {
+              Text("Ant List")
+              Text(radio.antList.joined(separator: ", ")).foregroundColor(.secondary)
+            }.gridCellColumns(3)
+            
+        }
+          
+          GridRow {
+            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+
+            HStack(spacing: 5) {
               Text("TNF's Enabled")
               Text("\(radio.tnfsEnabled ? "Y" : "N")")
                 .foregroundColor(radio.tnfsEnabled ? .green : .red)
@@ -93,22 +99,17 @@ struct RadioSubView: View {
               Text("\(radio.multiflexEnabled ? "Y" : "N")")
                 .foregroundColor(radio.multiflexEnabled ? .green : .red)
             }
-
-            HStack(spacing: 5) {
-              Text("Ant List")
-              Text(radio.antList.joined(separator: ", ")).foregroundColor(.secondary)
-            }
             
             HStack(spacing: 5) {
               Text("Mic List")
               Text(radio.micList.joined(separator: ", ")).foregroundColor(.secondary)
+            }.gridCellColumns(3)
             }
-          }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         
         if viewMode != .messages {
-          DetailView(filter: viewModel.settings.radioObjectFilter, radio: radio)
+          DetailView(filters: viewModel.settings.radioObjectFilters, radio: radio)
         }
       }
     } else {
@@ -118,54 +119,32 @@ struct RadioSubView: View {
 }
 
 private struct DetailView: View {
-  let filter: RadioObjectFilter
+  let filters: Set<String>
   let radio: Radio
   
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
-    ScrollView([.vertical]) {
+    ScrollView([.vertical, .horizontal]) {
       VStack(alignment: .leading) {
-        switch filter {
-        case .all:
-          AmplifierSubView(radio: radio)
-          AtuSubView(radio: radio)
-          BandSettingSubView()
-          CwxSubView()
-          EqualizerSubView()
-          GpsSubView(radio: radio)
-          InterlockSubView()
-          MemorySubView()
-          MeterSubView()
-          NetworkSubView()
-          ProfileSubView()
-          TnfSubView()
-          TransmitSubView()
-          //          UsbCableSubView()
-          WanSubView()
-          //          WaveformSubView(radio: radio)
-          XvtrSubView()
-          
-        case .amplifiers:   AmplifierSubView(radio: radio)
-        case .atu:          AtuSubView(radio: radio)
-        case .bandSettings: BandSettingSubView()
-        case .cwx:          CwxSubView()
-        case .equalizers:   EqualizerSubView()
-        case .gps:          GpsSubView(radio: radio)
-        case .interlocks:   InterlockSubView()
-        case .memories:     MemorySubView()
-        case .meters:       MeterSubView()
-        case .network:      NetworkSubView()
-        case .profiles:     ProfileSubView()
-        case .tnf:          TnfSubView()
-        case .transmit:     TransmitSubView()
-          //        case .usbCable:     UsbCableSubView()
-        case .wan:          WanSubView()
-          //        case .waveforms:    WaveformSubView(radio: radio)
-        case .xvtrs:        XvtrSubView()
-        case .usbCable, .waveforms:
-          EmptyView()
-        }
+
+        if filters.contains(RadioObjectFilter.amplifiers.rawValue) {AmplifierSubView(radio: radio)}
+        if filters.contains(RadioObjectFilter.atu.rawValue) {AtuSubView(radio: radio)}
+        if filters.contains(RadioObjectFilter.bandSettings.rawValue) {BandSettingSubView()}
+        if filters.contains(RadioObjectFilter.cwx.rawValue) {CwxSubView()}
+        if filters.contains(RadioObjectFilter.equalizers.rawValue) {EqualizerSubView()}
+        if filters.contains(RadioObjectFilter.gps.rawValue) {GpsSubView(radio: radio)}
+        if filters.contains(RadioObjectFilter.interlocks.rawValue) {InterlockSubView()}
+        if filters.contains(RadioObjectFilter.memories.rawValue) {MemorySubView()}
+        if filters.contains(RadioObjectFilter.meters.rawValue) {MeterSubView()}
+        if filters.contains(RadioObjectFilter.streams.rawValue) {StreamSubView()}
+        if filters.contains(RadioObjectFilter.profiles.rawValue) {ProfileSubView()}
+        if filters.contains(RadioObjectFilter.tnfs.rawValue) {TnfSubView()}
+        if filters.contains(RadioObjectFilter.transmit.rawValue) {TransmitSubView()}
+        if filters.contains(RadioObjectFilter.usbCables.rawValue) {UsbCableSubView()}
+        if filters.contains(RadioObjectFilter.wan.rawValue) {WanSubView()}
+        if filters.contains(RadioObjectFilter.waveforms.rawValue) {WaveformSubView()}
+        if filters.contains(RadioObjectFilter.xvtrs.rawValue) {XvtrSubView()}
       }
     }
   }

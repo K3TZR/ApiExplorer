@@ -22,7 +22,7 @@ struct ProfileSubView: View {
   
   var body: some View {
     
-    Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .topLeading, horizontalSpacing: 20, verticalSpacing: 0) {
       if viewModel.api.profiles.count > 0 {
         HeaderView()
         
