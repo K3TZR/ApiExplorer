@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ApiPackage
 
 #if os(iOS)
 extension View {
@@ -48,9 +49,26 @@ public struct SendView: View {
       }
   
       #if os(iOS)
+      ButtonX(title: "Pings") {
+        if viewModel.api.activeSelection == nil {
+          viewModel.alertInfo = AlertInfo("No Connection", "Please connect to a radio")
+          viewModel.showAlert = true
+        } else {
+          viewModel.api.pingIntervalIndex = 0
+          viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
+          viewModel.activeSheet = .pings
+        }
+      }
       ButtonX(title: "Discovery") { viewModel.activeSheet = .discovery }
       ButtonX(title: "Gui Clients") { viewModel.activeSheet = .guiClients }
-      ButtonX(title: "Settings") { viewModel.activeSheet = .settings }
+      ButtonX(title: "Settings") {
+        if viewModel.api.activeSelection == nil {
+          viewModel.activeSheet = .settings
+        } else {
+          viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
+          viewModel.showAlert = true
+        }
+      }
       #endif
     }
   }

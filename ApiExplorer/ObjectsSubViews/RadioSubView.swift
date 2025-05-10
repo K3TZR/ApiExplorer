@@ -125,7 +125,7 @@ private struct DetailView: View {
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
-    ScrollView([.vertical, .horizontal]) {
+    ScrollView([.vertical]) {
       VStack(alignment: .leading) {
 
         if filters.contains(RadioObjectFilter.amplifiers.rawValue) {AmplifierSubView(radio: radio)}

@@ -98,6 +98,7 @@ private struct FooterView: View {
   var body: some View {
     HStack {
       Toggle("Use SmartLink", isOn: useSmartlink)
+        .frame(width: 200)
       Spacer()
       Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)

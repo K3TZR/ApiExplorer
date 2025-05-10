@@ -33,7 +33,6 @@ public class SettingsModel {
     commandsArray = _settings.stringArray(forKey: "commandsArray") ?? []
     commandsIndex = _settings.integer(forKey: "commandsIndex")
     commandToSend = _settings.string(forKey: "commandToSend") ?? ""
-    darkMode = _settings.bool(forKey: "darkMode")
     daxSelection = DaxChoice(rawValue: _settings.string(forKey: "daxSelection") ?? "none") ?? .none
     defaultGui = _settings.getStruct(forKey: "defaultGui", as: PickerSelection.self)
     defaultNonGui = _settings.getStruct(forKey: "defaultNonGui", as: PickerSelection.self)
@@ -80,7 +79,6 @@ public class SettingsModel {
   public var commandsArray: [String] { didSet { _settings.set(commandsArray, forKey: "commandsArray") }}
   public var commandsIndex: Int { didSet { _settings.set(commandsIndex, forKey: "commandsIndex") }}
   public var commandToSend: String { didSet { _settings.set(commandToSend, forKey: "commandToSend") }}
-  public var darkMode: Bool { didSet { _settings.set(darkMode, forKey: "darkMode") }}
   public var daxSelection: DaxChoice { didSet { _settings.set(daxSelection.rawValue, forKey: "daxSelection") }}
   public var defaultGui: PickerSelection? { didSet { _settings.setStruct(defaultGui, forKey: "defaultGui") }}
   public var defaultNonGui: PickerSelection? { didSet { _settings.setStruct(defaultNonGui, forKey: "defaultNonGui") }}
@@ -133,7 +131,6 @@ public class SettingsModel {
     _settings.set(commandsArray, forKey: "commandsArray")
     _settings.set(commandsIndex, forKey: "commandsIndex")
     _settings.set(commandToSend, forKey: "commandToSend")
-    _settings.set(darkMode, forKey: "darkMode")
     _settings.set(daxSelection.rawValue, forKey: "daxSelection")
     _settings.setStruct(defaultGui, forKey: "defaultGui")
     _settings.setStruct(defaultNonGui, forKey: "defaultNonGui")

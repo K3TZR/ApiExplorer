@@ -27,7 +27,7 @@ public enum ViewMode: String {
 struct ApiView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  
+
   var isMultiflex: Bool {
     if let selection = viewModel.api.activeSelection {
       if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
@@ -114,7 +114,7 @@ struct ApiView: View {
         
         Button("Pings") {
           if viewModel.api.activeSelection == nil {
-            viewModel.alertInfo = AlertInfo("No Selection", "Please select a radio first")
+            viewModel.alertInfo = AlertInfo("No Connection", "Please connect to a radio")
             viewModel.showAlert = true
           } else {
             viewModel.api.pingIntervalIndex = 0
@@ -152,7 +152,6 @@ struct ApiView: View {
           viewModel.showAlert = true
         }
       }
-      .preferredColorScheme(viewModel.settings.darkMode ? .dark : .light)
   }
 }
 

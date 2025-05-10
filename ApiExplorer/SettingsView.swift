@@ -18,6 +18,12 @@ public struct SettingsView: View {
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
   
+  func version() -> String {
+    let versions = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? "?"
+    let build   = Bundle.main.infoDictionary![kCFBundleVersionKey as String] as? String ?? "?"
+    return versions + ".\(build)"
+
+  }
   public var body: some View {
     @Bindable var settings = viewModel.settings
 
@@ -57,26 +63,17 @@ public struct SettingsView: View {
         
         GridRow {
           Text("Discovert Port")
-          HStack {
-            Picker("", selection: $settings.discoveryPort) {
-              Text(4992, format: .number)
-                .tag(4992)
-              Text(14992, format: .number)
-                .tag(14992)
-            }
-            .labelsHidden()
-            .frame(width: 75)
-            .onChange(of: settings.discoveryPort) {
-              settings.localEnabled = false
-            }
-            Text("-- Must Restart Local --")
-              .frame(alignment: .leading)
+          Picker("", selection: $settings.discoveryPort) {
+            Text(4992, format: .number)
+              .tag(4992)
+            Text(14992, format: .number)
+              .tag(14992)
           }
-        }
-        
-        GridRow {
-          Text("Dark mode")
-          Toggle("", isOn: $settings.darkMode)
+          .labelsHidden()
+          .frame(width: 75)
+          .onChange(of: settings.discoveryPort) {
+            settings.localEnabled = false
+          }
         }
         
         GridRow {
@@ -121,6 +118,7 @@ public struct SettingsView: View {
         .background(Color.gray)
       
       HStack() {
+        Text("v" + version())
         Spacer()
         Button("Close") { dismiss() }
           .keyboardShortcut(.defaultAction)
@@ -132,7 +130,6 @@ public struct SettingsView: View {
     .padding()
   }
 }
-
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview

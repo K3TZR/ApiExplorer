@@ -93,7 +93,7 @@ private struct GuiClientDetailView: View {
   
   var body: some View {
     
-    ScrollView([.vertical, .horizontal]) {
+    ScrollView([.vertical]) {
       VStack(alignment: .leading) {
         PanadapterSubView(handle: handle, filters: filters)
       }
