@@ -38,23 +38,27 @@ struct PanadapterSubView: View {
           VStack(alignment: .leading) {
             
             // Panadapter
-            PanadapterDetailView(panadapter: panadapter)
+            if filters.contains(StationObjectFilter.panadapters.rawValue) {
+              PanadapterDetailView(panadapter: panadapter)
+            }
             
-            if filters.contains(StationObjectFilter.waterfalls.rawValue) {
-              // corresponding Waterfall
-              ForEach(viewModel.api.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
+            // corresponding Waterfall
+            ForEach(viewModel.api.waterfalls.filter { $0.panadapterId == panadapter.id} ) { waterfall in
+              if filters.contains(StationObjectFilter.waterfalls.rawValue) {
                 WaterfallDetailView(waterfall: waterfall)
               }
             }
             
-            if filters.contains(StationObjectFilter.slices.rawValue) || filters.contains(StationObjectFilter.slicesMeters.rawValue) {
-              // corresponding Slice(s)
-              ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+            // corresponding Slice(s)
+            ForEach(viewModel.api.slices.filter { $0.panadapterId == panadapter.id}) { slice in
+              if filters.contains(StationObjectFilter.slices.rawValue) {
                 SliceDetailView(slice: slice)
-                if filters.contains(StationObjectFilter.slicesMeters.rawValue) {
-                  // slice meter(s)
-                  SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
               }
+              
+              // corresponding Slice Meters
+              if filters.contains(StationObjectFilter.meters.rawValue) {
+                // slice meter(s)
+                SliceMeterSubView(sliceId: slice.id, sliceClientHandle: slice.clientHandle, handle: handle) }
             }
           }
           .padding(.bottom, 20)

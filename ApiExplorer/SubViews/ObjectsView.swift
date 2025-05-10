@@ -61,12 +61,12 @@ public struct ObjectsView: View {
     // Sheet
     .sheet(isPresented: $showObjectFilterSettings) {
       ObjectsFilterView()
-        .frame(width: 180, height: 300)
+        .frame(width: 140, height: 340)
         .padding(10)
     }
     .sheet(isPresented: $showStationFilterSettings) {
       StationsFilterView()
-        .frame(width: 180, height: 300)
+        .frame(width: 140, height: 180)
         .padding(10)
     }
 
@@ -83,13 +83,48 @@ public struct ObjectsFilterView: View {
   public var body: some View {
     @Bindable var settings = viewModel.settings
 
-    VStack {
-      List(selection: $settings.radioObjectFilters) {
-        ForEach(RadioObjectFilter.allCases, id: \.self) {
-          Text($0.rawValue.capitalized).tag($0.rawValue)
-        }
+    VStack(alignment: .leading) {
+      HStack {
+        Text("all")
+        Spacer()
+      }
+      .contentShape(Rectangle())
+      .onTapGesture {
+        settings.radioObjectFilters = Set(RadioObjectFilter.allCases.map(\.rawValue))
+      }
+      
+      HStack {
+        Text("none")
+        Spacer()
+      }
+      .contentShape(Rectangle())
+      .onTapGesture {
+        settings.radioObjectFilters.removeAll()
       }
 
+      Divider()
+      
+      ForEach(RadioObjectFilter.allCases, id: \.self) { item in
+        HStack {
+          Text(item.rawValue)
+          
+          Spacer()
+          if settings.radioObjectFilters.contains(item.rawValue) {
+            Image(systemName: "checkmark")
+              .foregroundColor(.accentColor)
+          }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+          if settings.radioObjectFilters.contains(item.rawValue) {
+            settings.radioObjectFilters.remove(item.rawValue)
+          } else {
+            settings.radioObjectFilters.insert(item.rawValue)
+          }
+        }
+        
+      }
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
@@ -114,10 +149,45 @@ public struct StationsFilterView: View {
     @Bindable var settings = viewModel.settings
 
     VStack {
-      List(selection: $settings.stationObjectFilters) {
-        ForEach(StationObjectFilter.allCases, id: \.self) {
-          Text($0.rawValue.capitalized).tag($0.rawValue)
+      HStack {
+        Text("all")
+        Spacer()
+      }
+      .contentShape(Rectangle())
+      .onTapGesture {
+        settings.stationObjectFilters = Set(StationObjectFilter.allCases.map(\.rawValue))
+      }
+      
+      HStack {
+        Text("none")
+        Spacer()
+      }
+      .contentShape(Rectangle())
+      .onTapGesture {
+        settings.stationObjectFilters.removeAll()
+      }
+
+      Divider()
+      
+      ForEach(StationObjectFilter.allCases, id: \.self) { item in
+        HStack {
+          Text(item.rawValue)
+          
+          Spacer()
+          if settings.stationObjectFilters.contains(item.rawValue) {
+            Image(systemName: "checkmark")
+              .foregroundColor(.accentColor)
+          }
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+          if settings.stationObjectFilters.contains(item.rawValue) {
+            settings.stationObjectFilters.remove(item.rawValue)
+          } else {
+            settings.stationObjectFilters.insert(item.rawValue)
+          }
+        }
+        
       }
 
       Divider()
@@ -148,7 +218,6 @@ public struct StationsFilterView: View {
 // MARK: - Structs & Enums
 
 public enum RadioObjectFilter: String, CaseIterable, Sendable {
-  case none
   case amplifiers
   case atu
   case bandSettings = "band settings"
@@ -169,10 +238,9 @@ public enum RadioObjectFilter: String, CaseIterable, Sendable {
 }
 
 public enum StationObjectFilter: String, CaseIterable, Sendable {
-  case none
   case panadapters
   case waterfalls
   case slices
-  case slicesMeters = "Slices w/meters"
+  case meters
   case streams
 }

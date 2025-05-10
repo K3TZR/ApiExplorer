@@ -95,9 +95,7 @@ private struct GuiClientDetailView: View {
     
     ScrollView([.vertical, .horizontal]) {
       VStack(alignment: .leading) {
-        if filters.contains(StationObjectFilter.panadapters.rawValue) {
-          PanadapterSubView(handle: handle, filters: filters)
-        }
+        PanadapterSubView(handle: handle, filters: filters)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
