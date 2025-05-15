@@ -264,6 +264,7 @@ private struct VitaHexView: View {
   @State var isSaving = false
   @State var document: SaveDocument?
   @State var utf8 = false
+  let fontSize: CGFloat = 12
   
   var body: some View {
     VStack(alignment: .leading, spacing: 5) {
@@ -274,7 +275,7 @@ private struct VitaHexView: View {
       
       // Header row for hex dump
       Text("      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F")
-        .font(.system(.body, design: .monospaced))
+        .font(.system(size: fontSize, weight: .medium, design: .monospaced))
       
       Divider()
         .frame(height: 2)
@@ -290,6 +291,7 @@ private struct VitaHexView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
+        .font(.system(size: fontSize, weight: .medium, design: .monospaced))
       }
       
       HStack {
@@ -309,6 +311,7 @@ private struct VitaHexView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
+            .font(.system(size: fontSize, weight: .medium, design: .monospaced))
           }
         }
       }

@@ -20,9 +20,9 @@ public struct PickerView: View {
   @State var selectedStation: String = ""
   
   private var guiClients: [GuiClient] {
-      viewModel.api.radios.flatMap { $0.guiClients }
+    viewModel.api.radios.flatMap { $0.guiClients }
   }
-
+  
   public var body: some View {
     
     VStack(alignment: .leading) {
@@ -100,35 +100,41 @@ private struct NothingView: View {
 }
 
 private struct GuiView: View {
-  let selectedRadioId: Binding<String?>
-  
+  @Binding var selectedRadioId: String?
   @Environment(ViewModel.self) private var viewModel
-  
+
   var body: some View {
-    
-    // ----- List of Radios -----
-    List(selection: selectedRadioId) {
-      ForEach(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
-        HStack(spacing: 0) {
-          Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
-            .frame(width: 200, alignment: .leading)
-            .truncationMode(.middle)
-          
-          Text(radio.packet.source.rawValue)
-            .frame(width: 70, alignment: .leading)
-          
-          Text(radio.packet.status)
-            .frame(width: 100, alignment: .leading)
-          
-          Text(radio.packet.guiClientStations.joined(separator: ", "))
-            .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
-            .truncationMode(.middle)
+    ScrollView {
+      LazyVStack(spacing: 2) {
+        ForEach(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
+          let isSelected = selectedRadioId == radio.id
+
+          HStack(spacing: 0) {
+            Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
+              .frame(width: 200, alignment: .leading)
+              .truncationMode(.middle)
+
+            Text(radio.packet.source.rawValue)
+              .frame(width: 70, alignment: .leading)
+
+            Text(radio.packet.status)
+              .frame(width: 100, alignment: .leading)
+
+            Text(radio.packet.guiClientStations.joined(separator: ", "))
+              .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+              .truncationMode(.middle)
+          }
+//          .padding(.vertical, 4)
+          .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
+          .cornerRadius(4)
+          .contentShape(Rectangle()) // Makes entire row tappable
+          .onTapGesture {
+            selectedRadioId = isSelected ? nil : radio.id
+          }
         }
-        .font(.title3)
-        .foregroundColor(viewModel.settings.defaultGui?.radioId == radio.id ? .red : nil)
       }
+      .padding(.horizontal)
     }
-    .listStyle(.plain)
   }
 }
 
@@ -142,11 +148,15 @@ private struct NonGuiView: View {
   var body: some View {
     
     // ----- List of Stations -----
-    List(selection: selectedRadioId) {
-      ForEach(viewModel.api.radios, id:\.id) { radio in
-        ForEach(radio.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
-          if radio.packet.status != "In_Use" {
-            VStack {
+    ScrollView {
+      LazyVStack(spacing: 2) {
+        ForEach(viewModel.api.radios, id:\.id) { radio in
+          ForEach(radio.guiClients.sorted(by: {$0.station < $1.station}), id: \.id) { guiClient in
+            
+            if radio.packet.status != "In_Use" {
+              
+              let isSelected = selectedRadioId.wrappedValue == radio.id && selectedStation.wrappedValue == guiClient.station
+              
               HStack(spacing: 0) {
                 Text(guiClient.station)
                   .frame(width: 200, alignment: .leading)
@@ -162,14 +172,11 @@ private struct NonGuiView: View {
                   .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
                   .truncationMode(.middle)
               }
-              .font(.title3)
-              .foregroundColor(viewModel.settings.defaultNonGui == PickerSelection(radio.id, guiClient.station, nil) ? .red : nil)
-              .overlay(
-                Rectangle()
-                  .foregroundColor(selectedRadioId.wrappedValue == radio.id ? Color.blue.opacity(0.2) : Color.clear)
-              )
-              .onTapGesture { // Update selection manually
-                selectedRadioId.wrappedValue = radio.id
+              .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
+              .cornerRadius(4)
+              .contentShape(Rectangle()) // Makes entire row tappable
+              .onTapGesture {
+                selectedRadioId.wrappedValue = isSelected ? nil : radio.id
                 selectedStation.wrappedValue = guiClient.station
               }
             }
@@ -177,7 +184,6 @@ private struct NonGuiView: View {
         }
       }
     }
-    .listStyle(.plain)
   }
 }
 

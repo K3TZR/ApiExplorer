@@ -31,22 +31,11 @@ public struct SendView: View {
       .keyboardShortcut(.defaultAction)
       .disabled(viewModel.isConnected == false)
       
-      HStack(spacing: 0) {
-        Image(systemName: "x.circle").font(.title2)
-          .onTapGesture {
-            viewModel.clearTextButtonTapped()
-          }
-          .help("Clear the command field")
-        
-        TextField("Command to send", text: $settings.commandToSend)
-        #if os(iOS)
-          .textInputAutocapitalization(.never)
-          .autocorrectionDisabled(true)
-          .onSubmit {
-              hideKeyboard()
-          }
-        #endif
-      }  
+      HStack {
+        ClearableTextField(placeholder: "Command to send", text: $settings.commandToSend)
+        Spacer()
+        Button("Clear on Send") {viewModel.settings.clearOnSend.toggle()}
+      }
     }
   }
 }
@@ -59,4 +48,32 @@ public struct SendView: View {
     .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
+}
+
+
+public struct ClearableTextField: View {
+  var placeholder: String = ""
+  @Binding var text: String
+  
+  public var body: some View {
+    ZStack(alignment: .trailing) {
+      TextField(placeholder, text: $text)
+        .textFieldStyle(.roundedBorder)
+#if os(iOS)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled(true)
+        .onSubmit {
+          hideKeyboard()
+        }
+#endif
+      
+      if !text.isEmpty {
+        
+        Label("", systemImage: "xmark.circle").font(.title3)
+          .onTapGesture {
+            text = ""
+          }
+      }
+    }
+  }
 }

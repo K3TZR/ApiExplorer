@@ -29,6 +29,12 @@ public struct ObjectsMessagesSplitView: View {
         MessagesView()
           .frame(maxWidth: .infinity)
         
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        MessagesButtonsView()
+ 
       case .messages:
         ObjectsView(viewMode: viewMode)
           .frame(maxWidth: .infinity)
@@ -39,6 +45,12 @@ public struct ObjectsMessagesSplitView: View {
         
         MessagesView()
           .frame(maxWidth: .infinity)
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        MessagesButtonsView()
         
       case .objects:
         ObjectsView(viewMode: viewMode)

@@ -13,8 +13,8 @@ import ApiPackage
 // ----------------------------------------------------------------------------
 // MARK: - View
 
-public struct BottomButtonsView: View {
-  let viewMode: ViewMode
+public struct MessagesButtonsView: View {
+//  let viewMode: ViewMode
 
   @Environment(ViewModel.self) private var viewModel
 
@@ -30,17 +30,18 @@ public struct BottomButtonsView: View {
 
         Spacer()
         
-        if viewMode == .messages || viewMode == .all {
+//        if viewMode == .messages || viewMode == .all {
           
           HStack(spacing: 5) {
-            ToggleX(title: "Spacing", isOn: $settings.newLineBetweenMessages)
-            ToggleX(title: "Times", isOn: $settings.showTimes)
-            ToggleX(title: "Reverse", isOn: $settings.gotoBottom)
-            ToggleX(title: "Pings", isOn: $settings.showPings)
+            Toggle("Spacing", isOn: $settings.newLineBetweenMessages)
+            Toggle("Times", isOn: $settings.showTimes)
+            Toggle("Reverse", isOn: $settings.gotoBottom)
+            Toggle("Pings", isOn: $settings.showPings)
               .onChange(of: settings.showPings) {
                 if $1 == false { viewModel.messages.removePings() }
               }
           }
+          .toggleStyle(.button)
           
           Spacer()
           
@@ -52,7 +53,7 @@ public struct BottomButtonsView: View {
           Spacer()
           
           Button("Clear") { viewModel.messages.clearButtonTapped() }
-        }
+//        }
       }
       .frame(maxWidth: .infinity)
     }
@@ -74,7 +75,7 @@ public struct BottomButtonsView: View {
 // MARK: - Preview
 
 #Preview {
-  BottomButtonsView(viewMode: .all)
+  MessagesButtonsView()
     .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)

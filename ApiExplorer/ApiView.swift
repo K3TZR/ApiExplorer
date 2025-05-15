@@ -44,13 +44,11 @@ struct ApiView: View {
           .background(Color.gray)
         
         ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
-        
-        BottomButtonsView(viewMode: viewModel.settings.viewMode)
       }
 #if os(macOS)
       .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
-#endif
       .padding(10)
+#endif
       
       // initialize
       .onAppear {
@@ -147,7 +145,7 @@ extension View {
 
     return self.toolbar {
       ToolbarItemGroup(placement: .navigation) {
-        Label("", systemImage: viewModel.settings.viewMode.rawValue)
+        Label("", systemImage: viewModel.settings.viewMode.rawValue).font(.title2)
           .onTapGesture {
             viewModel.toggleViewMode()
           }
@@ -201,6 +199,8 @@ extension View {
 #Preview {
   ApiView()
     .environment(ViewModel(SettingsModel()))
+#if os(macOS)
     .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
-    .padding()
+    .padding(10)
+#endif
 }

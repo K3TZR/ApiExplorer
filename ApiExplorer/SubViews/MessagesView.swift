@@ -60,29 +60,22 @@ private struct FilterView: View {
     @Bindable var settings = viewModel.settings
     
     HStack {
-      Text("TCP Messages")
-        .frame(width: 130, alignment: .leading)
-      
-      Picker("", selection: $settings.messageFilter) {
+      Picker("TCP Messages", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
       }
-//      .pickerStyle(MenuPickerStyle())
-      .frame(width: 180) // Optional: fix width for the dropdown
+      .frame(width: 220)
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
       }
       
-      Image(systemName: "x.circle").font(.title2)
-        .onTapGesture {
-          settings.messageFilterText = ""
-        }
-      
-      TextField("filter text", text: $settings.messageFilterText)
+      ClearableTextField(placeholder: "filter text", text: $settings.messageFilterText)
+        .frame(width: 400)
         .onChange(of: settings.messageFilterText) {
           viewModel.messages.reFilter()
         }
+      Spacer()
     }
   }
 }

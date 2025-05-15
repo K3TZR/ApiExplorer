@@ -33,27 +33,29 @@ public struct TopButtonsView: View {
       
       Spacer()
       
-      ToggleX(title: "Gui", isOn: $settings.isGui)
+      Toggle("Gui", isOn: $settings.isGui)
+        .toggleStyle(.button)
         .disabled(viewModel.isConnected)
       
       Spacer()
       
       // Connection types
       HStack(spacing: 5) {
-        ToggleX(title: "Direct", isOn: $settings.directEnabled)
+        Toggle("Direct", isOn: $settings.directEnabled)
           .onChange(of: settings.directEnabled) { oldValue, newValue in
             viewModel.directButtonChanged(newValue)
           }
-        ToggleX(title: "Local", isOn: $settings.localEnabled)
+        Toggle("Local", isOn: $settings.localEnabled)
           .onChange(of: settings.localEnabled) { oldValue, newValue in
             viewModel.localButtonChanged(newValue)
           }
-        ToggleX(title: "Smartlink", isOn: $settings.smartlinkEnabled)
+        Toggle("Smartlink", isOn: $settings.smartlinkEnabled)
           .onChange(of: settings.smartlinkEnabled) { oldValue, newValue in
             viewModel.smartlinkButtonChanged(newValue)
           }
       }
       .disabled(viewModel.isConnected)
+      .toggleStyle(.button)
       
       Spacer()
       
@@ -72,18 +74,19 @@ public struct TopButtonsView: View {
       Spacer()
       
       HStack(spacing: 10) {
-        ToggleX(title: "Rx Audio", isOn: $settings.remoteRxAudioEnabled)
+        Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
           .disabled(settings.isGui == false)
           .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
             viewModel.remoteRxAudioEnabledButtonChanged()
           }
         
-        ToggleX(title: "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
+        Toggle( "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
           .disabled(settings.isGui == false)
           .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
             viewModel.remoteTxAudioEnabledButtonChanged()
           }
       }
+      .toggleStyle(.button)
     }
   }
 }
