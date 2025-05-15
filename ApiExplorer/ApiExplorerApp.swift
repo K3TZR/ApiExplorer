@@ -45,7 +45,8 @@ struct ApiExplorerApp: App {
   }
   
   var body: some Scene {
-    WindowGroup("ApiExplorer  (v" + Version().string + ")") {
+//    WindowGroup("ApiExplorer  (v" + Version().string + ")") {
+    WindowGroup() {
       ApiView()
         .environment(viewModel)
     }

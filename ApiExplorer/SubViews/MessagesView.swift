@@ -13,25 +13,6 @@ import SwiftUI
 struct MessagesView: View {
 
   @Environment(ViewModel.self) private var viewModel
-
-  @MainActor func textLine( _ text: String) -> AttributedString {
-    var attString = AttributedString(text)
-    // color it appropriately
-    if text.prefix(1) == "C" { attString.foregroundColor = .systemGreen }                        // Commands
-    if text.prefix(1) == "R" && text.contains("|0|") { attString.foregroundColor = .systemGray } // Replies no error
-    if text.prefix(1) == "R" && !text.contains("|0|") { attString.foregroundColor = .systemRed } // Replies w/error
-    if text.prefix(2) == "S0" { attString.foregroundColor = .systemOrange }                      // S0
-    
-    // highlight any filterText value
-    if !viewModel.settings.messageFilterText.isEmpty {
-      if let range = attString.range(of: viewModel.settings.messageFilterText, options: [.caseInsensitive]) {
-        attString[range].underlineStyle = .single
-        attString[range].foregroundColor = .yellow
-        //        attString[range].font = NSFont(name: "System", size: 16)
-      }
-    }
-    return attString
-  }
   
   @State var id: UUID?
   
@@ -80,14 +61,14 @@ private struct FilterView: View {
     
     HStack {
       Text("TCP Messages")
-        .frame(width: 130, alignment: .leading) // Fixed width label
+        .frame(width: 130, alignment: .leading)
       
       Picker("", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
       }
-      .pickerStyle(MenuPickerStyle())
+//      .pickerStyle(MenuPickerStyle())
       .frame(width: 180) // Optional: fix width for the dropdown
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
@@ -106,25 +87,31 @@ private struct FilterView: View {
   }
 }
 
+// ----------------------------------------------------------------------------
+// MARK: - Extension
 
+extension MessagesView {
+  
+  @MainActor func textLine( _ text: String) -> AttributedString {
+    var attString = AttributedString(text)
+    // color it appropriately
+    if text.prefix(1) == "C" { attString.foregroundColor = .systemGreen }                        // Commands
+    if text.prefix(1) == "R" && text.contains("|0|") { attString.foregroundColor = .systemGray } // Replies no error
+    if text.prefix(1) == "R" && !text.contains("|0|") { attString.foregroundColor = .systemRed } // Replies w/error
+    if text.prefix(2) == "S0" { attString.foregroundColor = .systemOrange }                      // S0
+    
+    // highlight any filterText value
+    if !viewModel.settings.messageFilterText.isEmpty {
+      if let range = attString.range(of: viewModel.settings.messageFilterText, options: [.caseInsensitive]) {
+        attString[range].underlineStyle = .single
+        attString[range].foregroundColor = .yellow
+        //        attString[range].font = NSFont(name: "System", size: 16)
+      }
+    }
+    return attString
+  }
 
-//HStack {
-//  Text("TCP Messages")
-//    .frame(width: 120, alignment: .leading) // Fixed width label
-//
-//  Picker("", selection: $settings.messageFilter) {
-//    ForEach(MessagesModel.Filter.allCases, id: \.self) {
-//      Text($0.rawValue).tag($0)
-//    }
-//  }
-//  .pickerStyle(MenuPickerStyle())
-//  .frame(width: 180) // Optional: fix width for the dropdown
-//}
-
-
-
-
-
+}
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview

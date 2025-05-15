@@ -70,7 +70,7 @@ public struct SettingsView: View {
               .tag(14992)
           }
           .labelsHidden()
-          .frame(width: 75)
+//          .frame(width: 75)
           .onChange(of: settings.discoveryPort) {
             settings.localEnabled = false
           }

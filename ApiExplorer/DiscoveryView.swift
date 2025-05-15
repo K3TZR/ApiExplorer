@@ -74,7 +74,7 @@ public struct DiscoveryView: View {
           
           HStack {
             Spacer()
-            ButtonX(title: "Close") { dismiss() }
+            Button("Close") { dismiss() }
               .keyboardShortcut(.defaultAction)
           }
         }
@@ -206,7 +206,7 @@ private struct VitaHeaderView: View {
       
       HStack {
         Spacer()
-        ButtonX(title: "Close") { dismiss() }
+        Button("Close") { dismiss() }
           .keyboardShortcut(.defaultAction)
       }
     }
@@ -249,7 +249,7 @@ private struct VitaPayloadView: View {
     
     HStack {
       Spacer()
-      ButtonX(title: "Close") { dismiss() }
+      Button("Close") { dismiss() }
         .keyboardShortcut(.defaultAction)
     }
   }
@@ -318,12 +318,12 @@ private struct VitaHexView: View {
         .background(Color.gray)
       
       HStack {
-        ButtonX(title: "Save") {
+        Button("Save") {
           document = SaveDocument(text: viewModel.vitaString(data, utf8))
           isSaving = true
         }
         Spacer()
-        ButtonX(title: "Close") { dismiss() }
+        Button("Close") { dismiss() }
           .keyboardShortcut(.defaultAction)
       }
     }
@@ -454,7 +454,7 @@ private struct TimingView: View {
             .frame(width: 120)
           
           Spacer()
-          ButtonX(title: "Close") { dismiss() }
+          Button("Close") { dismiss() }
             .keyboardShortcut(.defaultAction)
         }
       }

@@ -21,97 +21,136 @@ public enum ViewMode: String {
   case objects = "arrow.up.square"
   case all = "arrow.up.and.down.square"
 }
+
 // ----------------------------------------------------------------------------
 // MARK: - View
 
 struct ApiView: View {
   
   @Environment(ViewModel.self) private var viewModel
-
-  var isMultiflex: Bool {
-    if let selection = viewModel.api.activeSelection {
-      if let radio = viewModel.api.radios.first(where: {$0.id == selection.radioId }) {
-        return radio.guiClients.count > 1
-      }
-    }
-    return false
-  }
   
   var body: some View {
     @Bindable var viewModel = viewModel
     
-    // primary view
-    VStack(alignment: .leading, spacing: 10) {
-      TopButtonsView()
-      
-      SendView()
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      BottomButtonsView(viewMode: viewModel.settings.viewMode)
-    }
-#if os(macOS)
-    .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
-#endif
-    .padding(10)
-    
-    // initialize
-    .onAppear {
-      viewModel.onAppear()
-    }
-    
-    // Sheets
-    .sheet(item: $viewModel.activeSheet) { sheet in
-      switch sheet {
-      case .pings:
-        PingsView(start: Date())
-          .frame(width: 400, height: 180)
-      case .discovery:
-        DiscoveryView()
-          .frame(width: 500, height: 600)
-      case .guiClients:
-        GuiClientsView()
-          .frame(width: 800, height: 300)
-      case .multiflex:
-        MultiflexView()
-          .frame(width: 300)
-      case .picker:
-        PickerView()
-          .frame(height: 300)
-      case .smartlinkLogin:
-        SmartlinkLoginView()
-      case .settings:
-        SettingsView()
+    NavigationStack {
+      // primary view
+      VStack(alignment: .leading, spacing: 10) {
+        TopButtonsView()
+        
+        SendView()
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
+        
+        BottomButtonsView(viewMode: viewModel.settings.viewMode)
       }
-    }
-    
-    // Alerts
-    .alert((viewModel.alertInfo?.title ?? "Alert"), isPresented: $viewModel.showAlert) {
-      Button("OK", role: .cancel) { }
-    } message: {
-      Text(viewModel.alertInfo?.message ?? "")
-    }
-    
-    // Toolbar
 #if os(macOS)
-    .toolbar {
-      // Middle items (automatic placement)
-      ToolbarItemGroup {
+      .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
+#endif
+      .padding(10)
+      
+      // initialize
+      .onAppear {
+        viewModel.onAppear()
+      }
+      
+      // Sheets
+      .sheet(item: $viewModel.activeSheet) { sheet in
+        apiSheetView(for: sheet)
+      }
+      
+      // Alerts
+      .alert((viewModel.alertInfo?.title ?? "Alert"), isPresented: $viewModel.showAlert) {
+        Button("OK", role: .cancel) { }
+      } message: {
+        Text(viewModel.alertInfo?.message ?? "")
+      }
+      
+      .navigationTitle("ApiExplorer  (v" + Version().string + ")")
+#if os(iOS)
+      .navigationBarTitleDisplayMode(.inline)
+#endif
+      
+      // Toolbar
+      apiToolbar()
+      
+      // LogAlert Notification (an Error or Warning occurred)
+      .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
+        .receive(on: RunLoop.main)) { note in
+          if viewModel.settings.alertOnError {
+            viewModel.alertInfo = note.object! as? AlertInfo
+            viewModel.showAlert = true
+          }
+        }
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// MARK: - Sheets
+
+extension ApiView {
+  @ViewBuilder
+  func apiSheetView(for sheet: ActiveSheet?) -> some View {
+    switch sheet {
+    case .pings:
+      PingsView(start: Date())
+        .frame(width: 400, height: 180)
+    case .discovery:
+      DiscoveryView()
+        .frame(width: 500, height: 600)
+    case .guiClients:
+      GuiClientsView()
+        .frame(width: 800, height: 300)
+    case .multiflex:
+      MultiflexView()
+        .frame(width: 300)
+    case .picker:
+      PickerView()
+        .frame(height: 300)
+    case .smartlinkLogin:
+      SmartlinkLoginView()
+    case .settings:
+      SettingsView()
+    case .none:
+      EmptyView()
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// MARK: - Toolbar
+
+extension ApiView {
+  @ViewBuilder
+  func apiToolbar() -> some View {
+    let isMultiflex: Bool = {
+      if let selection = viewModel.api.activeSelection,
+         let radio = viewModel.api.radios.first(where: { $0.id == selection.radioId }) {
+        return radio.guiClients.count > 1
+      }
+      return false
+    }()
+
+    toolbar {
+      ToolbarItemGroup(placement: .navigation) {
+        Label("", systemImage: viewModel.settings.viewMode.rawValue)
+          .onTapGesture {
+            viewModel.toggleViewMode()
+          }
+      }
+
+      ToolbarItemGroup(placement: .destructiveAction) {
         if isMultiflex {
           Text("MultiFlex")
             .foregroundColor(.blue)
             .padding(10)
             .border(Color.blue, width: 2)
         }
-        
+
         Button("Pings") {
           if viewModel.api.activeSelection == nil {
             viewModel.alertInfo = AlertInfo("No Connection", "Please connect to a radio")
@@ -122,36 +161,27 @@ struct ApiView: View {
             viewModel.activeSheet = .pings
           }
         }
-        
+
         Button("Discovery") {
           viewModel.activeSheet = .discovery
         }
-        
+
         Button("Gui Clients") {
           viewModel.activeSheet = .guiClients
         }
-        
-        Button(action: {
+
+        Button {
           if viewModel.api.activeSelection == nil {
             viewModel.activeSheet = .settings
           } else {
             viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
             viewModel.showAlert = true
           }
-        }) {
+        } label: {
           Label("Settings", systemImage: "gearshape")
         }
       }
-    }#endif
-    
-    // LogAlert Notification (an Error or Warning occurred)
-    .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
-      .receive(on: RunLoop.main)) { note in
-        if viewModel.settings.alertOnError {
-          viewModel.alertInfo = note.object! as? AlertInfo
-          viewModel.showAlert = true
-        }
-      }
+    }
   }
 }
 
@@ -161,49 +191,6 @@ struct ApiView: View {
 #Preview {
   ApiView()
     .environment(ViewModel(SettingsModel()))
-  
     .frame(minWidth: 900, maxWidth: .infinity, minHeight: 700, maxHeight: .infinity)
     .padding()
-}
-
-// ----------------------------------------------------------------------------
-// MARK: - Custom Split View
-
-struct ObjectsMessagesSplitView: View {
-  let viewMode: ViewMode
-  
-  var body: some View {
-    
-    VStack(spacing: 10) {
-      
-      switch viewMode {
-      case .all:
-        ObjectsView(viewMode: viewMode)
-          .frame(maxWidth: .infinity)
-        
-        Divider()
-          .frame(height: 2)
-          .background(Color.gray)
-        
-        MessagesView()
-          .frame(maxWidth: .infinity)
-        
-      case .messages:
-        ObjectsView(viewMode: viewMode)
-          .frame(maxWidth: .infinity)
-        
-        Divider()
-          .frame(height: 2)
-          .background(Color.gray)
-
-        MessagesView()
-          .frame(maxWidth: .infinity)
-        
-      case .objects:
-        ObjectsView(viewMode: viewMode)
-          .frame(maxWidth: .infinity)
-      }
-    }
-    .frame(maxHeight: .infinity)
-  }
 }

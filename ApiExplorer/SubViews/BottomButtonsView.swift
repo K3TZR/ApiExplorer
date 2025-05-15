@@ -27,10 +27,6 @@ public struct BottomButtonsView: View {
 
     VStack(alignment: .leading) {
       HStack( spacing: 10) {
-        Label( "", systemImage: viewModel.settings.viewMode.rawValue).font(.title)
-          .onTapGesture {
-            viewModel.toggleViewMode()
-          }
 
         Spacer()
         
@@ -48,14 +44,14 @@ public struct BottomButtonsView: View {
           
           Spacer()
           
-          ButtonX(title: "Save") {
+          Button("Save") {
             document = SaveDocument(text: viewModel.messages.messagesText())
             isSaving = true
           }
           
           Spacer()
           
-          ButtonX(title: "Clear") { viewModel.messages.clearButtonTapped() }
+          Button("Clear") { viewModel.messages.clearButtonTapped() }
         }
       }
       .frame(maxWidth: .infinity)
@@ -87,24 +83,6 @@ public struct BottomButtonsView: View {
 // ----------------------------------------------------------------------------
 // MARK: - Alternate controls (iOS vs macOS)
 
-public struct ButtonX: View {
-  let title: String
-  let action: () -> Void
-//  let width: CGFloat?
-  
-  public var body: some View {
-
-#if os(macOS)
-    Button(title, action: action)
-//      .frame(width: width ?? 100)
-#else
-    Button(title, action: action)
-//      .frame(width: width ?? 100)
-      .buttonStyle(.bordered)
-#endif
-  }
-}
-
 public struct ToggleX: View {
   let title: String
   let isOn: Binding<Bool>
@@ -117,9 +95,9 @@ public struct ToggleX: View {
 #else
     Toggle(title, isOn: isOn)
       .toggleStyle(ButtonToggleStyle())
-      .border(Color.gray, width: 0.5)
-      .background(isOn.wrappedValue ? Color.blue.opacity(0.5) : Color.clear)
-      .foregroundColor(isOn.wrappedValue ? Color.white : Color.blue)
+//      .border(Color.gray, width: 0.5)
+//      .background(isOn.wrappedValue ? Color.blue.opacity(0.5) : Color.clear)
+//      .foregroundColor(isOn.wrappedValue ? Color.white : Color.blue)
 #endif
   }
 }

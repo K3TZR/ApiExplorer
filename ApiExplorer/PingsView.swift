@@ -109,7 +109,7 @@ public struct PingsView: View {
         
         HStack {
           Spacer()
-          ButtonX(title: "Close") { dismiss() }
+          Button("Close") { dismiss() }
             .keyboardShortcut(.defaultAction)
         }
       }

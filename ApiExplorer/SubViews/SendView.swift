@@ -27,7 +27,7 @@ public struct SendView: View {
     @Bindable var settings = viewModel.settings
 
     HStack {
-      ButtonX(title: "Send") { viewModel.sendButtonTapped() }
+      Button("Send") { viewModel.sendButtonTapped() }
       .keyboardShortcut(.defaultAction)
       .disabled(viewModel.isConnected == false)
       
@@ -46,30 +46,7 @@ public struct SendView: View {
               hideKeyboard()
           }
         #endif
-      }
-  
-      #if os(iOS)
-      ButtonX(title: "Pings") {
-        if viewModel.api.activeSelection == nil {
-          viewModel.alertInfo = AlertInfo("No Connection", "Please connect to a radio")
-          viewModel.showAlert = true
-        } else {
-          viewModel.api.pingIntervalIndex = 0
-          viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
-          viewModel.activeSheet = .pings
-        }
-      }
-      ButtonX(title: "Discovery") { viewModel.activeSheet = .discovery }
-      ButtonX(title: "Gui Clients") { viewModel.activeSheet = .guiClients }
-      ButtonX(title: "Settings") {
-        if viewModel.api.activeSelection == nil {
-          viewModel.activeSheet = .settings
-        } else {
-          viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
-          viewModel.showAlert = true
-        }
-      }
-      #endif
+      }  
     }
   }
 }

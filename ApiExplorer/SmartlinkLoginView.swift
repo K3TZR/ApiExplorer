@@ -43,12 +43,12 @@ public struct SmartlinkLoginView: View {
         .background(Color.gray)
 
       HStack( spacing: 60 ) {
-        ButtonX(title: "Cancel" ) {
+        Button("Cancel" ) {
           viewModel.smartlinkCancelButtonTapped()
         }
         .keyboardShortcut( .cancelAction )
         
-        ButtonX(title: "Log in" ) {
+        Button("Log in" ) {
           viewModel.smartlinkLoginButtonTapped(settings.smartlinkUser, password)
         }
         .keyboardShortcut( .defaultAction )
