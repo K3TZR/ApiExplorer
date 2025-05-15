@@ -47,9 +47,9 @@ struct ApiView: View {
       }
 #if os(macOS)
       .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
-      .padding(10)
 #endif
-      
+      .padding(10)
+
       // initialize
       .onAppear {
         viewModel.onAppear()
@@ -121,17 +121,6 @@ extension ApiView {
 
 // ----------------------------------------------------------------------------
 // MARK: - Toolbar
-
-//extension ApiView {
-//  @ViewBuilder
-//  func apiToolbar() -> some View {
-//    toolbar {
-//      ToolbarItem(placement: .automatic) {
-//        Text("Test Toolbar")
-//      }
-//    }
-//  }
-//}
 
 extension View {
   func apiToolbar(viewModel: ViewModel) -> some View {

@@ -60,12 +60,13 @@ private struct FilterView: View {
     @Bindable var settings = viewModel.settings
     
     HStack {
-      Picker("TCP Messages", selection: $settings.messageFilter) {
+      Text("TCP Message Type")
+      Picker("", selection: $settings.messageFilter) {
         ForEach(MessagesModel.Filter.allCases, id: \.self) {
           Text($0.rawValue).tag($0)
         }
       }
-      .frame(width: 220)
+      .frame(width: 120)
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
       }
