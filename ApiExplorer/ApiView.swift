@@ -75,7 +75,7 @@ struct ApiView: View {
 #endif
       
       // Toolbar
-      apiToolbar()
+      .apiToolbar(viewModel: viewModel)
       
       // LogAlert Notification (an Error or Warning occurred)
       .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
@@ -124,9 +124,19 @@ extension ApiView {
 // ----------------------------------------------------------------------------
 // MARK: - Toolbar
 
-extension ApiView {
-  @ViewBuilder
-  func apiToolbar() -> some View {
+//extension ApiView {
+//  @ViewBuilder
+//  func apiToolbar() -> some View {
+//    toolbar {
+//      ToolbarItem(placement: .automatic) {
+//        Text("Test Toolbar")
+//      }
+//    }
+//  }
+//}
+
+extension View {
+  func apiToolbar(viewModel: ViewModel) -> some View {
     let isMultiflex: Bool = {
       if let selection = viewModel.api.activeSelection,
          let radio = viewModel.api.radios.first(where: { $0.id == selection.radioId }) {
@@ -135,7 +145,7 @@ extension ApiView {
       return false
     }()
 
-    toolbar {
+    return self.toolbar {
       ToolbarItemGroup(placement: .navigation) {
         Label("", systemImage: viewModel.settings.viewMode.rawValue)
           .onTapGesture {
