@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9F9C65762D6B89F900E7F025 /* ApiPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C65752D6B89F900E7F025 /* ApiPackage */; };
-		9F9CA52A2DDE1FF700C88BDF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5292DDE1FF700C88BDF /* Launch Screen.storyboard */; };
+		9F9CA52A2DDE1FF700C88BDF /* ApiLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */; };
 		9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9FA7E4D02DA59CC2007DFB88 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +34,7 @@
 		9F9C64A12D68F9D800E7F025 /* ApiExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C64AB2D68F9D800E7F025 /* ApiExplorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C65782D6CC1E400E7F025 /* ApiPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ApiPackage; path = ../Packages/ApiPackage; sourceTree = SOURCE_ROOT; };
-		9F9CA5292DDE1FF700C88BDF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ApiLaunch.storyboard; sourceTree = "<group>"; };
 		9FA7E4D02DA59CC2007DFB88 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,7 +85,7 @@
 		9F9C64872D68F9D700E7F025 = {
 			isa = PBXGroup;
 			children = (
-				9F9CA5292DDE1FF700C88BDF /* Launch Screen.storyboard */,
+				9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */,
 				9FA7E4D02DA59CC2007DFB88 /* README.md */,
 				9F9C65782D6CC1E400E7F025 /* ApiPackage */,
 				9F9C64922D68F9D700E7F025 /* ApiExplorer */,
@@ -229,7 +229,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F9CA52A2DDE1FF700C88BDF /* Launch Screen.storyboard in Resources */,
+				9F9CA52A2DDE1FF700C88BDF /* ApiLaunch.storyboard in Resources */,
 				9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,7 +421,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -429,6 +429,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UILaunchStoryboardName = ApiLaunch;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -457,7 +458,7 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -465,6 +466,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UILaunchStoryboardName = ApiLaunch;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
