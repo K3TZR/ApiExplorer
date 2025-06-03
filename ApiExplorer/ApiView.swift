@@ -58,6 +58,7 @@ struct ApiView: View {
       // Sheets
       .sheet(item: $viewModel.activeSheet) { sheet in
         apiSheetView(for: sheet)
+          .environment(viewModel)
       }
       
       // Alerts

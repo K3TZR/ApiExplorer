@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 import ApiPackage
+import SwiftyPing
 
 @MainActor
 @Observable
@@ -35,6 +36,7 @@ public class ViewModel {
   public var alertInfo: AlertInfo?
   public var initialized: Bool = false
   public var isConnected: Bool = false
+  public var pingResult: String = ""
   public var selection: String?
   public var showAlert: Bool = false
   #if os(iOS)
@@ -77,16 +79,7 @@ public class ViewModel {
   }
   
   public func localButtonChanged(_ enabled: Bool) {
-    if enabled {
-      settings.directEnabled = false
-      api.listenerLocal = ListenerLocal(api)
-      let port = UInt16(settings.discoveryPort)
-      Task { await api.listenerLocal!.start(port: port) }
-    } else {
-      api.listenerLocal?.stop()
-      api.listenerLocal = nil
-      api.removeRadios(.local)
-    }
+    startStoplocalListener(enabled)
   }
   
   public func multiflexCancelButtonTapped() {
@@ -110,7 +103,7 @@ public class ViewModel {
       
       // start Local if enabled
       if settings.localEnabled {
-        localButtonChanged(true)
+        startStoplocalListener(true)
       }
       
      // start Smartlink if enabled
@@ -158,6 +151,31 @@ public class ViewModel {
     api.smartlinkTestResult = SmartlinkTestResult()
     // perform a connection test on the smartlink radio
     api.sendSmartlinkTest(String(parts[0]))
+  }
+  
+  public func ping(_ ipAddress: String) {
+    let simplePingQ = DispatchQueue(label: "simplePingQ")
+//    var results: [String] = []
+//    print("Pinging", ipAddress )
+
+    // Ping indefinitely
+    let pinger = try? SwiftyPing(host: ipAddress, configuration: PingConfiguration(interval: 0.5, with: 5), queue: simplePingQ)
+//    pinger?.observer = { (response) in
+//      print("time = " + String(format: "%.3f ms", response.duration * 1000))
+//      results.append("time = " + String(format: "%.3f ms", response.duration * 1000))
+//    }
+    pinger?.targetCount = 5
+    pinger?.finished = { result in
+//      print(results.joined(separator: "\n"))
+      let min =  String(format: "%.3f", (result.roundtrip?.minimum ?? 0) * 1_000)
+      let max =  String(format: "%.3f", (result.roundtrip?.maximum ?? 0) * 1_000)
+      let avg =  String(format: "%.3f", (result.roundtrip?.average ?? 0) * 1_000)
+
+      self.pingResult = "Ping \(ipAddress):\n      Min = \(min), Max = \(max), Avg = \(avg) (ms)"
+//      self.alertInfo = AlertInfo.init("Ping Results", "Min = \(min)\nMax = \(max)\nAvg = \(avg)")
+//      self.showAlert = true
+    }
+    try? pinger?.startPinging()
   }
 
   public func remoteRxAudioCompressedButtonChanged() {
@@ -282,6 +300,19 @@ public class ViewModel {
       
     } else {
       activeSheet = .picker
+    }
+  }
+
+  private func startStoplocalListener(_ enabled: Bool) {
+    if enabled {
+      settings.directEnabled = false
+      api.listenerLocal = ListenerLocal(api)
+      let port = UInt16(settings.discoveryPort)
+      Task { await api.listenerLocal!.start(port: port) }
+    } else {
+      api.listenerLocal?.stop()
+      api.listenerLocal = nil
+      api.removeRadios(.local)
     }
   }
 

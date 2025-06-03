@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		9F9C65762D6B89F900E7F025 /* ApiPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C65752D6B89F900E7F025 /* ApiPackage */; };
-		9F9CA52A2DDE1FF700C88BDF /* ApiLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */; };
+		9F9CA5312DE4997A00C88BDF /* SwiftyPing in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9CA5302DE4997A00C88BDF /* SwiftyPing */; };
+		9F9CA5352DE7E2FB00C88BDF /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5342DE7E2FB00C88BDF /* Info-iOS.plist */; platformFilter = ios; };
+		9F9CA5382DE8B1BE00C88BDF /* Info-macOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5372DE8B1BE00C88BDF /* Info-macOS.plist */; };
+		9F9CA5392DE8B1BE00C88BDF /* ApiLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5362DE8B1BE00C88BDF /* ApiLaunch.storyboard */; platformFilter = ios; };
 		9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9FA7E4D02DA59CC2007DFB88 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +37,9 @@
 		9F9C64A12D68F9D800E7F025 /* ApiExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C64AB2D68F9D800E7F025 /* ApiExplorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApiExplorerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9C65782D6CC1E400E7F025 /* ApiPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ApiPackage; path = ../Packages/ApiPackage; sourceTree = SOURCE_ROOT; };
-		9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ApiLaunch.storyboard; sourceTree = "<group>"; };
+		9F9CA5342DE7E2FB00C88BDF /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		9F9CA5362DE8B1BE00C88BDF /* ApiLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ApiLaunch.storyboard; sourceTree = "<group>"; };
+		9F9CA5372DE8B1BE00C88BDF /* Info-macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macOS.plist"; sourceTree = "<group>"; };
 		9FA7E4D02DA59CC2007DFB88 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F9CA5312DE4997A00C88BDF /* SwiftyPing in Frameworks */,
 				9F9C65762D6B89F900E7F025 /* ApiPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,7 +91,9 @@
 		9F9C64872D68F9D700E7F025 = {
 			isa = PBXGroup;
 			children = (
-				9F9CA5292DDE1FF700C88BDF /* ApiLaunch.storyboard */,
+				9F9CA5362DE8B1BE00C88BDF /* ApiLaunch.storyboard */,
+				9F9CA5372DE8B1BE00C88BDF /* Info-macOS.plist */,
+				9F9CA5342DE7E2FB00C88BDF /* Info-iOS.plist */,
 				9FA7E4D02DA59CC2007DFB88 /* README.md */,
 				9F9C65782D6CC1E400E7F025 /* ApiPackage */,
 				9F9C64922D68F9D700E7F025 /* ApiExplorer */,
@@ -126,6 +134,7 @@
 			name = ApiExplorer;
 			packageProductDependencies = (
 				9F9C65752D6B89F900E7F025 /* ApiPackage */,
+				9F9CA5302DE4997A00C88BDF /* SwiftyPing */,
 			);
 			productName = ApiExplorer;
 			productReference = 9F9C64902D68F9D700E7F025 /* ApiExplorer.app */;
@@ -211,6 +220,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9F9C65742D6B89F900E7F025 /* XCRemoteSwiftPackageReference "ApiPackage" */,
+				9F9CA52F2DE4997A00C88BDF /* XCRemoteSwiftPackageReference "SwiftyPing" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9F9C64912D68F9D700E7F025 /* Products */;
@@ -229,7 +239,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F9CA52A2DDE1FF700C88BDF /* ApiLaunch.storyboard in Resources */,
+				9F9CA5382DE8B1BE00C88BDF /* Info-macOS.plist in Resources */,
+				9F9CA5392DE8B1BE00C88BDF /* ApiLaunch.storyboard in Resources */,
+				9F9CA5352DE7E2FB00C88BDF /* Info-iOS.plist in Resources */,
 				9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,12 +433,13 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = xApiExplorer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UILaunchStoryboardName = ApiLaunch;
@@ -441,6 +454,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -458,12 +472,13 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = xApiExplorer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UILaunchStoryboardName = ApiLaunch;
@@ -478,6 +493,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -602,6 +618,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		9F9CA52F2DE4997A00C88BDF /* XCRemoteSwiftPackageReference "SwiftyPing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/samiyr/SwiftyPing.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -609,6 +633,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9F9C65742D6B89F900E7F025 /* XCRemoteSwiftPackageReference "ApiPackage" */;
 			productName = ApiPackage;
+		};
+		9F9CA5302DE4997A00C88BDF /* SwiftyPing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F9CA52F2DE4997A00C88BDF /* XCRemoteSwiftPackageReference "SwiftyPing" */;
+			productName = SwiftyPing;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

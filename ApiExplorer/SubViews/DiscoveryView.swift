@@ -5,7 +5,6 @@
 //  Created by Douglas Adams on 2/16/25.
 //
 
-
 import SwiftUI
 
 import ApiPackage
@@ -352,6 +351,107 @@ private struct TimingView: View {
   
   @State var ticks = 0
   
+  var body: some View {
+    @Bindable var settings = viewModel.settings
+
+    VStack {
+      HStack {
+        Text("Radio Name")
+          .frame(width: 150, alignment: .leading)
+        
+        Text("IP Address")
+          .frame(width: 150, alignment: .leading)
+
+        Spacer()
+        
+        Text("Average")
+          .frame(width: 60, alignment: .trailing)
+        
+        Spacer()
+        
+        Text("Peak")
+          .frame(width: 60, alignment: .trailing)
+
+      }
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+      
+      TimelineView(.periodic(from: Date(), by: 10)) { context in
+        
+        ScrollView {
+          VStack(spacing: 5) {
+            ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
+              if radio.packet.source == .local {
+                HStack{
+                  Text(radio.packet.nickname)
+                    .frame(width: 150, alignment: .leading)
+                  
+                  HStack(spacing: 5) {
+                    Text(radio.packet.publicIp)
+                    Label("", systemImage: "parkingsign.circle").font(.title3)
+                      .help("Ping this Radio")
+                      .onTapGesture {
+                        viewModel.pingResult = ""
+                        viewModel.ping(radio.packet.publicIp)
+                      }
+                  }
+                  .frame(width: 150, alignment: .leading)
+                  
+                  Spacer()
+                  
+                  Text(average(radio.intervals))
+                    .frame(width: 60, alignment: .trailing)
+                  
+                  Spacer()
+                  
+                  Text(peak(radio.intervals))
+                    .frame( width: 60, alignment: .trailing)
+                    .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
+
+                }
+                .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
+              }
+            }
+          }
+        }
+        
+        Spacer()
+        VStack(alignment: .leading) {
+          Text(viewModel.pingResult)
+            .frame(alignment: .leading)
+          Spacer()
+          HStack {
+            Text(Int(context.date.timeIntervalSince(start)), format: .number).bold()
+            Text("Seconds")
+            Spacer()
+            Text("Peak > 10").bold()
+            Text("seconds shown in")
+            Text("RED").foregroundColor(.red).bold()
+          }
+        }
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        HStack {
+          Text("Port")
+          Text(viewModel.settings.discoveryPort, format: .number)
+            .frame(width: 120)
+          
+          Spacer()
+          Button("Close") { dismiss() }
+            .keyboardShortcut(.defaultAction)
+        }
+      }
+    }
+  }
+}
+
+extension TimingView {
+
   func formatMinutesAndSeconds(from date: Date) -> String {
     let formatter = DateFormatter()
     formatter.dateFormat = "mm:ss"
@@ -378,89 +478,6 @@ private struct TimingView: View {
       return "---"
     } else {
       return String(format: "%.3f", max)
-    }
-  }
-  
-  
-  var body: some View {
-    @Bindable var settings = viewModel.settings
-
-    VStack {
-      HStack {
-        Text("Radio Name")
-          .frame(width: 150, alignment: .leading)
-        
-        Spacer()
-        
-        Text("Average")
-          .frame(width: 150, alignment: .trailing)
-        
-        Spacer()
-        
-        Text("Peak")
-          .frame(width: 150, alignment: .trailing)
-      }
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      TimelineView(.periodic(from: Date(), by: 10)) { context in
-        
-        ScrollView {
-          VStack(spacing: 5) {
-            ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
-              if radio.packet.source == .local {
-                HStack{
-                  Text(radio.packet.nickname)
-                    .frame(width: 150, alignment: .leading)
-                  
-                  Spacer()
-                  
-                  Text(average(radio.intervals))
-                    .frame( width: 150, alignment: .trailing)
-                  
-                  Spacer()
-                  
-                  Text(peak(radio.intervals))
-                    .frame( width: 150, alignment: .trailing)
-                    .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
-                }
-                .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
-              }
-            }
-          }
-        }
-        
-        Spacer()
-        VStack {
-          HStack {
-            Text(Int(context.date.timeIntervalSince(start)), format: .number).bold()
-            Text("Seconds")
-            Spacer()
-            Text("Peak > 10").bold()
-            Text("seconds shown in")
-            Text("RED").foregroundColor(.red).bold()
-          }
-//          HStack {
-//            Spacer()
-//          }
-        }
-        
-        Divider()
-          .frame(height: 2)
-          .background(Color.gray)
-        
-        HStack {
-          Text("Port")
-          Text(viewModel.settings.discoveryPort, format: .number)
-            .frame(width: 120)
-          
-          Spacer()
-          Button("Close") { dismiss() }
-            .keyboardShortcut(.defaultAction)
-        }
-      }
     }
   }
 }
