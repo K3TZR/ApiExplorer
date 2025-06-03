@@ -3,9 +3,9 @@
 #### API Explorer for Flex (TM) 6000 / 8000 / 9000 series radios (SwiftUI version)
 
 ##### Built on:
-*  macOS 15.4
-*  Xcode 16.3
-*  SWIFT 5.0
+*  macOS 15.5
+*  Xcode 16.3 (16E140)
+*  Swift 6.0
 
 ##### Runs on:  
 * macOS 14.0 and higher
@@ -23,3 +23,5 @@ Please send any bugs / comments / questions to k3tzr@arrl.net
 [CocoaAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket)
 
 [JWTDecode](https://github.com/auth0/JWTDecode.swift)
+
+[SwiftyPing](https://github.com/samiyr/SwiftyPing.git)
