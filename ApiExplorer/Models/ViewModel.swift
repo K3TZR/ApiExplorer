@@ -103,12 +103,18 @@ public class ViewModel {
       
       // start Local if enabled
       if settings.localEnabled {
-        startStoplocalListener(true)
+        Task {
+          sleep(1)
+          startStoplocalListener(true)
+        }
       }
       
      // start Smartlink if enabled
       if settings.smartlinkEnabled {
-        smartlinkButtonChanged(true)
+        Task {
+          sleep(1)
+          startStopSmartlink(true)
+        }
       }
       
       // make sure we have a Client Id
@@ -214,51 +220,7 @@ public class ViewModel {
   }
   
   public func smartlinkButtonChanged(_ enabled: Bool)  {
-    if enabled {
-      // disable direct, it is incompatable with other connection types
-      settings.directEnabled = false
-
-      guard settings.smartlinkLoginRequired  == false else {
-        activeSheet = .smartlinkLogin
-        return
-      }
-      
-      // start the listener
-      api.listenerSmartlink = ListenerSmartlink(api)
-      // is the previous IdToken still valid?
-      if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
-        // YES, connect using the IdToken
-        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, settings.smartlinkRefreshToken)) {
-          // did not connect, force a Login
-          activeSheet = .smartlinkLogin
-        }
-        
-      // NO, try using the RefreshToken
-      } else if settings.smartlinkRefreshToken != nil {
-        Task {
-          // Can we get an IdToken using the RefreshToken?
-          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: settings.smartlinkRefreshToken!) {
-            // YES, connect using the IdToken
-            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, settings.smartlinkRefreshToken)) {
-              // did not connect, force a Login
-              activeSheet = .smartlinkLogin
-            }
-          } else {
-            // did not connect, force a Login
-            activeSheet = .smartlinkLogin
-          }
-        }
-      } else {
-        // did not connect, force a Login
-        activeSheet = .smartlinkLogin
-      }
-      
-    } else {
-      // stop smartlink listener
-      api.listenerSmartlink?.stop()
-      api.listenerSmartlink = nil
-      api.removeRadios(.smartlink)
-    }
+    startStopSmartlink(enabled)
   }
   
   public func smartlinkCancelButtonTapped() {
@@ -316,6 +278,53 @@ public class ViewModel {
     }
   }
 
+  public func startStopSmartlink(_ enabled: Bool)  {
+    if enabled {
+      // disable direct, it is incompatable with other connection types
+      settings.directEnabled = false
+
+      guard settings.smartlinkLoginRequired  == false else {
+        activeSheet = .smartlinkLogin
+        return
+      }
+      
+      // start the listener
+      api.listenerSmartlink = ListenerSmartlink(api)
+      // is the previous IdToken still valid?
+      if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
+        // YES, connect using the IdToken
+        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, settings.smartlinkRefreshToken)) {
+          // did not connect, force a Login
+          activeSheet = .smartlinkLogin
+        }
+        
+      // NO, try using the RefreshToken
+      } else if settings.smartlinkRefreshToken != nil {
+        Task {
+          // Can we get an IdToken using the RefreshToken?
+          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: settings.smartlinkRefreshToken!) {
+            // YES, connect using the IdToken
+            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, settings.smartlinkRefreshToken)) {
+              // did not connect, force a Login
+              activeSheet = .smartlinkLogin
+            }
+          } else {
+            // did not connect, force a Login
+            activeSheet = .smartlinkLogin
+          }
+        }
+      } else {
+        // did not connect, force a Login
+        activeSheet = .smartlinkLogin
+      }
+      
+    } else {
+      // stop smartlink listener
+      api.listenerSmartlink?.stop()
+      api.listenerSmartlink = nil
+      api.removeRadios(.smartlink)
+    }
+  }
   public func toggleDiscoveryPort() {
     if settings.discoveryPort == 4992 {
       settings.discoveryPort = 14992
