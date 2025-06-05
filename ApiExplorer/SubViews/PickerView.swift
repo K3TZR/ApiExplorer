@@ -103,6 +103,11 @@ private struct GuiView: View {
   @Binding var selectedRadioId: String?
   @Environment(ViewModel.self) private var viewModel
 
+  
+  private func isDefaut(_ id: String) -> Bool {
+    return id == viewModel.settings.defaultGui?.radioId
+  }
+  
   var body: some View {
     ScrollView {
       LazyVStack(spacing: 2) {
@@ -126,6 +131,7 @@ private struct GuiView: View {
           }
 //          .padding(.vertical, 4)
           .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
+          .foregroundColor(isDefaut(radio.id) ? Color.red : nil)
           .cornerRadius(4)
           .contentShape(Rectangle()) // Makes entire row tappable
           .onTapGesture {
@@ -145,6 +151,10 @@ private struct NonGuiView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
+  private func isDefaut(_ id: String, _ station: String) -> Bool {
+    return id == viewModel.settings.defaultNonGui?.radioId && station == viewModel.settings.defaultNonGui?.station
+  }
+
   var body: some View {
     
     // ----- List of Stations -----
@@ -173,6 +183,7 @@ private struct NonGuiView: View {
                   .truncationMode(.middle)
               }
               .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
+              .foregroundColor(isDefaut(radio.id, guiClient.station) ? Color.red : nil)
               .cornerRadius(4)
               .contentShape(Rectangle()) // Makes entire row tappable
               .onTapGesture {
@@ -198,7 +209,6 @@ private struct FooterView: View {
     guard let selectedRadioId = selectedRadioId.wrappedValue else { return false }
     return viewModel.api.radios.first(where: { $0.id == selectedRadioId })?.packet.source != .smartlink
   }
-  
   
   var body: some View {
     Spacer()
@@ -229,7 +239,6 @@ private struct FooterView: View {
       Spacer()
       
       Button("Connect") {
-        //        viewModel.pickerConnectButtonTapped(selectedRadioId.wrappedValue! + "|" + "\(settings.isGui ? settings.stationName : selectedStation.wrappedValue)")
         viewModel.pickerConnectButtonTapped(PickerSelection(selectedRadioId.wrappedValue!, viewModel.settings.isGui ? viewModel.settings.stationName : selectedStation.wrappedValue, nil))
       }
       .keyboardShortcut(.defaultAction)

@@ -146,6 +146,8 @@ private struct DetailView: View {
         if filters.contains(RadioObjectFilter.waveforms.rawValue) {WaveformSubView()}
         if filters.contains(RadioObjectFilter.xvtrs.rawValue) {XvtrSubView()}
       }
+      .textSelection(.enabled)
+      .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
     }
   }
 }

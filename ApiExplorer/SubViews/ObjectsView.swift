@@ -69,9 +69,6 @@ public struct ObjectsView: View {
         .frame(width: 140, height: 180)
         .padding(10)
     }
-
-    .textSelection(.enabled)
-    .font(.system(size: CGFloat(settings.fontSize), weight: .regular, design: .monospaced))
   }
 }
 
@@ -204,7 +201,6 @@ public struct StationsFilterView: View {
     }
   }
 }
-
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview

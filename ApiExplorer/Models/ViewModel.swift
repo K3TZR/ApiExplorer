@@ -101,19 +101,12 @@ public class ViewModel {
       // initialize the Messages model
       messages.reFilter()
       
-      // start Local if enabled
-      if settings.localEnabled {
+      // start Local and/or Smartlink if enabled
+      if settings.localEnabled || settings.smartlinkEnabled {
         Task {
-          sleep(1)
-          startStoplocalListener(true)
-        }
-      }
-      
-     // start Smartlink if enabled
-      if settings.smartlinkEnabled {
-        Task {
-          sleep(1)
-          startStopSmartlink(true)
+          sleep(2)
+          if settings.localEnabled { startStoplocalListener(true) }
+          if settings.smartlinkEnabled { startStopSmartlinkListener(true) }
         }
       }
       
@@ -220,7 +213,7 @@ public class ViewModel {
   }
   
   public func smartlinkButtonChanged(_ enabled: Bool)  {
-    startStopSmartlink(enabled)
+    startStopSmartlinkListener(enabled)
   }
   
   public func smartlinkCancelButtonTapped() {
@@ -278,7 +271,7 @@ public class ViewModel {
     }
   }
 
-  public func startStopSmartlink(_ enabled: Bool)  {
+  public func startStopSmartlinkListener(_ enabled: Bool)  {
     if enabled {
       // disable direct, it is incompatable with other connection types
       settings.directEnabled = false

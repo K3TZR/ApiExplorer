@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		9F9C65762D6B89F900E7F025 /* ApiPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9C65752D6B89F900E7F025 /* ApiPackage */; };
 		9F9CA5312DE4997A00C88BDF /* SwiftyPing in Frameworks */ = {isa = PBXBuildFile; productRef = 9F9CA5302DE4997A00C88BDF /* SwiftyPing */; };
-		9F9CA5352DE7E2FB00C88BDF /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5342DE7E2FB00C88BDF /* Info-iOS.plist */; platformFilter = ios; };
-		9F9CA5382DE8B1BE00C88BDF /* Info-macOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5372DE8B1BE00C88BDF /* Info-macOS.plist */; };
 		9F9CA5392DE8B1BE00C88BDF /* ApiLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F9CA5362DE8B1BE00C88BDF /* ApiLaunch.storyboard */; platformFilter = ios; };
 		9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9FA7E4D02DA59CC2007DFB88 /* README.md */; };
 /* End PBXBuildFile section */
@@ -239,9 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F9CA5382DE8B1BE00C88BDF /* Info-macOS.plist in Resources */,
 				9F9CA5392DE8B1BE00C88BDF /* ApiLaunch.storyboard in Resources */,
-				9F9CA5352DE7E2FB00C88BDF /* Info-iOS.plist in Resources */,
 				9FA7E4D12DA59CC2007DFB88 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,12 +429,14 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				"GENERATE_INFOPLIST_FILE[sdk=macosx*]" = YES;
+				"INFOPLIST_FILE[sdk=iphone*]" = "Info-iOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = xApiExplorer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -472,12 +470,14 @@
 				CODE_SIGN_ENTITLEMENTS = ApiExplorer/ApiExplorer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ApiExplorer/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				"GENERATE_INFOPLIST_FILE[sdk=macosx*]" = YES;
+				"INFOPLIST_FILE[sdk=iphone*]" = "Info-iOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = xApiExplorer;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";

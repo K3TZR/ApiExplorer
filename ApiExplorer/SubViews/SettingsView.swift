@@ -111,6 +111,13 @@ public struct SettingsView: View {
           Toggle("", isOn: $settings.useDefaultEnabled)
         }
         
+        GridRow {
+          Button("Font Size") {
+            settings.fontSize += 1
+            if settings.fontSize > 14 { settings.fontSize = 8 }
+          }
+          Text(settings.fontSize, format: .number)
+        }
       }
       
       Divider()

@@ -54,19 +54,18 @@ struct MessagesView: View {
 private struct FilterView: View {
   
   @Environment(ViewModel.self) private var viewModel
-  
+
+  @State private var showMessageFilterSettings: Bool = false
+
   var body: some View {
     @Bindable var viewModelBinding = viewModel
     @Bindable var settings = viewModel.settings
     
     HStack {
-      Text("TCP Message Type")
-      Picker("", selection: $settings.messageFilter) {
-        ForEach(MessagesModel.Filter.allCases, id: \.self) {
-          Text($0.rawValue).tag($0)
-        }
+      HStack {
+        Button("MESSAGE Type") {showMessageFilterSettings.toggle()}
+        Text(settings.messageFilter.rawValue).foregroundColor(.secondary)
       }
-      .frame(width: 120)
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
       }
@@ -78,6 +77,14 @@ private struct FilterView: View {
         }
       Spacer()
     }
+    
+    // Sheet
+    .sheet(isPresented: $showMessageFilterSettings) {
+      MessagesFilterView()
+        .frame(width: 140, height: 340)
+        .padding(10)
+    }
+
   }
 }
 
@@ -105,6 +112,51 @@ extension MessagesView {
     return attString
   }
 
+}
+
+public struct MessagesFilterView: View {
+
+  @Environment(ViewModel.self) private var viewModel
+  @Environment(\.dismiss) var dismiss
+
+  public var body: some View {
+    @Bindable var settings = viewModel.settings
+
+    VStack {
+      ForEach(MessagesModel.Filter.allCases, id: \.self) { item in
+        HStack {
+          Text(item.rawValue)
+          
+          Spacer()
+          if settings.messageFilter == item {
+            Image(systemName: "checkmark")
+              .foregroundColor(.accentColor)
+          }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+          if settings.messageFilter == item {
+            settings.messageFilter = MessagesModel.Filter.all
+          } else {
+            settings.messageFilter = item
+          }
+        }
+        
+      }
+
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
+      HStack {
+        Spacer()
+        Button("Close") {
+          dismiss()
+        }
+        .keyboardShortcut(.defaultAction)
+      }
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------

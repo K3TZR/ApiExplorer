@@ -99,6 +99,8 @@ private struct GuiClientDetailView: View {
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+    .textSelection(.enabled)
+    .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
   }
 }
 
