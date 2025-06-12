@@ -18,6 +18,8 @@ public class SettingsModel {
     _settings = settings
     
     _settings.register(defaults: [
+      "alertOnError": true,
+      "alertOnWarning": true,
       "discoveryPort": 4992,
       "fontSize": 12,
       "isGui": true,
@@ -27,6 +29,7 @@ public class SettingsModel {
     
     // read values from UserDefaults
     alertOnError = _settings.bool(forKey: "alertOnError")
+    alertOnWarning = _settings.bool(forKey: "alertOnWarning")
     clearOnSend = _settings.bool(forKey: "clearOnSend")
     clearOnStart = _settings.bool(forKey: "clearOnStart")
     clearOnStop = _settings.bool(forKey: "clearOnStop")
@@ -73,6 +76,7 @@ public class SettingsModel {
   // MARK: - Public (Observable) properties
   
   public var alertOnError: Bool { didSet { _settings.set(alertOnError, forKey: "alertOnError") }}
+  public var alertOnWarning: Bool { didSet { _settings.set(alertOnWarning, forKey: "alertOnWarning") }}
   public var clearOnSend: Bool { didSet { _settings.set(clearOnSend, forKey: "clearOnSend") }}
   public var clearOnStart: Bool { didSet { _settings.set(clearOnStart, forKey: "clearOnStart") }}
   public var clearOnStop: Bool { didSet { _settings.set(clearOnStop, forKey: "clearOnStop") }}
@@ -125,6 +129,7 @@ public class SettingsModel {
   // write values to UserDefaults
   public func save() {
     _settings.set(alertOnError, forKey: "alertOnError")
+    _settings.set(alertOnWarning, forKey: "alertOnWarning")
     _settings.set(clearOnSend, forKey: "clearOnSend")
     _settings.set(clearOnStart, forKey: "clearOnStart")
     _settings.set(clearOnStop, forKey: "clearOnStop")

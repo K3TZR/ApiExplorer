@@ -11,7 +11,7 @@ import SwiftUI
 import ApiPackage
 
 public enum ActiveSheet: Identifiable {
-  case pings, discovery, guiClients, multiflex, picker, smartlinkLogin, settings
+  case alert, pings, discovery, guiClients, multiflex, picker, smartlinkLogin, settings
   
   public var id: Int { hashValue }
 }
@@ -31,7 +31,8 @@ struct ApiView: View {
   
   var body: some View {
     @Bindable var viewModel = viewModel
-    
+    @Bindable var settings = viewModel.settings
+
     NavigationStack {
       // primary view
       VStack(alignment: .leading, spacing: 10) {
@@ -61,13 +62,6 @@ struct ApiView: View {
           .environment(viewModel)
       }
       
-      // Alerts
-      .alert((viewModel.alertInfo?.title ?? "Alert"), isPresented: $viewModel.showAlert) {
-        Button("OK", role: .cancel) { }
-      } message: {
-        Text(viewModel.alertInfo?.message ?? "")
-      }
-      
       .navigationTitle("ApiExplorer  (v" + Version().string + ")")
 #if os(iOS)
       .navigationBarTitleDisplayMode(.inline)
@@ -76,12 +70,21 @@ struct ApiView: View {
       // Toolbar
       .apiToolbar(viewModel: viewModel)
       
-      // LogAlert Notification (an Error or Warning occurred)
-      .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlert)
+      // LogAlert Warning Notification
+      .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertWarning)
+        .receive(on: RunLoop.main)) { note in
+          if viewModel.settings.alertOnWarning {
+            viewModel.alertInfo = note.object! as? AlertInfo
+            viewModel.activeSheet = .alert
+          }
+        }
+
+      // LogAlert Error Notification
+      .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertError)
         .receive(on: RunLoop.main)) { note in
           if viewModel.settings.alertOnError {
             viewModel.alertInfo = note.object! as? AlertInfo
-            viewModel.showAlert = true
+            viewModel.activeSheet = .alert
           }
         }
     }
@@ -95,6 +98,8 @@ extension ApiView {
   @ViewBuilder
   func apiSheetView(for sheet: ActiveSheet?) -> some View {
     switch sheet {
+    case .alert:
+      AlertView()
     case .pings:
       PingsView(start: Date())
         .frame(width: 400, height: 180)

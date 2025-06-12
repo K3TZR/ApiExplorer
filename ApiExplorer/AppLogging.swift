@@ -30,16 +30,16 @@ public actor AppLog: LoggingActor {
   public func warning(_ message: String) async {
     _logger.warning("\(message)")
     NotificationCenter.default.post(
-      name: Notification.Name.logAlert,
-      object: AlertInfo("WARNING logged", message)
+      name: Notification.Name.logAlertWarning,
+      object: AlertInfo("A Warning has been logged", message)
     )
   }
   
   public func error(_ message: String) async {
     _logger.error("\(message)")
     NotificationCenter.default.post(
-      name: Notification.Name.logAlert,
-      object: AlertInfo("ERROR logged", message)
+      name: Notification.Name.logAlertError,
+      object: AlertInfo("An Error has been logged", message)
     )
   }
 }

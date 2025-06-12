@@ -47,8 +47,13 @@ public struct SettingsView: View {
         }
         
         GridRow {
-          Text("Alert on Error / warning")
+          Text("Alert on Error")
           Toggle("", isOn: $settings.alertOnError)
+        }
+        
+        GridRow {
+          Text("Alert on Warning")
+          Toggle("", isOn: $settings.alertOnWarning)
         }
         
         GridRow {
@@ -112,11 +117,14 @@ public struct SettingsView: View {
         }
         
         GridRow {
-          Button("Font Size") {
-            settings.fontSize += 1
-            if settings.fontSize > 14 { settings.fontSize = 8 }
-          }
-          Text(settings.fontSize, format: .number)
+            Text("Font Size")
+            Picker("", selection: $settings.fontSize) {
+              Text(8, format: .number).tag(8)
+              Text(10, format: .number).tag(10)
+              Text(12, format: .number).tag(12)
+              Text(14, format: .number).tag(14)
+            }
+            .labelsHidden()
         }
       }
       
