@@ -11,7 +11,7 @@ import SwiftUI
 import ApiPackage
 
 public enum ActiveSheet: Identifiable {
-  case alert, pings, discovery, guiClients, multiflex, picker, smartlinkLogin, settings
+  case alert, simpleAlert, pings, discovery, guiClients, multiflex, picker, smartlinkLogin, settings
   
   public var id: Int { hashValue }
 }
@@ -99,7 +99,9 @@ extension ApiView {
   func apiSheetView(for sheet: ActiveSheet?) -> some View {
     switch sheet {
     case .alert:
-      AlertView()
+      AlertView(simpleAlert: false)
+    case .simpleAlert:
+      AlertView(simpleAlert: true)
     case .pings:
       PingsView(start: Date())
         .frame(width: 400, height: 180)
@@ -157,7 +159,7 @@ extension View {
         Button("Pings") {
           if viewModel.api.activeSelection == nil {
             viewModel.alertInfo = AlertInfo("No Connection", "Please connect to a radio")
-            viewModel.showAlert = true
+            viewModel.activeSheet = .simpleAlert
           } else {
             viewModel.api.pingIntervalIndex = 0
             viewModel.api.pingIntervals = Array(repeating: 0, count: 60)
@@ -178,7 +180,7 @@ extension View {
             viewModel.activeSheet = .settings
           } else {
             viewModel.alertInfo = AlertInfo("Not Available", "Use only when not connected")
-            viewModel.showAlert = true
+            viewModel.activeSheet = .simpleAlert
           }
         } label: {
           Label("Settings", systemImage: "gearshape")

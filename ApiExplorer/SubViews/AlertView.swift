@@ -7,7 +7,11 @@
 
 import SwiftUI
 
+// ----------------------------------------------------------------------------
+// MARK: - View
+
 public struct AlertView: View {
+  let simpleAlert: Bool
   
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
@@ -16,7 +20,7 @@ public struct AlertView: View {
     @Bindable var settings = viewModel.settings
     
     VStack(alignment: .center, spacing: 20) {
-      Text(viewModel.alertInfo?.title ?? "AN Unknown event has been logged")
+      Text(viewModel.alertInfo?.title ?? "An Unknown event has been logged")
         .font(.headline)
       
       Divider()
@@ -33,11 +37,13 @@ public struct AlertView: View {
 
       // Checkboxes
       HStack {
-        Toggle("Error", isOn: $settings.alertOnError)
-          .toggleStyle(.checkbox)
-        
-        Toggle("Warning", isOn: $settings.alertOnWarning)
-          .toggleStyle(.checkbox)
+        if !simpleAlert {
+          Toggle("Error", isOn: $settings.alertOnError)
+            .toggleStyle(.checkbox)
+          
+          Toggle("Warning", isOn: $settings.alertOnWarning)
+            .toggleStyle(.checkbox)
+        }
         
         Spacer()
           
@@ -50,6 +56,15 @@ public struct AlertView: View {
   }
 }
 
-#Preview {
-  AlertView()
+// ----------------------------------------------------------------------------
+// MARK: - Preview
+
+#Preview("Normal)") {
+  AlertView(simpleAlert: false)
+    .environment(ViewModel(SettingsModel()))
+}
+
+#Preview("Simple") {
+  AlertView(simpleAlert: true)
+    .environment(ViewModel(SettingsModel()))
 }

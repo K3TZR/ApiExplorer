@@ -38,7 +38,6 @@ public class ViewModel {
   public var isConnected: Bool = false
   public var pingResult: String = ""
   public var selection: String?
-  public var showAlert: Bool = false
   #if os(iOS)
   public var showSettings: Bool = false
   #endif
@@ -60,13 +59,13 @@ public class ViewModel {
   
   public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
     alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.daxSelection = .none
   }
   
   public func directButtonChanged(_ enabled: Bool) {
     alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.directEnabled = false
 //    if enabled {
 //      settings.localEnabled = true
@@ -179,25 +178,25 @@ public class ViewModel {
 
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.remoteRxAudioCompressed = false
   }
   
   public func remoteRxAudioEnabledButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.remoteRxAudioEnabled = false
   }
   
   public func remoteTxAudioEnabledButtonChanged() {
     alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.remoteTxAudioEnabled = false
   }
   
   public func remoteTxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
-    showAlert = true
+    activeSheet = .simpleAlert
     settings.remoteTxAudioCompressed = false
   }
   
@@ -233,7 +232,7 @@ public class ViewModel {
       } else {
         alertInfo = AlertInfo("Smartlink tokens", "FAILED for user: \(user)")
         settings.smartlinkEnabled = false
-        showAlert = true
+        activeSheet = .alert
       }
     }
   }
