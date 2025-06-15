@@ -39,10 +39,10 @@ public struct AlertView: View {
       HStack {
         if !simpleAlert {
           Toggle("Error", isOn: $settings.alertOnError)
-            .toggleStyle(.checkbox)
+//            .toggleStyle(.checkbox)
           
           Toggle("Warning", isOn: $settings.alertOnWarning)
-            .toggleStyle(.checkbox)
+//            .toggleStyle(.checkbox)
         }
         
         Spacer()
