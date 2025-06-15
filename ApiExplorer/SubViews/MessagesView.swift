@@ -64,7 +64,9 @@ private struct FilterView: View {
     HStack {
       HStack {
         Button("MESSAGE Type") {showMessageFilterSettings.toggle()}
-        Text(settings.messageFilter.rawValue).foregroundColor(.secondary)
+        Text(settings.messageFilter.rawValue)
+          .foregroundColor(.secondary)
+          .frame(width: 100, alignment: .leading)
       }
       .onChange(of: settings.messageFilter) {
         viewModel.messages.reFilter()
@@ -81,7 +83,7 @@ private struct FilterView: View {
     // Sheet
     .sheet(isPresented: $showMessageFilterSettings) {
       MessagesFilterView()
-        .frame(width: 140, height: 340)
+        .frame(width: 140, height: 200)
         .padding(10)
     }
 
@@ -123,6 +125,12 @@ public struct MessagesFilterView: View {
     @Bindable var settings = viewModel.settings
 
     VStack {
+      Text("Choose ONE")
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       ForEach(MessagesModel.Filter.allCases, id: \.self) { item in
         HStack {
           Text(item.rawValue)

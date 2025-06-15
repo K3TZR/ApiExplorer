@@ -36,7 +36,8 @@ public struct ObjectsView: View {
       if viewMode != .messages {
         HStack {
           Button("RADIO Properties") {showObjectFilterSettings.toggle()}
-          Text(settings.radioObjectFilters.map(\.self).joined(separator: ", ")).foregroundColor(.secondary)
+          Text(settings.radioObjectFilters.map(\.self).joined(separator: ", "))
+            .foregroundColor(.secondary)
         }
       }
       
@@ -61,12 +62,12 @@ public struct ObjectsView: View {
     // Sheet
     .sheet(isPresented: $showObjectFilterSettings) {
       ObjectsFilterView()
-        .frame(width: 140, height: 340)
+        .frame(width: 140, height: 400)
         .padding(10)
     }
     .sheet(isPresented: $showStationFilterSettings) {
       StationsFilterView()
-        .frame(width: 140, height: 180)
+        .frame(width: 140, height: 200)
         .padding(10)
     }
   }
@@ -81,6 +82,12 @@ public struct ObjectsFilterView: View {
     @Bindable var settings = viewModel.settings
 
     VStack(alignment: .leading) {
+      Text("Choose ONE or MORE")
+
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       HStack {
         Text("all")
         Spacer()
@@ -146,6 +153,12 @@ public struct StationsFilterView: View {
     @Bindable var settings = viewModel.settings
 
     VStack {
+      Text("Choose ONE or MORE")
+      
+      Divider()
+        .frame(height: 2)
+        .background(Color.gray)
+
       HStack {
         Text("all")
         Spacer()
