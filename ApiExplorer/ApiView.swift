@@ -107,7 +107,7 @@ extension ApiView {
         .frame(width: 400, height: 180)
     case .discovery:
       DiscoveryView()
-        .frame(width: 500, height: 600)
+        .frame(width: 600, height: 600)
     case .guiClients:
       GuiClientsView()
         .frame(width: 800, height: 300)

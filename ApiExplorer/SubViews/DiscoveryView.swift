@@ -298,7 +298,7 @@ private struct VitaHexView: View {
         Spacer()
         Toggle("UTF8", isOn: $utf8)
       }
-
+      
       ScrollView {
         
         VStack(spacing: 5) {
@@ -348,136 +348,101 @@ private struct TimingView: View {
 
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-  
-  @State var ticks = 0
-  
+
+  let timeLimit: TimeInterval = 3
+
   var body: some View {
     @Bindable var settings = viewModel.settings
 
-    VStack {
-      HStack {
-        Text("Radio Name")
-          .frame(width: 150, alignment: .leading)
-        
-        Text("IP Address")
-          .frame(width: 150, alignment: .leading)
-
-        Spacer()
-        
-        Text("Average")
-          .frame(width: 60, alignment: .trailing)
-        
-        Spacer()
-        
-        Text("Peak")
-          .frame(width: 60, alignment: .trailing)
-
-      }
+    TimelineView(.periodic(from: start, by: 1)) { _ in
       
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-      
-      TimelineView(.periodic(from: Date(), by: 10)) { context in
-        
+      VStack(spacing: 0) {
+        // Fixed Header
+        Grid(alignment: .leading) {
+          GridRow {
+            Text("Radio Name")
+              .frame(width: 125, alignment: .leading)
+            Text("IP Address")
+              .frame(width: 200, alignment: .leading)
+            Text("Peak Interval").frame(maxWidth: .infinity, alignment: .trailing)
+          }
+          Divider()
+            .frame(height: 2)
+            .background(Color.gray)
+        }
+        .padding(.horizontal)
+
+        // Scrollable rows
         ScrollView {
-          VStack(spacing: 5) {
-            ForEach(Array(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }).enumerated()), id: \.element.id) { index, radio in
+          Grid(alignment: .leading) {
+            ForEach(Array(viewModel.api.radios
+              .sorted(by: { $0.packet.nickname < $1.packet.nickname })
+              .enumerated()), id: \.element.id) { index, radio in
+
               if radio.packet.source == .local {
-                HStack{
-                  Text(radio.packet.nickname)
-                    .frame(width: 150, alignment: .leading)
-                  
+                GridRow {
+                  Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
+                    .frame(width: 125, alignment: .leading)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .help(radio.packet.nickname)
+
                   HStack(spacing: 5) {
                     Text(radio.packet.publicIp)
-                    Label("", systemImage: "parkingsign.circle").font(.title3)
-                      .help("Ping this Radio")
-                      .onTapGesture {
-                        viewModel.pingResult = ""
-                        viewModel.ping(radio.packet.publicIp)
-                      }
+                    Button(action: {
+                      viewModel.pingResult = ""
+                      viewModel.ping(radio.packet.publicIp)
+                    }) {
+                      Image(systemName: "parkingsign.circle")
+                        .font(.title3)
+                        .help("Ping this Radio")
+                    }
+                    .buttonStyle(.plain)
                   }
-                  .frame(width: 150, alignment: .leading)
-                  
-                  Spacer()
-                  
-                  Text(average(radio.intervals))
-                    .frame(width: 60, alignment: .trailing)
-                  
-                  Spacer()
-                  
-                  Text(peak(radio.intervals))
-                    .frame( width: 60, alignment: .trailing)
-                    .foregroundColor( Int(radio.intervals.max() ?? 0) > 10 ? .red : nil)
+                  .frame(width: 200, alignment: .leading)
 
+                  Text(String(format: "%0.3f", radio.intervalPeak))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .foregroundColor(radio.intervalPeak > timeLimit ? .red : nil)
+                    .monospacedDigit()
                 }
                 .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
               }
             }
           }
+          .padding(.horizontal)
+          .padding(.bottom, 16)
         }
-        
-        Spacer()
-        VStack(alignment: .leading) {
+
+        // Ping result + summary
+        VStack(alignment: .leading, spacing: 8) {
           Text(viewModel.pingResult)
             .frame(alignment: .leading)
-          Spacer()
+
           HStack {
-            Text(Int(context.date.timeIntervalSince(start)), format: .number).bold()
-            Text("Seconds")
             Spacer()
-            Text("Peak > 10").bold()
+            Text("Peak > \(String(format: "%0.3f", timeLimit))").bold()
             Text("seconds shown in")
             Text("RED").foregroundColor(.red).bold()
           }
         }
-        
+        .padding()
+
         Divider()
           .frame(height: 2)
           .background(Color.gray)
-        
-        HStack {
-          Text("Port")
+
+        // Footer
+        HStack(spacing: 5) {
+          Text("UDP Port:")
           Text(viewModel.settings.discoveryPort, format: .number)
-            .frame(width: 120)
-          
+
           Spacer()
+
           Button("Close") { dismiss() }
             .keyboardShortcut(.defaultAction)
         }
       }
-    }
-  }
-}
-
-extension TimingView {
-
-  func formatMinutesAndSeconds(from date: Date) -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "mm:ss"
-    return formatter.string(from: date)
-  }
-  
-  func average(_ intervals: [Double]) -> String {
-    guard !intervals.isEmpty else { return "---" }
-    
-    let nonZero = intervals.filter {$0 != 0}
-    let count = nonZero.count
-    if count == 0 {
-      return "---"
-    } else {
-      let avg = nonZero.reduce(0, +) / Double(count)
-      return String(format: "%.3f", avg)
-    }
-  }
-  
-  func peak(_ intervals: [Double]) -> String {
-    guard !intervals.isEmpty else { return "---" }
-    let max = intervals.max() ?? 0
-    if max == 0 {
-      return "---"
-    } else {
-      return String(format: "%.3f", max)
     }
   }
 }

@@ -36,8 +36,12 @@ public struct ObjectsView: View {
       if viewMode != .messages {
         HStack {
           Button("RADIO Properties") {showObjectFilterSettings.toggle()}
+            .popover(isPresented: $showObjectFilterSettings, arrowEdge: .trailing) {
+              ObjectsFilterPopover()
+                .padding(10)
+            }
+
           Text(settings.radioObjectFilters.map(\.self).joined(separator: ", "))
-            .foregroundColor(.secondary)
         }
       }
       
@@ -51,29 +55,22 @@ public struct ObjectsView: View {
       if viewMode != .messages {
         HStack {
           Button("STATION Properties") {showStationFilterSettings.toggle()}
-          Text(settings.stationObjectFilters.map(\.self).joined(separator: ", ")).foregroundColor(.secondary)
+            .popover(isPresented: $showStationFilterSettings, arrowEdge: .trailing) {
+              StationsFilterPopover()
+                .padding(10)
+            }
+
+          Text(settings.stationObjectFilters.map(\.self).joined(separator: ", "))
         }
       }
       
       GuiClientSubView(radio: radio, viewMode: viewMode)
         .frame(maxWidth: .infinity)
     }
-    
-    // Sheet
-    .sheet(isPresented: $showObjectFilterSettings) {
-      ObjectsFilterView()
-        .frame(width: 140, height: 400)
-        .padding(10)
-    }
-    .sheet(isPresented: $showStationFilterSettings) {
-      StationsFilterView()
-        .frame(width: 140, height: 200)
-        .padding(10)
-    }
   }
 }
 
-public struct ObjectsFilterView: View {
+public struct ObjectsFilterPopover: View {
 
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
@@ -128,23 +125,11 @@ public struct ObjectsFilterView: View {
         }
         
       }
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-
-      HStack {
-        Spacer()
-        Button("Close") {
-          dismiss()
-        }
-        .keyboardShortcut(.defaultAction)
-      }
     }
   }
 }
 
-public struct StationsFilterView: View {
+public struct StationsFilterPopover: View {
 
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
@@ -196,20 +181,7 @@ public struct StationsFilterView: View {
           } else {
             settings.stationObjectFilters.insert(item.rawValue)
           }
-        }
-        
-      }
-
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-
-      HStack {
-        Spacer()
-        Button("Close") {
-          dismiss()
-        }
-        .keyboardShortcut(.defaultAction)
+        }        
       }
     }
   }

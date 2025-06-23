@@ -34,7 +34,9 @@ public struct SendView: View {
       HStack {
         ClearableTextField(placeholder: "Command to send", text: $settings.commandToSend)
         Spacer()
-        Button("Clear on Send") {viewModel.settings.clearOnSend.toggle()}
+//        Button("Clear on Send") {viewModel.settings.clearOnSend.toggle()}
+        Toggle("Clear on Send", isOn: $settings.clearOnSend)
+          .toggleStyle(CustomToggleStyle())
       }
     }
   }
@@ -62,17 +64,19 @@ public struct ClearableTextField: View {
 #if os(iOS)
         .textInputAutocapitalization(.never)
         .autocorrectionDisabled(true)
+        .keyboardType(.asciiCapable)
         .onSubmit {
           hideKeyboard()
         }
 #endif
       
       if !text.isEmpty {
-        
-        Label("", systemImage: "xmark.circle").font(.title3)
-          .onTapGesture {
-            text = ""
-          }
+        Button(action: { text = "" }) {
+          Image(systemName: "xmark.circle.fill")
+            .foregroundColor(.gray)
+        }
+        .buttonStyle(.plain)
+        .padding(.trailing, 8)
       }
     }
   }

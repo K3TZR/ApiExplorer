@@ -169,7 +169,7 @@ public class ViewModel {
       let max =  String(format: "%.3f", (result.roundtrip?.maximum ?? 0) * 1_000)
       let avg =  String(format: "%.3f", (result.roundtrip?.average ?? 0) * 1_000)
 
-      self.pingResult = "Ping \(ipAddress):\n      Min = \(min), Max = \(max), Avg = \(avg) (ms)"
+      self.pingResult = "Ping \(ipAddress):  Min = \(min), Max = \(max), Avg = \(avg) (ms)"
 //      self.alertInfo = AlertInfo.init("Ping Results", "Min = \(min)\nMax = \(max)\nAvg = \(avg)")
 //      self.showAlert = true
     }

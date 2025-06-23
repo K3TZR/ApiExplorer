@@ -11,7 +11,7 @@ import SwiftUI
 // MARK: - View
 
 struct MessagesView: View {
-
+  
   @Environment(ViewModel.self) private var viewModel
   
   @State var id: UUID?
@@ -54,9 +54,9 @@ struct MessagesView: View {
 private struct FilterView: View {
   
   @Environment(ViewModel.self) private var viewModel
-
+  
   @State private var showMessageFilterSettings: Bool = false
-
+  
   var body: some View {
     @Bindable var viewModelBinding = viewModel
     @Bindable var settings = viewModel.settings
@@ -64,8 +64,12 @@ private struct FilterView: View {
     HStack {
       HStack {
         Button("MESSAGE Type") {showMessageFilterSettings.toggle()}
+          .popover(isPresented: $showMessageFilterSettings, arrowEdge: .trailing) {
+            MessagesFilterPopover()
+              .padding(10)
+          }
+
         Text(settings.messageFilter.rawValue)
-          .foregroundColor(.secondary)
           .frame(width: 100, alignment: .leading)
       }
       .onChange(of: settings.messageFilter) {
@@ -79,14 +83,6 @@ private struct FilterView: View {
         }
       Spacer()
     }
-    
-    // Sheet
-    .sheet(isPresented: $showMessageFilterSettings) {
-      MessagesFilterView()
-        .frame(width: 140, height: 200)
-        .padding(10)
-    }
-
   }
 }
 
@@ -113,24 +109,24 @@ extension MessagesView {
     }
     return attString
   }
-
+  
 }
 
-public struct MessagesFilterView: View {
-
+public struct MessagesFilterPopover: View {
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
+  
   public var body: some View {
     @Bindable var settings = viewModel.settings
-
+    
     VStack {
       Text("Choose ONE")
       
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
       ForEach(MessagesModel.Filter.allCases, id: \.self) { item in
         HStack {
           Text(item.rawValue)
@@ -149,20 +145,7 @@ public struct MessagesFilterView: View {
             settings.messageFilter = item
           }
         }
-        
-      }
-
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-
-      HStack {
-        Spacer()
-        Button("Close") {
-          dismiss()
-        }
-        .keyboardShortcut(.defaultAction)
-      }
+      }      
     }
   }
 }

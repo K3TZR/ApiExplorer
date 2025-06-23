@@ -41,7 +41,7 @@ public struct MessagesButtonsView: View {
                 if $1 == false { viewModel.messages.removePings() }
               }
           }
-          .toggleStyle(.button)
+          .toggleStyle(CustomToggleStyle())
           
           Spacer()
           

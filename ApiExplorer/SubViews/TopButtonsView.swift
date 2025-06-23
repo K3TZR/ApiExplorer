@@ -16,6 +16,9 @@ public struct TopButtonsView: View {
   
   @Environment(ViewModel.self) private var viewModel
   
+  @State private var daxChanged = false
+  @State private var directChanged = false
+
   private var startButtonDisabled: Bool {
     return !(viewModel.settings.directEnabled || viewModel.settings.localEnabled || viewModel.settings.smartlinkEnabled)
   }
@@ -28,13 +31,13 @@ public struct TopButtonsView: View {
       Button(viewModel.isConnected ? "Stop" : "Start") {
         viewModel.startButtonTapped()
       }
-      .foregroundColor(viewModel.isConnected ? .red : .green)
+      .foregroundColor(.primary)
       .disabled(startButtonDisabled)
       
       Spacer()
       
       Toggle("Gui", isOn: $settings.isGui)
-        .toggleStyle(.button)
+        .toggleStyle(CustomToggleStyle())
         .disabled(viewModel.isConnected)
       
       Spacer()
@@ -42,10 +45,16 @@ public struct TopButtonsView: View {
       // Connection types
       HStack(spacing: 5) {
         Toggle("Direct", isOn: $settings.directEnabled)
+          .popover(isPresented: $directChanged) {
+            NotImplementedView()
+          }
           .onChange(of: settings.directEnabled) { oldValue, newValue in
-            viewModel.directButtonChanged(newValue)
+            directChanged = true
+            settings.directEnabled = false
+//            viewModel.directButtonChanged(newValue)
           }
         Toggle("Local", isOn: $settings.localEnabled)
+          .opacity(0.7)
           .onChange(of: settings.localEnabled) { oldValue, newValue in
             viewModel.localButtonChanged(newValue)
           }
@@ -55,7 +64,7 @@ public struct TopButtonsView: View {
           }
       }
       .disabled(viewModel.isConnected)
-      .toggleStyle(.button)
+      .toggleStyle(CustomToggleStyle())
       
       Spacer()
       
@@ -67,8 +76,13 @@ public struct TopButtonsView: View {
       .frame(width: 180)
       .labelsHidden()
       .disabled(settings.isGui == false)
+      .popover(isPresented: $daxChanged) {
+        NotImplementedView()
+      }
       .onChange(of: settings.daxSelection) {
-        viewModel.daxSelectionChanged($0, $1)
+        daxChanged = true
+        settings.daxSelection = .none
+//        viewModel.daxSelectionChanged($0, $1)
       }
       
       Spacer()
@@ -76,17 +90,23 @@ public struct TopButtonsView: View {
       HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
           .disabled(settings.isGui == false)
-          .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
-            viewModel.remoteRxAudioEnabledButtonChanged()
+          .popover(isPresented: $settings.remoteRxAudioEnabled) {
+            NotImplementedView()
           }
+//          .onChange(of: settings.remoteRxAudioEnabled) { _, _ in
+//            viewModel.remoteRxAudioEnabledButtonChanged()
+//          }
         
         Toggle( "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
           .disabled(settings.isGui == false)
-          .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
-            viewModel.remoteTxAudioEnabledButtonChanged()
+          .popover(isPresented: $settings.remoteTxAudioEnabled) {
+            NotImplementedView()
           }
+//          .onChange(of: settings.remoteTxAudioEnabled) { _, _ in
+//            viewModel.remoteTxAudioEnabledButtonChanged()
+//          }
       }
-      .toggleStyle(.button)
+      .toggleStyle(CustomToggleStyle())
     }
   }
 }
@@ -99,4 +119,25 @@ public struct TopButtonsView: View {
     .environment(ViewModel(SettingsModel()))
   
     .frame(width: 1000)
+}
+
+
+public struct CustomToggleStyle: ToggleStyle {
+  public func makeBody(configuration: Configuration) -> some View {
+    Button(action: {
+      configuration.isOn.toggle()
+    }) {
+      configuration.label
+        .padding(.vertical, 1)
+        .padding(.horizontal, 12)
+        .background(configuration.isOn ? Color.accentColor : Color.accentColor.opacity(0.15))
+        .foregroundColor(.primary)
+        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+//        .overlay(
+//          RoundedRectangle(cornerRadius: 4, style: .continuous)
+//            .stroke(Color.accentColor.opacity(configuration.isOn ? 1 : 0.4), lineWidth: 1)
+//        )
+    }
+    .buttonStyle(PlainButtonStyle()) // prevents default button tinting
+  }
 }

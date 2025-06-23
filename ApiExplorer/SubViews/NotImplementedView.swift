@@ -12,29 +12,11 @@ import SwiftUI
 
 public struct NotImplementedView: View {
   
-  @Environment(ViewModel.self) var viewModel
-  @Environment(\.dismiss) var dismiss
-  
   public var body: some View {
     
     VStack(spacing: 20) {
-      Spacer()
       Text("Not Implemented (yet)").font(.title)
-      Spacer()
-      
-      Divider()
-        .frame(height: 2)
-        .background(Color.gray)
-
-      HStack {
-        Spacer()
-        Button("Cancel") {
-          dismiss()
-        }
-        .keyboardShortcut(.cancelAction)
-      }
     }
-    .frame(width: 250, height: 200)
     .padding()
   }
 }
@@ -44,5 +26,4 @@ public struct NotImplementedView: View {
 
 #Preview() {
   NotImplementedView()
-    .environment(ViewModel(SettingsModel()))
 }
