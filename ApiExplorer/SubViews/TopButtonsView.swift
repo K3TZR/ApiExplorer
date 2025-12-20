@@ -55,7 +55,7 @@ public struct TopButtonsView: View {
           }
         Toggle("Local", isOn: $settings.localEnabled)
           .onChange(of: settings.localEnabled) { oldValue, newValue in
-            viewModel.localButtonChanged(newValue)
+            Task { await viewModel.localButtonChanged(newValue) }
           }
         Toggle("Smartlink", isOn: $settings.smartlinkEnabled)
           .onChange(of: settings.smartlinkEnabled) { oldValue, newValue in

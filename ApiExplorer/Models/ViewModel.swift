@@ -77,8 +77,8 @@ public class ViewModel {
     settings.isGui.toggle()
   }
   
-  public func localButtonChanged(_ enabled: Bool) {
-    startStoplocalListener(enabled)
+  public func localButtonChanged(_ enabled: Bool) async {
+    await startStoplocalListener(enabled)
   }
   
   public func multiflexCancelButtonTapped() {
@@ -104,7 +104,7 @@ public class ViewModel {
       if settings.localEnabled || settings.smartlinkEnabled {
         Task {
           sleep(2)
-          if settings.localEnabled { startStoplocalListener(true) }
+          if settings.localEnabled { await startStoplocalListener(true) }
           if settings.smartlinkEnabled { startStopSmartlinkListener(true) }
         }
       }
@@ -257,14 +257,14 @@ public class ViewModel {
     }
   }
   
-  private func startStoplocalListener(_ enabled: Bool) {
+  private func startStoplocalListener(_ enabled: Bool) async {
     if enabled {
       settings.directEnabled = false
       api.listenerLocal = ListenerLocal(api)
       let port = UInt16(settings.discoveryPort)
-      Task { await api.listenerLocal!.start(port: port) }
+      Task { try! await api.listenerLocal!.start(port: port) }
     } else {
-      api.listenerLocal?.stop()
+      await api.listenerLocal?.stop()
       api.listenerLocal = nil
       api.removeRadios(.local)
     }
@@ -497,3 +497,4 @@ public struct SaveDocument: FileDocument {
       return FileWrapper(regularFileWithContents: data)
   }
 }
+
