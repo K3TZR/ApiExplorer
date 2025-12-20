@@ -100,27 +100,40 @@ extension ApiView {
     switch sheet {
     case .alert:
       AlertView(simpleAlert: false)
+        .presentationDetents([.medium])
+
     case .simpleAlert:
       AlertView(simpleAlert: true)
+        .presentationDetents([.medium])
+
     case .pings:
       PingsView(start: Date())
-        .frame(width: 400, height: 180)
+        .presentationDetents([.medium])
+
     case .discovery:
       DiscoveryView()
-        .frame(width: 600, height: 600)
+        .presentationDetents([.medium])
+
     case .guiClients:
       GuiClientsView()
-        .frame(width: 800, height: 300)
+        .presentationDetents([.medium])
+
     case .multiflex:
       MultiflexView()
-        .frame(width: 300)
+        .presentationDetents([.medium])
+
     case .picker:
       PickerView()
-        .frame(height: 300)
+        .presentationDetents([.medium])
+
     case .smartlinkLogin:
       SmartlinkLoginView()
+        .presentationDetents([.medium])
+
     case .settings:
       SettingsView()
+        .presentationDetents([.medium])
+
     case .none:
       EmptyView()
     }

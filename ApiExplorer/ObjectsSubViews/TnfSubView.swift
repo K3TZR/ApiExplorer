@@ -16,14 +16,14 @@ struct TnfSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
-  private func depthName(_ depth: UInt) -> String {
-    switch depth {
-    case 1: return "Normal"
-    case 2: return "Deep"
-    case 3: return "Very Deep"
-    default:  return "Invalid"
-    }
-  }
+//  private func depthName(_ depth: UInt) -> String {
+//    switch depth {
+//    case 1: return "Normal"
+//    case 2: return "Deep"
+//    case 3: return "Very Deep"
+//    default:  return "Invalid"
+//    }
+//  }
 
   var body: some View {
     
@@ -38,7 +38,8 @@ struct TnfSubView: View {
             Text(tnf.id.formatted(.number))
             Text(tnf.frequency, format: .number)
             Text(tnf.width, format: .number)
-            Text(depthName(tnf.depth))
+//            Text(depthName(tnf.depth))
+            Text(tnf.depth.rawValue)
             Text(tnf.permanent ? "Y" : "N")
               .foregroundColor(tnf.permanent ? .green : .red)
           }

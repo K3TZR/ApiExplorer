@@ -63,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   }
   
   func applicationWillTerminate(_ notification: Notification) {
-    Task { await AppLog.info("ApiExplorer (macOS): application terminated") }
+    appLog(.info, "ApiExplorerApp (macOS): application terminated")
   }
   
   func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -82,7 +82,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
   }
   
   func applicationWillTerminate(_ application: UIApplication) {
-    Task { await AppLog.info("ApiExplorer (iOS): application terminated") }
+    appLog(.info, "ApiExplorerApp (iOS): application terminated") 
   }
 }
 #endif

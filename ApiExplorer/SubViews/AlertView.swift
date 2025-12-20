@@ -27,22 +27,32 @@ public struct AlertView: View {
         .frame(height: 2)
         .background(Color.gray)
 
+      Spacer()
       
       Text(viewModel.alertInfo?.message ?? "Something BAD happened")
         .font(.body)
       
+      Spacer()
+
       Divider()
         .frame(height: 2)
         .background(Color.gray)
 
+      
       // Checkboxes
-      HStack {
+      HStack(spacing: 40) {
         if !simpleAlert {
-          Toggle("Error", isOn: $settings.alertOnError)
-//            .toggleStyle(.checkbox)
-          
-          Toggle("Warning", isOn: $settings.alertOnWarning)
-//            .toggleStyle(.checkbox)
+          HStack(spacing: 5) {
+            Text("Show:    Errors")
+            Toggle("", isOn: $settings.alertOnError)
+              .labelsHidden()
+          }
+
+          HStack(spacing: 5) {
+            Text("Warnings")
+            Toggle("Warnings", isOn: $settings.alertOnWarning)
+              .labelsHidden()
+          }
         }
         
         Spacer()
@@ -52,7 +62,7 @@ public struct AlertView: View {
         }
       }
     .padding()
-    .frame(minWidth: 300)
+//    .frame(minWidth: 300)
   }
 }
 

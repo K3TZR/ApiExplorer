@@ -21,7 +21,7 @@ public final class MessagesModel: TcpProcessor {
   // ----------------------------------------------------------------------------
   // MARK: - Public properties
   
-  public var filteredMessages = [TcpMessage]()
+  public private(set) var filteredMessages = [TcpMessage]()
   
   public enum Filter: String, Codable, CaseIterable, Sendable {
     case all
@@ -54,27 +54,16 @@ public final class MessagesModel: TcpProcessor {
     formatter.minimumFractionDigits = 6
     formatter.positiveFormat = " * ##0.000000"
     
-    let textArray = filteredMessages.map { formatter.string(from: NSNumber(value: $0.interval))! + " " + $0.text }
+    let textArray = filteredMessages.compactMap { msg -> String? in
+      guard let formattedInterval = formatter.string(from: NSNumber(value: msg.interval)) else { return nil }
+      return formattedInterval + " " + msg.text
+    }
     return textArray.joined(separator: "\n")
   }
 
- /// Rebuild the entire filteredMessages array
+  /// Rebuild the entire filteredMessages array
   public func reFilter() {
-    
-    // re-filter the entire messages array
-    switch (_settings.messageFilter, _settings.messageFilterText) {
-
-    case (.all, _):               filteredMessages = _messages
-    case (.prefix, ""):           filteredMessages = _messages
-    case (.prefix, _):            filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains("|" + _settings.messageFilterText) }
-    case (.includes, _):          filteredMessages = _messages.filter { $0.text.localizedCaseInsensitiveContains(_settings.messageFilterText) }
-    case (.excludes, ""):         filteredMessages = _messages
-    case (.excludes, _):          filteredMessages = _messages.filter { !$0.text.localizedCaseInsensitiveContains(_settings.messageFilterText) }
-    case (.command, _):           filteredMessages = _messages.filter { $0.text.prefix(1) == "C" }
-    case (.S0, _):                filteredMessages = _messages.filter { $0.text.prefix(3) == "S0|" }
-    case (.status, _):            filteredMessages = _messages.filter { $0.text.prefix(1) == "S" && $0.text.prefix(3) != "S0|"}
-    case (.reply, _):             filteredMessages = _messages.filter { $0.text.prefix(1) == "R" }
-    }
+    filteredMessages = _messages.filter { passesCurrentFilter($0) }
   }
 
   public func removePings() {
@@ -130,18 +119,8 @@ public final class MessagesModel: TcpProcessor {
         _messages.append(msg)
         
         // add it to the public collection (if appropriate)
-        switch (_settings.messageFilter, _settings.messageFilterText) {
-
-        case (.all, _):               filteredMessages.append(msg)
-        case (.prefix, ""):           filteredMessages.append(msg)
-        case (.prefix, _):            if msg.text.localizedCaseInsensitiveContains("|" + _settings.messageFilterText) { filteredMessages.append(msg) }
-        case (.includes, _):          if msg.text.localizedCaseInsensitiveContains(_settings.messageFilterText) { filteredMessages.append(msg) }
-        case (.excludes, ""):         filteredMessages.append(msg)
-        case (.excludes, _):          if !msg.text.localizedCaseInsensitiveContains(_settings.messageFilterText) { filteredMessages.append(msg) }
-        case (.command, _):           if msg.text.prefix(1) == "C" { filteredMessages.append(msg) }
-        case (.S0, _):                if msg.text.prefix(3) == "S0|" { filteredMessages.append(msg) }
-        case (.status, _):            if msg.text.prefix(1) == "S" && msg.text.prefix(3) != "S0|" { filteredMessages.append(msg) }
-        case (.reply, _):             if msg.text.prefix(1) == "R" { filteredMessages.append(msg) }
+        if passesCurrentFilter(msg) {
+          filteredMessages.append(msg)
         }
       }
     }}
@@ -149,6 +128,31 @@ public final class MessagesModel: TcpProcessor {
 
   // ----------------------------------------------------------------------------
   // MARK: - Private methods
+
+  private func passesCurrentFilter(_ msg: TcpMessage) -> Bool {
+    switch (_settings.messageFilter, _settings.messageFilterText) {
+    case (.all, _):
+      return true
+    case (.prefix, ""):
+      return true
+    case (.prefix, let filterText):
+      return msg.text.localizedCaseInsensitiveContains("|" + filterText)
+    case (.includes, let filterText):
+      return msg.text.localizedCaseInsensitiveContains(filterText)
+    case (.excludes, ""):
+      return true
+    case (.excludes, let filterText):
+      return !msg.text.localizedCaseInsensitiveContains(filterText)
+    case (.command, _):
+      return msg.text.hasPrefix("C")
+    case (.S0, _):
+      return msg.text.hasPrefix("S0|")
+    case (.status, _):
+      return msg.text.hasPrefix("S") && !msg.text.hasPrefix("S0|")
+    case (.reply, _):
+      return msg.text.hasPrefix("R")
+    }
+  }
   
   private func removeAllFilteredMessages() {
     filteredMessages.removeAll()

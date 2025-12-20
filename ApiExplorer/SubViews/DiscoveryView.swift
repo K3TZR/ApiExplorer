@@ -263,7 +263,7 @@ private struct VitaHexView: View {
   @State var isSaving = false
   @State var document: SaveDocument?
   @State var utf8 = false
-  let fontSize: CGFloat = 12
+  let fontSize: CGFloat = 14
   
   var body: some View {
     VStack(alignment: .leading, spacing: 5) {
@@ -286,7 +286,7 @@ private struct VitaHexView: View {
         HStack {
           Text(String(format: "%04X:", index * 16))
           Text(string)
-            .foregroundColor(.secondary)
+//            .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
@@ -306,7 +306,7 @@ private struct VitaHexView: View {
             HStack {
               Text(String(format: "%04X:", (index * 16) + 16))
               Text(string)
-                .foregroundColor(.secondary)
+//                .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
@@ -335,9 +335,9 @@ private struct VitaHexView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
       switch result {
       case .success(let url):
-        Task { await AppLog.info("ApiExplorer: Broadcast Exported to \(String(describing: url))") }
+        appLog(.info, "DiscoveryView: Broadcast Exported to \(String(describing: url))")
       case .failure(let error):
-        Task { await AppLog.warning("ApiExplorer: Broadcast Export failed, \(error)") }
+        appLog(.warning, "DiscoveryView: Broadcast Export failed, \(error)")
       }
     }
   }
@@ -345,15 +345,15 @@ private struct VitaHexView: View {
 
 private struct TimingView: View {
   let start: Date
-
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
+  
   let timeLimit: TimeInterval = 3
-
+  
   var body: some View {
     @Bindable var settings = viewModel.settings
-
+    
     TimelineView(.periodic(from: start, by: 1)) { _ in
       
       VStack(spacing: 0) {
@@ -371,54 +371,55 @@ private struct TimingView: View {
             .background(Color.gray)
         }
         .padding(.horizontal)
-
+        
         // Scrollable rows
         ScrollView {
-          Grid(alignment: .leading) {
+          Grid(alignment: .leading, verticalSpacing: 10) {
             ForEach(Array(viewModel.api.radios
               .sorted(by: { $0.packet.nickname < $1.packet.nickname })
               .enumerated()), id: \.element.id) { index, radio in
-
-              if radio.packet.source == .local {
-                GridRow {
-                  Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
-                    .frame(width: 125, alignment: .leading)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .help(radio.packet.nickname)
-
-                  HStack(spacing: 5) {
-                    Text(radio.packet.publicIp)
-                    Button(action: {
-                      viewModel.pingResult = ""
-                      viewModel.ping(radio.packet.publicIp)
-                    }) {
-                      Image(systemName: "parkingsign.circle")
-                        .font(.title3)
-                        .help("Ping this Radio")
+                
+                if radio.packet.source == .local {
+                  GridRow {
+                    let displayName = radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname
+                    
+                    Text(displayName)
+                      .frame(width: 125, alignment: .leading)
+                      .lineLimit(1)
+                      .truncationMode(.tail)
+                      .help(displayName)
+                    
+                    HStack(spacing: 5) {
+                      Text(radio.packet.publicIp)
+                      Button(action: {
+                        viewModel.pingResult = ""
+                        viewModel.ping(radio.packet.publicIp)
+                      }) {
+                        Image(systemName: "parkingsign.circle")
+                          .font(.title3)
+                          .help("Ping this Radio")
+                      }
+                      .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
+                    .frame(width: 200, alignment: .leading)
+                    
+                    Text(String(format: "%0.3f", radio.intervalPeak))
+                      .frame(maxWidth: .infinity, alignment: .trailing)
+                      .foregroundColor(radio.intervalPeak > timeLimit ? .red : nil)
+                      .monospacedDigit()
                   }
-                  .frame(width: 200, alignment: .leading)
-
-                  Text(String(format: "%0.3f", radio.intervalPeak))
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .foregroundColor(radio.intervalPeak > timeLimit ? .red : nil)
-                    .monospacedDigit()
                 }
-                .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
               }
-            }
           }
           .padding(.horizontal)
           .padding(.bottom, 16)
         }
-
+        
         // Ping result + summary
         VStack(alignment: .leading, spacing: 8) {
           Text(viewModel.pingResult)
             .frame(alignment: .leading)
-
+          
           HStack {
             Spacer()
             Text("Peak > \(String(format: "%0.3f", timeLimit))").bold()
@@ -427,18 +428,18 @@ private struct TimingView: View {
           }
         }
         .padding()
-
+        
         Divider()
           .frame(height: 2)
           .background(Color.gray)
-
+        
         // Footer
         HStack(spacing: 5) {
           Text("UDP Port:")
           Text(viewModel.settings.discoveryPort, format: .number)
-
+          
           Spacer()
-
+          
           Button("Close") { dismiss() }
             .keyboardShortcut(.defaultAction)
         }
@@ -452,5 +453,4 @@ private struct TimingView: View {
 
 #Preview("DiscoveryView") {
   DiscoveryView()
-    .environment(ViewModel(SettingsModel()))
 }

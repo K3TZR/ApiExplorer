@@ -38,10 +38,10 @@ public class ViewModel {
   public var isConnected: Bool = false
   public var pingResult: String = ""
   public var selection: String?
-  #if os(iOS)
+#if os(iOS)
   public var showSettings: Bool = false
-  #endif
-
+#endif
+  
   // ----------------------------------------------------------------------------
   // MARK: - Private properties
   
@@ -49,7 +49,7 @@ public class ViewModel {
   
   private let kDomain             = "https://frtest.auth0.com/"
   private let kClientId           = "4Y9fEIIsVYyQo5u6jr7yBWc4lV5ugC2m"
-
+  
   // ----------------------------------------------------------------------------
   // MARK: - Public action methods
   
@@ -67,10 +67,10 @@ public class ViewModel {
     alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
     activeSheet = .simpleAlert
     settings.directEnabled = false
-//    if enabled {
-//      settings.localEnabled = true
-//      settings.smartlinkEnabled = false
-//    }
+    //    if enabled {
+    //      settings.localEnabled = true
+    //      settings.smartlinkEnabled = false
+    //    }
   }
   
   public func guiButtonTapped() {
@@ -84,7 +84,7 @@ public class ViewModel {
   public func multiflexCancelButtonTapped() {
     activeSheet = nil
   }
-
+  
   public func multiflexConnectButtonTapped(_ disconnectHandle: String?) {
     activeSheet = nil
     if let disconnectHandle {
@@ -95,8 +95,8 @@ public class ViewModel {
   
   public func onAppear() {
     if initialized == false {
-      Task { await AppLog.debug("ApiExplorer: application started")}
-            
+      appLog(.debug, "application started")
+      
       // initialize the Messages model
       messages.reFilter()
       
@@ -113,12 +113,12 @@ public class ViewModel {
       if settings.guiClientId.isEmpty {
         settings.guiClientId = UUID().uuidString
       }
-
+      
       // mark as initialized
       initialized = true
     }
   }
-    
+  
   public func pickerConnectButtonTapped(_ selection: PickerSelection) {
     activeSheet = nil
     // try to connect to the selected radio / station
@@ -153,29 +153,29 @@ public class ViewModel {
   
   public func ping(_ ipAddress: String) {
     let simplePingQ = DispatchQueue(label: "simplePingQ")
-//    var results: [String] = []
-//    print("Pinging", ipAddress )
-
+    //    var results: [String] = []
+    //    print("Pinging", ipAddress )
+    
     // Ping indefinitely
     let pinger = try? SwiftyPing(host: ipAddress, configuration: PingConfiguration(interval: 0.5, with: 5), queue: simplePingQ)
-//    pinger?.observer = { (response) in
-//      print("time = " + String(format: "%.3f ms", response.duration * 1000))
-//      results.append("time = " + String(format: "%.3f ms", response.duration * 1000))
-//    }
+    //    pinger?.observer = { (response) in
+    //      print("time = " + String(format: "%.3f ms", response.duration * 1000))
+    //      results.append("time = " + String(format: "%.3f ms", response.duration * 1000))
+    //    }
     pinger?.targetCount = 5
     pinger?.finished = { result in
-//      print(results.joined(separator: "\n"))
+      //      print(results.joined(separator: "\n"))
       let min =  String(format: "%.3f", (result.roundtrip?.minimum ?? 0) * 1_000)
       let max =  String(format: "%.3f", (result.roundtrip?.maximum ?? 0) * 1_000)
       let avg =  String(format: "%.3f", (result.roundtrip?.average ?? 0) * 1_000)
-
+      
       self.pingResult = "Ping \(ipAddress):  Min = \(min), Max = \(max), Avg = \(avg) (ms)"
-//      self.alertInfo = AlertInfo.init("Ping Results", "Min = \(min)\nMax = \(max)\nAvg = \(avg)")
-//      self.showAlert = true
+      //      self.alertInfo = AlertInfo.init("Ping Results", "Min = \(min)\nMax = \(max)\nAvg = \(avg)")
+      //      self.showAlert = true
     }
     try? pinger?.startPinging()
   }
-
+  
   public func remoteRxAudioCompressedButtonChanged() {
     alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
     activeSheet = .simpleAlert
@@ -256,7 +256,7 @@ public class ViewModel {
       activeSheet = .picker
     }
   }
-
+  
   private func startStoplocalListener(_ enabled: Bool) {
     if enabled {
       settings.directEnabled = false
@@ -269,12 +269,12 @@ public class ViewModel {
       api.removeRadios(.local)
     }
   }
-
+  
   public func startStopSmartlinkListener(_ enabled: Bool)  {
     if enabled {
       // disable direct, it is incompatable with other connection types
       settings.directEnabled = false
-
+      
       guard settings.smartlinkLoginRequired  == false else {
         activeSheet = .smartlinkLogin
         return
@@ -290,7 +290,7 @@ public class ViewModel {
           activeSheet = .smartlinkLogin
         }
         
-      // NO, try using the RefreshToken
+        // NO, try using the RefreshToken
       } else if settings.smartlinkRefreshToken != nil {
         Task {
           // Can we get an IdToken using the RefreshToken?
@@ -335,7 +335,7 @@ public class ViewModel {
       settings.viewMode = .objects
     }  }
   
-
+  
   // ----------------------------------------------------------------------------
   // MARK: - Public supporting methods
   
@@ -348,9 +348,9 @@ public class ViewModel {
     }
     return stringArray
   }
-
+  
   /// Converts Data to an array of formatted hex string lines (16 bytes per row).
- public func vitaPayload(_ data: Data, _ utf8: Bool) -> [String] {
+  public func vitaPayload(_ data: Data, _ utf8: Bool) -> [String] {
     var stringArray: [String] = []
     
     if utf8 {
@@ -398,14 +398,14 @@ public class ViewModel {
     //    let len = 552
     let len = data.count
     var bytes = [UInt8](repeating: 0x00, count: len)
-
+    
     (data as NSData).getBytes(&bytes, range: NSMakeRange(0, len - 1))
-
+    
     let payloadBytes = bytes[27...len-1]
     let text = String(decoding: payloadBytes, as: UTF8.self)
     return text.keyValuesArrayIndexed()
   }
-
+  
   // ----------------------------------------------------------------------------
   // MARK: - Private supporting methods
   
@@ -430,15 +430,15 @@ public class ViewModel {
       } catch {
         // connection attempt failed
         await api.disconnect()
-        await AppLog.error("ApiExplorer/connect: \(error.localizedDescription)")
+        appLog(.error, "Connection FAILED, error: \(error.localizedDescription)")
         return false
       }
     }
     isConnected = await connectTask.result.get()
     if isConnected {
-      Task { await AppLog.info("ApiExplorer/connect: SUCCEEDED, ID <\(selection.radioId)>") }
+      appLog(.info, "Connection SUCCEEDED, ID <\(selection.radioId)>")
     } else {
-      Task { await AppLog.error("ApiExplorer/connect: FAILED, ID <\(selection.radioId)>") }
+      appLog(.debug, "Connection FAILED, ID <\(selection.radioId)>")
     }
   }
   
@@ -456,7 +456,7 @@ public class ViewModel {
       }
       
     } else {
-      Task { await AppLog.error("ApiExplorer: Radio not found, ID <\(selection.radioId)>") }
+      appLog(.error, "Radio not found, ID <\(selection.radioId)>")
     }
   }
   

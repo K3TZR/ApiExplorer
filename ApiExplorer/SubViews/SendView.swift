@@ -28,13 +28,13 @@ public struct SendView: View {
 
     HStack {
       Button("Send") { viewModel.sendButtonTapped() }
-      .keyboardShortcut(.defaultAction)
-      .disabled(viewModel.isConnected == false)
+        .keyboardShortcut(.defaultAction)
+        .disabled(viewModel.isConnected == false)
       
       HStack {
         ClearableTextField(placeholder: "Command to send", text: $settings.commandToSend)
         Spacer()
-//        Button("Clear on Send") {viewModel.settings.clearOnSend.toggle()}
+        //        Button("Clear on Send") {viewModel.settings.clearOnSend.toggle()}
         Toggle("Clear on Send", isOn: $settings.clearOnSend)
           .toggleStyle(CustomToggleStyle())
       }

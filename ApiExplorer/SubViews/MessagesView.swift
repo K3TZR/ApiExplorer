@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ApiPackage
 
 // ----------------------------------------------------------------------------
 // MARK: - View
@@ -56,7 +57,8 @@ private struct FilterView: View {
   @Environment(ViewModel.self) private var viewModel
   
   @State private var showMessageFilterSettings: Bool = false
-  
+  @State private var showIssues: Bool = false
+
   var body: some View {
     @Bindable var viewModelBinding = viewModel
     @Bindable var settings = viewModel.settings
@@ -82,6 +84,11 @@ private struct FilterView: View {
           viewModel.messages.reFilter()
         }
       Spacer()
+      Button("Issues") {showIssues.toggle()}
+        .popover(isPresented: $showIssues, arrowEdge: .bottom) {
+          IssuesPopover()
+            .padding(10)
+        }
     }
   }
 }
@@ -149,6 +156,30 @@ public struct MessagesFilterPopover: View {
     }
   }
 }
+
+public struct IssuesPopover: View {
+  @State private var issues: [String: String] = [:]
+  
+  public var body: some View {
+    VStack(alignment: .leading) {
+      if issues.isEmpty {
+        Text("Loading...")
+      } else {
+        ForEach(issues.sorted(by: { $0.key < $1.key }), id: \.key) { pair in
+          Text(pair.value)
+            .fixedSize(horizontal: true, vertical: false)
+        }
+      }
+    }
+    .frame(maxWidth: .infinity)
+    .padding()
+
+    .task {
+      issues = await ApiLog.shared.fetchIssues()
+    }
+  }
+}
+
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview

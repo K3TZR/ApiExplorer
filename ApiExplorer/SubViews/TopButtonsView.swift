@@ -31,7 +31,7 @@ public struct TopButtonsView: View {
       Button(viewModel.isConnected ? "Stop" : "Start") {
         viewModel.startButtonTapped()
       }
-      .foregroundColor(.primary)
+//      .foregroundColor(.primary)
       .disabled(startButtonDisabled)
       
       Spacer()
@@ -54,7 +54,6 @@ public struct TopButtonsView: View {
 //            viewModel.directButtonChanged(newValue)
           }
         Toggle("Local", isOn: $settings.localEnabled)
-          .opacity(0.7)
           .onChange(of: settings.localEnabled) { oldValue, newValue in
             viewModel.localButtonChanged(newValue)
           }
@@ -90,6 +89,7 @@ public struct TopButtonsView: View {
       HStack(spacing: 10) {
         Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
           .disabled(settings.isGui == false)
+          .toggleStyle(CustomToggleStyle())
           .popover(isPresented: $settings.remoteRxAudioEnabled) {
             NotImplementedView()
           }
@@ -99,6 +99,7 @@ public struct TopButtonsView: View {
         
         Toggle( "Tx Audio", isOn: $settings.remoteTxAudioEnabled)
           .disabled(settings.isGui == false)
+          .toggleStyle(CustomToggleStyle())
           .popover(isPresented: $settings.remoteTxAudioEnabled) {
             NotImplementedView()
           }
@@ -106,7 +107,6 @@ public struct TopButtonsView: View {
 //            viewModel.remoteTxAudioEnabledButtonChanged()
 //          }
       }
-      .toggleStyle(CustomToggleStyle())
     }
   }
 }
@@ -130,7 +130,7 @@ public struct CustomToggleStyle: ToggleStyle {
       configuration.label
         .padding(.vertical, 1)
         .padding(.horizontal, 12)
-        .background(configuration.isOn ? Color.accentColor : Color.accentColor.opacity(0.15))
+        .background(configuration.isOn ? Color.accentColor : Color.accentColor.opacity(0.3))
         .foregroundColor(.primary)
         .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
 //        .overlay(

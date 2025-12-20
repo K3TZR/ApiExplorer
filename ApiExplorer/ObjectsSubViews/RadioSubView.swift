@@ -128,7 +128,7 @@ private struct DetailView: View {
     ScrollView([.vertical]) {
       VStack(alignment: .leading) {
 
-        if filters.contains(RadioObjectFilter.amplifiers.rawValue) {AmplifierSubView(radio: radio)}
+        if filters.contains(RadioObjectFilter.amplifiers.rawValue) {AmplifierSubView()}
         if filters.contains(RadioObjectFilter.atu.rawValue) {AtuSubView(radio: radio)}
         if filters.contains(RadioObjectFilter.bandSettings.rawValue) {BandSettingSubView()}
         if filters.contains(RadioObjectFilter.cwx.rawValue) {CwxSubView()}

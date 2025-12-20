@@ -41,6 +41,7 @@ public struct PickerView: View {
       
       FooterView(selectedRadioId: $selectedRadioId, selectedStation: $selectedStation)
     }
+//    .frame(minHeight: 200)
     .padding(10)
   }
 }
@@ -110,13 +111,14 @@ private struct GuiView: View {
   
   var body: some View {
     ScrollView {
-      LazyVStack(spacing: 2) {
+      LazyVStack(spacing: 10) {
         ForEach(viewModel.api.radios.sorted(by: { $0.packet.nickname < $1.packet.nickname }), id: \.id) { radio in
           let isSelected = selectedRadioId == radio.id
 
           HStack(spacing: 0) {
             Text(radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname)
               .frame(width: 200, alignment: .leading)
+              .lineLimit(1)
               .truncationMode(.middle)
 
             Text(radio.packet.source.rawValue)
@@ -127,13 +129,13 @@ private struct GuiView: View {
 
             Text(radio.packet.guiClientStations.joined(separator: ", "))
               .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
+              .lineLimit(1)
               .truncationMode(.middle)
           }
-//          .padding(.vertical, 4)
           .background(isSelected ? Color.accentColor.opacity(0.2) : Color.clear)
           .foregroundColor(isDefaut(radio.id) ? Color.red : nil)
           .cornerRadius(4)
-          .contentShape(Rectangle()) // Makes entire row tappable
+          .contentShape(Rectangle())
           .onTapGesture {
             selectedRadioId = isSelected ? nil : radio.id
           }
@@ -141,6 +143,7 @@ private struct GuiView: View {
       }
       .padding(.horizontal)
     }
+    .frame(minHeight: 200)
   }
 }
 
@@ -195,6 +198,7 @@ private struct NonGuiView: View {
         }
       }
     }
+    .frame(minHeight: 200)
   }
 }
 

@@ -63,9 +63,9 @@ public struct MessagesButtonsView: View {
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.log") { result in
       switch result {
       case .success(let url):
-        Task { await ApiLog.info("ApiExplorer: Log Exported to \(url)") }
+        apiLog(.info, "ApiExplorer: Log Exported to \(url)")
       case .failure(let error):
-        Task { await ApiLog.warning("ApiExplorer: Log Export failed, \(error)") }
+        apiLog(.warning, "ApiExplorer: Log Export failed, \(error)") 
       }
     }
   }
