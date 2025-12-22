@@ -15,24 +15,38 @@ struct TesterSubView: View {
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
-    
-    Grid(alignment: .trailing, horizontalSpacing: 10, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 4) {
+      // Header row
       GridRow {
-        Text("Explorer").foregroundColor(.blue)
-          .frame(width: 80, alignment: .leading)
+        Text("Explorer")
+          .foregroundStyle(.blue)
+          .frame(width: 100, alignment: .leading)
           .font(.title)
-        
+        Text("Field")
+          .foregroundStyle(.secondary)
+        Text("Value")
+          .foregroundStyle(.secondary)
+        Color.clear
+        Color.clear
+      }
+
+      // Data row
+      GridRow {
+        Text("")
+          .frame(width: 100, alignment: .leading)
+
         Text("Bound to Station")
-        Text("\(viewModel.api.activeSelection?.station ?? "Unknown")")
-          .foregroundColor(.secondary)
-        
+        Text(viewModel.api.activeSelection?.station ?? "Unknown")
+          .foregroundStyle(.secondary)
+
         Text("Handle")
         Text(viewModel.api.connectionHandle?.hex ?? "???")
-          .foregroundColor(.secondary)
-        
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
+
         Text("Client Id")
-        Text("\(viewModel.api.boundClientId ?? "???")")
-          .foregroundColor(.secondary)
+        Text(viewModel.api.boundClientId ?? "???")
+          .foregroundStyle(.secondary)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
