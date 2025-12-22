@@ -22,6 +22,7 @@ struct InterlockSubView: View {
       GridRow {
         Text("INTLCK")
           .frame(width: labelWidth, alignment: .leading)
+          .foregroundStyle(.yellow)
         
         ToggleRow(label: "Tx Allowed", isOn: interlock.txAllowed)
         ToggleRow(label: "Tx1 Enabled", isOn: interlock.tx1Enabled)

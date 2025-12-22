@@ -66,7 +66,7 @@ private struct HeadingView: View {
         Text("4000 Hz")
         Text("8000 Hz")
       }.frame(width: 60)
-    }
+    }.foregroundStyle(.yellow)
   }
 }
 

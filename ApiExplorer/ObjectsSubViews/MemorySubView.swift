@@ -118,6 +118,7 @@ private struct HeadingView: View {
       Text("DIGL")
     }
     .gridCellAnchor(.leading)
+    .foregroundStyle(.yellow)
   }
 }
 

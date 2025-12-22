@@ -49,6 +49,7 @@ struct ProfileSubView: View {
           Text("Profiles")
             .frame(width: labelWidth, alignment: .leading)
             .accessibilityLabel("Profiles column")
+            .foregroundStyle(.yellow)
 
           Text("----- NONE -----")
             .foregroundStyle(.red)
@@ -78,6 +79,7 @@ private struct HeaderView: View {
       Text("List")
         .accessibilityLabel("List column")
     }
+    .foregroundStyle(.yellow)
   }
 }
 

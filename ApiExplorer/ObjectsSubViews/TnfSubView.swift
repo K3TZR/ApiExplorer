@@ -48,6 +48,7 @@ struct TnfSubView: View {
         GridRow {
           Text("TNFs")
             .frame(width: 40, alignment: .leading)
+            .foregroundStyle(.yellow)
 
           Text("No TNFs present").foregroundStyle(.secondary)
         }
@@ -74,6 +75,7 @@ private struct HeaderView: View {
       Text("Depth")
       Text("Permanent")
     }
+    .foregroundStyle(.yellow)
   }
 }
 

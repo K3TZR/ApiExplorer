@@ -34,8 +34,9 @@ struct TransmitSubView: View {
     GridRow {
       Text("Xmit")
         .frame(width: 50, alignment: .leading)
-//      Text("Setting")
-//        .foregroundStyle(.secondary)
+        .foregroundStyle(.yellow)
+      Text("Mode")
+        .foregroundStyle(.yellow)
       Color.clear
       Color.clear
       Color.clear

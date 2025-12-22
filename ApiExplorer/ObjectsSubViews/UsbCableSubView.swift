@@ -26,6 +26,7 @@ struct UsbCableSubView: View {
         GridRow {
           Text("UsbCables")
             .frame(width: 70, alignment: .leading)
+            .foregroundStyle(.yellow)
 
           Text("----- NOT IMPLEMENTED -----").foregroundColor(.red)
         }

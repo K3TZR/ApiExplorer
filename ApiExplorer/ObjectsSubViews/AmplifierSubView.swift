@@ -31,6 +31,8 @@ struct AmplifierSubView: View {
           Text("AMP")
             .frame(width: 80, alignment: .leading)
             .accessibilityLabel("Amplifier column")
+            .foregroundStyle(.yellow)
+
           
           Text("----- NONE PRESENT -----")
             .foregroundStyle(.red)

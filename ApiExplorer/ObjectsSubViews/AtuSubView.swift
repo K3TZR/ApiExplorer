@@ -43,6 +43,7 @@ struct AtuSubView: View {
       GridRow {
         Text("ATU")
           .frame(width: labelWidth, alignment: .leading)
+          .foregroundStyle(.yellow)
         
         ToggleRow(label: "ATU Enabled", isOn: atu.enabled)
         ToggleRow(label: "Memories Enabled", isOn: atu.memoriesEnabled)
@@ -58,6 +59,8 @@ struct AtuSubView: View {
       GridRow {
         Text("ATU")
           .frame(width: labelWidth, alignment: .leading)
+          .foregroundStyle(.yellow)
+
         Text("----- NONE -----")
           .foregroundStyle(.red)
       }
@@ -69,6 +72,8 @@ struct AtuSubView: View {
       GridRow {
         Text("ATU")
           .frame(width: labelWidth, alignment: .leading)
+          .foregroundStyle(.yellow)
+
         Text("----- NO RADIO -----")
           .foregroundStyle(.red)
       }

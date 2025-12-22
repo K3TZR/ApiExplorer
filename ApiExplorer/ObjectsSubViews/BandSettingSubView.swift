@@ -73,6 +73,7 @@ private struct HeadingView: View {
       Text("HW ALC")
     }
     .gridCellAnchor(.leading)
+    .foregroundStyle(.yellow)
   }
 }
 

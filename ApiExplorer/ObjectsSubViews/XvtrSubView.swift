@@ -46,6 +46,7 @@ struct XvtrSubView: View {
         GridRow {
           Text("XVTR")
             .frame(width: 40, alignment: .leading)
+            .foregroundStyle(.yellow)
 
           Text("No transverters present").foregroundStyle(.secondary)
         }
@@ -73,6 +74,7 @@ private struct HeaderView: View {
       Text("Rx Gain")
       Text("Rx Only")
     }
+    .foregroundStyle(.yellow)
   }
 }
 

@@ -26,6 +26,7 @@ struct CwxSubView: View {
       GridRow {
         Text("CWX")
           .frame(width: labelWidth, alignment: .leading)
+          .foregroundStyle(.yellow)
         
         LabeledValue(label: "Delay", value: cwx.breakInDelay.formatted(), valueColor: .secondary)
         ToggleRow(label: "QSK", isOn: cwx.qskEnabled, onText: "ON", offText: "OFF")

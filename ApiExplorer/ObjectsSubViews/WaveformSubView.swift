@@ -25,6 +25,7 @@ struct WaveformSubView: View {
         GridRow {
           Text("Waveforms")
             .frame(width: 70, alignment: .leading)
+            .foregroundStyle(.yellow)
 
           Text("----- NOT IMPLEMENTED -----").foregroundColor(.red)
         }

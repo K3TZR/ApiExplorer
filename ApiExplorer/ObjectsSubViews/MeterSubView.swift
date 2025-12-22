@@ -50,6 +50,7 @@ private struct HeadingView: View {
       Text("Description")
     }
     .gridCellAnchor(.leading)
+    .foregroundStyle(.yellow)
   }
 }
 

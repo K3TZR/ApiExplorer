@@ -43,6 +43,8 @@ struct GpsSubView: View {
           GridRow {
             Text("GPS")
               .frame(width: labelWidth, alignment: .leading)
+              .foregroundStyle(.yellow)
+
             Text("----- NOT INSTALLED -----")
               .foregroundStyle(.red)
           }
@@ -67,6 +69,7 @@ struct GpsSubView: View {
       Text("Tracked")
       Text("Visible")
     }
+    .foregroundStyle(.yellow)
   }
 }
 

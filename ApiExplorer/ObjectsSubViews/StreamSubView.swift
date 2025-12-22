@@ -30,6 +30,8 @@ public struct StreamSubView: View {
           Text("Errors")
           Text("Error PerCent")
         }
+        .foregroundStyle(.yellow)
+
         DetailView(streamModel: viewModel.api.streamModel!)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
