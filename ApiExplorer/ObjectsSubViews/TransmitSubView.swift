@@ -23,6 +23,7 @@ struct TransmitSubView: View {
       CwView(transmit: viewModel.api.transmit)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 
@@ -38,49 +39,51 @@ private struct TransmitView: View {
       HStack( spacing: 5) {
         Text("Compander")
         Text("\(transmit.companderEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.companderEnabled ? .green : .red)
+          .foregroundStyle(transmit.companderEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Processor")
         Text("\(transmit.speechProcessorEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.speechProcessorEnabled ? .green : .red)
+          .foregroundStyle(transmit.speechProcessorEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Monitor")
         Text("\(transmit.txMonitorEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.txMonitorEnabled ? .green : .red)
+          .foregroundStyle(transmit.txMonitorEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Mic Acc")
         Text("\(transmit.micAccEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.micAccEnabled ? .green : .red)
+          .foregroundStyle(transmit.micAccEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Dax")
         Text("\(transmit.daxEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.daxEnabled ? .green : .red)
+          .foregroundStyle(transmit.daxEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Vox")
         Text("\(transmit.voxEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.voxEnabled ? .green : .red)
+          .foregroundStyle(transmit.voxEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Vox Delay")
         Text(transmit.voxDelay, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
       
       HStack( spacing: 5) {
         Text("Vox Level")
         Text(transmit.voxLevel, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
     }
   }
@@ -98,31 +101,35 @@ private struct CwView: View {
       HStack( spacing: 5) {
         Text("Sidetone")
         Text("\(transmit.cwSidetoneEnabled ? "ON" : "OFF")")
-          .foregroundColor(transmit.cwSidetoneEnabled ? .green : .red)
+          .foregroundStyle(transmit.cwSidetoneEnabled ? .green : .red)
       }
       
       HStack( spacing: 5) {
         Text("Level")
         Text(transmit.cwMonitorGain, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
       
       HStack( spacing: 5) {
         Text("Pan")
         Text(transmit.cwMonitorPan, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
       
       HStack( spacing: 5) {
         Text("Pitch")
         Text(transmit.cwPitch, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
       
       HStack( spacing: 5) {
         Text("Speed")
         Text(transmit.cwSpeed, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
       }
     }
   }
@@ -137,3 +144,4 @@ private struct CwView: View {
   
     .frame(minWidth: 1000)
 }
+

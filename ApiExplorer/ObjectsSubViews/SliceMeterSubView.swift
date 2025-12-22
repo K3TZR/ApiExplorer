@@ -38,6 +38,7 @@ struct SliceMeterSubView: View {
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 
@@ -46,8 +47,7 @@ private struct HeadingView: View {
   var body: some View {
 
     GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 80)
+      Color.clear.frame(width: 80).gridCellUnsizedAxes([.horizontal, .vertical])
 
       Text("METERS")
         .frame(width: 80, alignment: .leading)
@@ -79,13 +79,11 @@ private struct DetailView: View {
   var body: some View {
     
     GridRow {
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 80)
+      Color.clear.frame(width: 80).gridCellUnsizedAxes([.horizontal, .vertical])
 
-      Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-        .frame(width: 80)
+      Color.clear.frame(width: 80).gridCellUnsizedAxes([.horizontal, .vertical])
 
-      Text("\(meter.id)")
+      Text("\(meter.id)").monospacedDigit()
       
       Text(meter.group)
       Text(meter.source)
@@ -94,9 +92,10 @@ private struct DetailView: View {
         .help("        range: \(String(format: "%-4.2f", meter.low)) to \(String(format: "%-4.2f", meter.high))")
         .foregroundColor(valueColor(meter.value, meter.low, meter.high))
         .onReceive(meter.$value.throttle(for: 1, scheduler: RunLoop.main, latest: true)) { throttledValue = CGFloat($0) }
+        .monospacedDigit()
       
       Text(meter.units)
-      Text(String(format: "% 2d", meter.fps))
+      Text(String(format: "% 2d", meter.fps)).monospacedDigit()
       Text(meter.desc)
         .gridColumnAlignment(.leading)
     }
@@ -114,3 +113,4 @@ private struct DetailView: View {
 
     .frame(width: 1000)
 }
+

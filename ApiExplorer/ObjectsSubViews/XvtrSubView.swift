@@ -18,23 +18,28 @@ struct XvtrSubView: View {
   
   var body: some View {
     
+    let xvtrs = viewModel.api.xvtrs.sorted { $0.rfFrequency < $1.rfFrequency }
+    
     Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
-      if viewModel.api.xvtrs.count > 0 {
+      if !xvtrs.isEmpty {
         HeaderView()
         
-        ForEach(viewModel.api.xvtrs, id: \.id) { xvtr in
+        ForEach(xvtrs, id: \.id) { xvtr in
           GridRow {
-            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            Color.clear
+              .frame(width: 40)
+              .gridCellUnsizedAxes([.horizontal, .vertical])
             
             Text(xvtr.name)
-            Text(xvtr.ifFrequency, format: .number)
-            Text(xvtr.rfFrequency, format: .number)
-            Text(xvtr.maxPower, format: .number)
-            Text(xvtr.rxGain, format: .number)
+            Text(xvtr.ifFrequency, format: .number).monospacedDigit()
+            Text(xvtr.rfFrequency, format: .number).monospacedDigit()
+            Text(xvtr.maxPower, format: .number).monospacedDigit()
+            Text(xvtr.rxGain, format: .number).monospacedDigit()
             Text(xvtr.rxOnly ? "Y" : "N")
-              .foregroundColor(xvtr.rxOnly ? .red : .green)
+              .foregroundStyle(xvtr.rxOnly ? .red : .green)
           }
-//          .foregroundColor(.secondary)
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel("Name \(xvtr.name), IF \(xvtr.ifFrequency), RF \(xvtr.rfFrequency), Max Power \(xvtr.maxPower), Rx Gain \(xvtr.rxGain), Rx Only \(xvtr.rxOnly ? "yes" : "no")")
         }
         
       } else {
@@ -42,11 +47,12 @@ struct XvtrSubView: View {
           Text("XVTR")
             .frame(width: 40, alignment: .leading)
 
-          Text("----- NONE -----").foregroundColor(.red)
+          Text("No transverters present").foregroundStyle(.secondary)
         }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 

@@ -20,18 +20,21 @@ struct PanadapterSubView: View {
   
   var body: some View {
     
-    if viewModel.api.panadapters.count == 0 {
+    let panadapters = viewModel.api.panadapters
+    
+    if panadapters.isEmpty {
       VStack(alignment: .leading) {
         HStack(spacing: 20) {
           Text("PANADAPTER").frame(width: 110, alignment: .leading)
-          Text("----- NONE PRESENT -----").foregroundColor(.red)
+          Text("----- NONE PRESENT -----").foregroundStyle(.red)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+      .textSelection(.enabled)
       
       
     } else {
-      ForEach(viewModel.api.panadapters, id: \.id) { panadapter in
+      ForEach(panadapters, id: \.id) { panadapter in
         
         if panadapter.clientHandle == handle {
           
@@ -63,6 +66,7 @@ struct PanadapterSubView: View {
           }
           .padding(.bottom, 20)
           .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
+          .textSelection(.enabled)
         }
       }
     }
@@ -82,17 +86,19 @@ private struct PanadapterDetailView: View {
         
         Text("ID")
         Text(panadapter.id.hex)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
           .gridColumnAlignment(.trailing)
         
         Text("Bandwidth")
         Text(panadapter.bandwidth, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("Center")
         Text(panadapter.center, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
       }
     }
@@ -112,27 +118,30 @@ private struct WaterfallDetailView: View {
         
         Text("ID")
         Text(waterfall.id.hex)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
           .gridColumnAlignment(.trailing)
         
         Text("Auto Black")
         Text("\(waterfall.autoBlackEnabled ? "Y" : "N")")
-          .foregroundColor(waterfall.autoBlackEnabled ? .green : .red)
+          .foregroundStyle(waterfall.autoBlackEnabled ? .green : .red)
           .gridColumnAlignment(.trailing)
         
         Text("Color Gain")
         Text(waterfall.colorGain, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("Black Level")
         Text(waterfall.blackLevel, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("Duration")
         Text(waterfall.lineDuration, format: .number)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
       }
     }
@@ -152,55 +161,60 @@ private struct SliceDetailView: View {
         
         Text("ID")
         Text(slice.id.hex)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
           .gridColumnAlignment(.trailing)
         
         Text("Freq")
         Text("\(slice.frequency)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("Mode")
         Text("\(slice.mode)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
         
         Text("Rx Ant")
           .gridColumnAlignment(.leading)
         
         Text("\(slice.rxAnt)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
         
         Text("Tx Ant")
           .gridColumnAlignment(.leading)
         
         Text("\(slice.txAnt)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
         
         Text("DAX_channel")
         Text("\(slice.daxChannel)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
         
         Text("DAX_clients")
         Text("\(slice.daxClients)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
         
         Text("Low")
         Text("\(slice.filterLow)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("High")
         Text("\(slice.filterHigh)")
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
+          .monospacedDigit()
           .gridColumnAlignment(.trailing)
         
         Text("Active")
         Text("\(slice.active ? "Y" : "N")")
-          .foregroundColor(slice.active ? .green : .red)
+          .foregroundStyle(slice.active ? .green : .red)
         
         Text("Locked")
         Text("\(slice.locked ? "Y" : "N")")
-          .foregroundColor(slice.locked ? .green : .red)
+          .foregroundStyle(slice.locked ? .green : .red)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading) // Ensure left alignment
@@ -216,3 +230,4 @@ private struct SliceDetailView: View {
   
     .frame(minWidth: 1000)
 }
+

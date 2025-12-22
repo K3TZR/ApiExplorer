@@ -46,13 +46,13 @@ public struct MessagesButtonsView: View {
           Spacer()
           
           Button("Save") {
-            document = SaveDocument(text: viewModel.messages.messagesText())
+            document = SaveDocument(text: String(describing: viewModel.messages))
             isSaving = true
           }
           
           Spacer()
           
-          Button("Clear") { viewModel.messages.clearButtonTapped() }
+          Button("Clear") { viewModel.messages.clear() }
 //        }
       }
       .frame(maxWidth: .infinity)
@@ -176,3 +176,4 @@ public struct StepperX: View {
 //#endif
 //  }
 //}
+

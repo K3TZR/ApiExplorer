@@ -16,54 +16,67 @@ struct ProfileSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
+  // Consistent label width for alignment
+  private let labelWidth: CGFloat = 80
+  
   private func name(_ id: String) -> String {
     id.components(separatedBy: " ").first ?? "???"
   }
   
   var body: some View {
-    
-    Grid(alignment: .topLeading, horizontalSpacing: 20, verticalSpacing: 0) {
+    Grid(alignment: .topLeading, horizontalSpacing: 20, verticalSpacing: 5) {
       if viewModel.api.profiles.count > 0 {
-        HeaderView()
+        HeaderView(labelWidth: labelWidth)
         
-        ForEach(viewModel.api.profiles.sorted(by: {$0.id < $1.id}), id: \.id) { profile in
+        ForEach(viewModel.api.profiles.sorted(by: { $0.id < $1.id }), id: \.id) { profile in
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
-              .frame(width: 70)
+              .frame(width: labelWidth)
 
             Text(name(profile.id).uppercased())
-            Text("\(profile.current.isEmpty ? "-none-" : profile.current)")
-              .foregroundColor(profile.current.isEmpty ? .red : nil)
+              .accessibilityLabel("ID: \(name(profile.id).uppercased())")
+            Text(profile.current.isEmpty ? "-none-" : profile.current)
+              .foregroundStyle(profile.current.isEmpty ? .red : .secondary)
+              .accessibilityLabel("Current: \(profile.current.isEmpty ? "None" : profile.current)")
             Text(profile.list.joined(separator: ", "))
+              .foregroundStyle(.secondary)
+              .accessibilityLabel("List: \(profile.list.joined(separator: ", "))")
           }
-//          .foregroundColor(.secondary)
         }
         
       } else {
         GridRow {
           Text("Profiles")
-            .frame(width: 70, alignment: .leading)
+            .frame(width: labelWidth, alignment: .leading)
+            .accessibilityLabel("Profiles column")
 
-          Text("----- NONE -----").foregroundColor(.red)
+          Text("----- NONE -----")
+            .foregroundStyle(.red)
+            .accessibilityLabel("None present")
         }
       }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
 
 private struct HeaderView: View {
+  let labelWidth: CGFloat
 
   var body: some View {
-    
     GridRow {
       Text("Profiles")
-        .frame(width: 70, alignment: .leading)
+        .frame(width: labelWidth, alignment: .leading)
+        .accessibilityLabel("Profiles column")
 
       Text("ID")
         .frame(width: 50, alignment: .leading)
+        .accessibilityLabel("ID column")
 
       Text("Current")
+        .accessibilityLabel("Current column")
       Text("List")
+        .accessibilityLabel("List column")
     }
   }
 }

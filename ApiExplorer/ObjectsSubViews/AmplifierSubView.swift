@@ -17,26 +17,29 @@ struct AmplifierSubView: View {
 
   var body: some View {
     
+    let amplifiers = viewModel.api.amplifiers
+    
     Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 5) {
-      if viewModel.api.amplifiers.count > 0 {
+      if !amplifiers.isEmpty {
         HeadingView()
-        ForEach(viewModel.api.amplifiers) { amplifier in
+        ForEach(amplifiers) { amplifier in
           AmplifierRowView(amplifier: amplifier)
         }
         
       } else {
         GridRow {
           Text("AMP")
-            .frame(width: 50, alignment: .leading)
+            .frame(width: 80, alignment: .leading)
             .accessibilityLabel("Amplifier column")
           
           Text("----- NONE PRESENT -----")
-            .foregroundColor(.red)
+            .foregroundStyle(.red)
             .accessibilityLabel("None present")
         }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 
@@ -47,17 +50,19 @@ private struct AmplifierRowView: View {
     GridRow {
       Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
       Text(amplifier.id.hex)
+        .monospaced()
         .accessibilityLabel("ID: \(amplifier.id.hex)")
       Text(amplifier.model)
         .accessibilityLabel("Model: \(amplifier.model)")
       Text(amplifier.ip)
         .accessibilityLabel("Address: \(amplifier.ip)")
       Text(amplifier.port, format: .number)
+        .monospacedDigit()
         .accessibilityLabel("Port: \(amplifier.port)")
       Text(amplifier.state)
         .accessibilityLabel("State: \(amplifier.state)")
     }
-    .foregroundColor(.secondary)
+    .foregroundStyle(.secondary)
   }
 }
 
@@ -92,3 +97,4 @@ private struct HeadingView: View {
     .environment(ViewModel(SettingsModel()))
     .frame(width: 1250)
 }
+

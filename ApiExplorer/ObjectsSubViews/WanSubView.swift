@@ -26,52 +26,58 @@ struct WanSubView: View {
         HStack(spacing: 5) {
           Text("Authenticated")
           Text(viewModel.api.wan.radioAuthenticated ? "Y" : "N")
-            .foregroundColor(viewModel.api.wan.radioAuthenticated ? .green : .red)
+            .foregroundStyle(viewModel.api.wan.radioAuthenticated ? .green : .red)
         }
         
         HStack(spacing: 5) {
           Text("Server Connected")
           Text(viewModel.api.wan.serverConnected ? "Y" : "N")
-            .foregroundColor(viewModel.api.wan.serverConnected ? .green : .red)
+            .foregroundStyle(viewModel.api.wan.serverConnected ? .green : .red)
         }
         
         HStack(spacing: 5) {
           Text("Public TLS Port")
           Text(viewModel.api.wan.publicTlsPort, format: .number)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
         }
         
         HStack(spacing: 5) {
           Text("Public UDP Port")
           Text(viewModel.api.wan.publicUdpPort, format: .number)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
         }
       }
       
       GridRow {
-        Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+        Color.clear
           .frame(width: 40)
+          .gridCellUnsizedAxes([.horizontal, .vertical])
 
         HStack(spacing: 5) {
           Text("Public Upnp TLS Port")
           Text(viewModel.api.wan.publicUpnpTlsPort, format: .number)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
         }
 
         HStack(spacing: 5) {
           Text("Public Upnp UDP Port")
           Text(viewModel.api.wan.publicUpnpUdpPort, format: .number)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
         }
         
         HStack(spacing: 5) {
           Text("UPNP Supported")
           Text(viewModel.api.wan.upnpSupported ? "Y" : "N")
-            .foregroundColor(viewModel.api.wan.upnpSupported ? .green : .red)
+            .foregroundStyle(viewModel.api.wan.upnpSupported ? .green : .red)
         }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 
@@ -84,3 +90,4 @@ struct WanSubView: View {
   
     .frame(minWidth: 1000)
 }
+

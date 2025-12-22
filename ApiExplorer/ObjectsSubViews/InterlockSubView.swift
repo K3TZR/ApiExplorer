@@ -13,103 +13,81 @@ struct InterlockSubView: View {
   
   @Environment(ViewModel.self) var viewModel
   
+  // Consistent label width for alignment
+  private let labelWidth: CGFloat = 80
+  
   var body: some View {
-    
     let interlock = viewModel.api.interlock
-    Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 0) {
+    Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 5) {
       GridRow {
         Text("INTLCK")
-          .frame(width: 50, alignment: .leading)
+          .frame(width: labelWidth, alignment: .leading)
         
-        HStack(spacing: 5){
-          Text("Tx Allowed")
-          Text(interlock.txAllowed ? "Y" : "N")
-            .foregroundColor(interlock.txAllowed ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Tx1 Enabled")
-          Text(interlock.tx1Enabled ? "Y" : "N")
-            .foregroundColor(interlock.tx1Enabled ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Tx2 Enabled")
-          Text(interlock.tx2Enabled ? "Y" : "N")
-            .foregroundColor(interlock.tx2Enabled ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Tx3 Enabled")
-          Text(interlock.tx3Enabled ? "Y" : "N")
-            .foregroundColor(interlock.tx3Enabled ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Acc Tx")
-          Text(interlock.accTxEnabled ? "Y" : "N")
-            .foregroundColor(interlock.accTxEnabled ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Acc Req")
-          Text(interlock.accTxReqEnabled ? "Y" : "N")
-            .foregroundColor(interlock.accTxReqEnabled ? .green : .red)
-        }
-        
-        HStack(spacing: 5){
-          Text("Rca Req")
-          Text(interlock.rcaTxReqEnabled ? "Y" : "N")
-            .foregroundColor(interlock.rcaTxReqEnabled ? .green : .red)
-        }
+        ToggleRow(label: "Tx Allowed", isOn: interlock.txAllowed)
+        ToggleRow(label: "Tx1 Enabled", isOn: interlock.tx1Enabled)
+        ToggleRow(label: "Tx2 Enabled", isOn: interlock.tx2Enabled)
+        ToggleRow(label: "Tx3 Enabled", isOn: interlock.tx3Enabled)
+        ToggleRow(label: "Acc Tx", isOn: interlock.accTxEnabled)
+        ToggleRow(label: "Acc Req", isOn: interlock.accTxReqEnabled)
+        ToggleRow(label: "Rca Req", isOn: interlock.rcaTxReqEnabled)
       }
       
       GridRow {
         Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
         
-        HStack(spacing: 5){
-          Text("Delay")
-          Text(interlock.txDelay, format: .number)
-        }
-        
-        HStack(spacing: 5){
-          Text("Delay")
-          Text(interlock.tx1Delay, format: .number)
-            .foregroundColor(.secondary)
-        }
-        
-        HStack(spacing: 5){
-          Text("Delay")
-          Text(interlock.tx2Delay, format: .number)
-            .foregroundColor(.secondary)
-        }
-        
-        HStack(spacing: 5){
-          Text("Delay")
-          Text(interlock.tx3Delay, format: .number)
-            .foregroundColor(.secondary)
-        }
-        
-        HStack(spacing: 5){
-          Text("Delay")
-          Text(interlock.accTxDelay, format: .number)
-            .foregroundColor(.secondary)
-        }
-        
-        HStack(spacing: 5){
-          Text("Polarity")
-          Text(interlock.accTxReqPolarity ? "+" : "-")
-            .foregroundColor(.secondary)
-        }
-        
-        HStack(spacing: 5){
-          Text("Polarity")
-          Text(interlock.rcaTxReqPolarity ? "+" : "-")
-            .foregroundColor(.secondary)
-        }
+        LabeledValue(label: "Delay", value: interlock.txDelay.formatted(), valueColor: .secondary)
+        LabeledValue(label: "Delay", value: interlock.tx1Delay.formatted(), valueColor: .secondary)
+        LabeledValue(label: "Delay", value: interlock.tx2Delay.formatted(), valueColor: .secondary)
+        LabeledValue(label: "Delay", value: interlock.tx3Delay.formatted(), valueColor: .secondary)
+        LabeledValue(label: "Delay", value: interlock.accTxDelay.formatted(), valueColor: .secondary)
+        LabeledValue(label: "Polarity", value: interlock.accTxReqPolarity ? "+" : "-", valueColor: .secondary)
+        LabeledValue(label: "Polarity", value: interlock.rcaTxReqPolarity ? "+" : "-", valueColor: .secondary)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+  }
+}
+
+// MARK: - Helper Views
+
+private struct ToggleRow: View {
+  let label: String
+  let isOn: Bool
+  var onText: String = "Y"
+  var offText: String = "N"
+  
+  var body: some View {
+    HStack(spacing: 5) {
+      Text(label)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+      Text(isOn ? onText : offText)
+        .foregroundStyle(isOn ? .green : .red)
+        .monospacedDigit()
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(Text(label))
+    .accessibilityValue(Text(isOn ? "Yes" : "No"))
+  }
+}
+
+private struct LabeledValue: View {
+  let label: String
+  let value: String
+  var valueColor: Color = .primary
+  
+  var body: some View {
+    HStack(spacing: 5) {
+      Text(label)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+      Text(value)
+        .foregroundStyle(valueColor)
+        .monospacedDigit()
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(Text(label))
+    .accessibilityValue(Text(value))
   }
 }
 

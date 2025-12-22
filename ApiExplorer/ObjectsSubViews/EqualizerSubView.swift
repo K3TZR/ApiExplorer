@@ -18,28 +18,31 @@ struct EqualizerSubView: View {
 
   var body: some View {
     
+    let equalizers = viewModel.api.equalizers
+    
     Grid(alignment: .trailing, horizontalSpacing: 30, verticalSpacing: 0) {
       HeadingView()
       
-      ForEach(viewModel.api.equalizers) { eq in
+      ForEach(equalizers) { eq in
         GridRow {
-          Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+          Color.clear.frame(width: 40).gridCellUnsizedAxes([.horizontal, .vertical])
 
           Text(eq.id)
 
           Text("\(eq.eqEnabled ? "ON" : "OFF")")
-            .foregroundColor(eq.eqEnabled ? .green : .red)
-          Text(eq.hz63.formatted(.number))
-          Text(eq.hz125.formatted(.number))
-          Text(eq.hz250.formatted(.number))
-          Text(eq.hz500.formatted(.number))
-          Text(eq.hz1000.formatted(.number))
-          Text(eq.hz2000.formatted(.number))
-          Text(eq.hz4000.formatted(.number))
-          Text(eq.hz8000.formatted(.number))
+            .foregroundStyle(eq.eqEnabled ? .green : .red)
+          Text(eq.hz63.formatted(.number)).monospacedDigit()
+          Text(eq.hz125.formatted(.number)).monospacedDigit()
+          Text(eq.hz250.formatted(.number)).monospacedDigit()
+          Text(eq.hz500.formatted(.number)).monospacedDigit()
+          Text(eq.hz1000.formatted(.number)).monospacedDigit()
+          Text(eq.hz2000.formatted(.number)).monospacedDigit()
+          Text(eq.hz4000.formatted(.number)).monospacedDigit()
+          Text(eq.hz8000.formatted(.number)).monospacedDigit()
         }
       }
     }
+    .textSelection(.enabled)
   }
 }
 
@@ -76,3 +79,4 @@ private struct HeadingView: View {
   
     .frame(minWidth: 1000)
 }
+

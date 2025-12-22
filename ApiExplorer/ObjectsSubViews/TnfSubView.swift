@@ -16,34 +16,32 @@ struct TnfSubView: View {
 
   @Environment(ViewModel.self) private var viewModel
   
-//  private func depthName(_ depth: UInt) -> String {
-//    switch depth {
-//    case 1: return "Normal"
-//    case 2: return "Deep"
-//    case 3: return "Very Deep"
-//    default:  return "Invalid"
-//    }
-//  }
-
-  var body: some View {
+ var body: some View {
+    
+    let tnfs = viewModel.api.tnfs.sorted { $0.frequency < $1.frequency }
     
     Grid(alignment: .trailing, horizontalSpacing: 40, verticalSpacing: 0) {
-      if viewModel.api.tnfs.count > 0 {
+      if !tnfs.isEmpty {
         HeaderView()
         
-        ForEach(viewModel.api.tnfs, id: \.id) { tnf in
+        ForEach(tnfs, id: \.id) { tnf in
           GridRow {
-            Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+            Color.clear
+              .frame(width: 40)
+              .gridCellUnsizedAxes([.horizontal, .vertical])
             
             Text(tnf.id.formatted(.number))
+              .monospacedDigit()
             Text(tnf.frequency, format: .number)
+              .monospacedDigit()
             Text(tnf.width, format: .number)
-//            Text(depthName(tnf.depth))
+              .monospacedDigit()
             Text(tnf.depth.rawValue)
             Text(tnf.permanent ? "Y" : "N")
-              .foregroundColor(tnf.permanent ? .green : .red)
+              .foregroundStyle(tnf.permanent ? .green : .red)
           }
-//          .foregroundColor(.secondary)
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel("ID \(tnf.id), Frequency \(tnf.frequency), Width \(tnf.width), Depth \(tnf.depth.rawValue), Permanent \(tnf.permanent ? "yes" : "no")")
         }
         
       } else {
@@ -51,11 +49,12 @@ struct TnfSubView: View {
           Text("TNFs")
             .frame(width: 40, alignment: .leading)
 
-          Text("----- NONE -----").foregroundColor(.red)
+          Text("No TNFs present").foregroundStyle(.secondary)
         }
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+    .textSelection(.enabled)
   }
 }
 
@@ -87,3 +86,4 @@ private struct HeaderView: View {
   
     .frame(minWidth: 1000)
 }
+

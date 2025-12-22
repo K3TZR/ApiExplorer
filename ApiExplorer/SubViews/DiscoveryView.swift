@@ -105,97 +105,97 @@ private struct VitaHeaderView: View {
       HStack {
         Text("Packet Type")
         Spacer()
-        Text(vita.packetType.description()).frame(alignment: .trailing)
+        Text(verbatim: vita.packetType.description()).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Class Code")
         Spacer()
-        Text(vita.classCode.description()).frame(alignment: .trailing)
+        Text(verbatim: vita.classCode.description()).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Packet Size")
         Spacer()
-        Text("\(vita.packetSize)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.packetSize)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Header Size")
         Spacer()
-        Text("\(vita.headerSize)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.headerSize)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Payload Size")
         Spacer()
-        Text("\(vita.payloadSize)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.payloadSize)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Stream ID")
         Spacer()
-        Text("\(vita.streamId)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.streamId)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Tsi Type")
         Spacer()
-        Text("\(vita.tsiType)").frame(alignment: .trailing)
+        Text(verbatim: String(describing: vita.tsiType)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Tsf Type")
         Spacer()
-        Text("\(vita.tsfType)").frame(alignment: .trailing)
+        Text(verbatim: String(describing: vita.tsfType)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Sequence")
         Spacer()
-        Text("\(vita.sequence)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.sequence)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Integer Time Stamp")
         Spacer()
-        Text("\(vita.integerTimestamp)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.integerTimestamp)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Frac Time Stamp Lsb")
         Spacer()
-        Text("\(vita.fracTimeStampLsb)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.fracTimeStampLsb)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Frac Time Stamp Msb")
         Spacer()
-        Text("\(vita.fracTimeStampMsb)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.fracTimeStampMsb)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("OUI")
         Spacer()
-        Text("\(vita.oui)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.oui)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Information Class Code")
         Spacer()
-        Text("\(vita.informationClassCode)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.informationClassCode)).frame(alignment: .trailing)
       }
       
       HStack {
         Text("Trailer")
         Spacer()
-        Text("\(vita.trailer)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.trailer)).frame(alignment: .trailing)
       }.background(Color.gray.opacity(0.2))
       
       HStack {
         Text("Trailer Present")
         Spacer()
-        Text("\(vita.trailerPresent)").frame(alignment: .trailing)
+        Text(verbatim: String(vita.trailerPresent)).frame(alignment: .trailing)
       }
       Spacer()
       

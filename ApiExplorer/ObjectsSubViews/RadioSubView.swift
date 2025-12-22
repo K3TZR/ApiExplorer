@@ -18,6 +18,8 @@ struct RadioSubView: View {
   
   @Environment(ViewModel.self) var viewModel
   
+  private let labelWidth: CGFloat = 200
+  
   var body: some View {
     
     if let radio {
@@ -25,85 +27,50 @@ struct RadioSubView: View {
         Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
           GridRow {
             Text(radio.packet.nickname)
-              .frame(width: 200, alignment: .leading)
+              .frame(width: labelWidth, alignment: .leading)
               .bold()
               .underline()
 //              .font(.title)
-              .foregroundColor(radio.packet.source == .local ? .green : .red)
+              .foregroundStyle(radio.packet.source == .local ? .green : .red)
               .gridColumnAlignment(.leading)
               .truncationMode(.tail)
               .lineLimit(1)   // This is critical
               .clipped()
               .help(radio.packet.nickname)
+              .accessibilityLabel("Nickname: \(radio.packet.nickname)")
             
-            HStack(spacing: 5) {
-              Text("Model")
-              Text(radio.packet.model)
-                .foregroundColor(.secondary)
-            }
-
-            HStack(spacing: 5) {
-              Text("ip")
-              Text(radio.packet.publicIp)
-                .foregroundColor(.secondary)
-                .gridColumnAlignment(.trailing)
-            }
+            LabeledValue(label: "Model", value: radio.packet.model)
             
-            HStack(spacing: 5) {
-              Text("FW")
-              Text(radio.packet.version)
-                .foregroundColor(radio.alpha ? .red : .secondary)
-            }
+            LabeledValue(label: "ip", value: radio.packet.publicIp, alignTrailing: true)
             
-            HStack(spacing: 5) {
-              Text("Serial")
-              Text(radio.packet.serial)
-                .foregroundColor(.secondary)
-            }.gridCellColumns(2)
+            LabeledValue(label: "FW", value: radio.packet.version, valueStyle: radio.alpha ? .red : .secondary)
+            
+            LabeledValue(label: "Serial", value: radio.packet.serial)
+              .gridCellColumns(2)
        }
           
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
             
   
-            HStack(spacing: 5) {
-              Text("HW")
-              Text(viewModel.api.hardwareVersion ?? "")
-                .foregroundColor(.secondary)
-            }
+            LabeledValue(label: "HW", value: viewModel.api.hardwareVersion ?? "")
             
-            HStack(spacing: 5) {
-              Text("Uptime")
-              Text("\(radio.uptime)")
-                .foregroundColor(.secondary)
-            }
+            LabeledValue(label: "Uptime", value: "\(radio.uptime)")
             
-            HStack(spacing: 5) {
-              Text("Ant List")
-              Text(radio.antList.joined(separator: ", ")).foregroundColor(.secondary)
-            }.gridCellColumns(3)
+            LabeledValue(label: "Ant List", value: radio.antList.joined(separator: ", "))
+              .gridCellColumns(3)
             
         }
           
           GridRow {
             Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
 
-            HStack(spacing: 5) {
-              Text("TNF's Enabled")
-              Text("\(radio.tnfsEnabled ? "Y" : "N")")
-                .foregroundColor(radio.tnfsEnabled ? .green : .red)
-            }
+            ToggleRow(label: "TNF's Enabled", isOn: radio.tnfsEnabled)
             
-            HStack(spacing: 5) {
-              Text("MF Enabled")
-              Text("\(radio.multiflexEnabled ? "Y" : "N")")
-                .foregroundColor(radio.multiflexEnabled ? .green : .red)
-            }
+            ToggleRow(label: "MF Enabled", isOn: radio.multiflexEnabled)
             
-            HStack(spacing: 5) {
-              Text("Mic List")
-              Text(radio.micList.joined(separator: ", ")).foregroundColor(.secondary)
-            }.gridCellColumns(3)
+            LabeledValue(label: "Mic List", value: radio.micList.joined(separator: ", "))
+              .gridCellColumns(3)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -149,6 +116,43 @@ private struct DetailView: View {
       .textSelection(.enabled)
       .font(.system(size: CGFloat(viewModel.settings.fontSize), weight: .regular, design: .monospaced))
     }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// MARK: - Helper Views
+
+private struct LabeledValue: View {
+  let label: String
+  let value: String
+  var valueStyle: Color = .secondary
+  var alignTrailing: Bool = false
+  var body: some View {
+    HStack(spacing: 5) {
+      Text(label)
+      Text(value)
+        .foregroundStyle(valueStyle)
+        .monospaced()
+        .gridColumnAlignment(alignTrailing ? .trailing : .leading)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(Text("\(label): \(value)"))
+  }
+}
+
+private struct ToggleRow: View {
+  let label: String
+  let isOn: Bool
+  var onText: String = "Y"
+  var offText: String = "N"
+  var body: some View {
+    HStack(spacing: 5) {
+      Text(label)
+      Text(isOn ? onText : offText)
+        .foregroundStyle(isOn ? .green : .red)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(Text("\(label): \(isOn ? "Yes" : "No")"))
   }
 }
 
