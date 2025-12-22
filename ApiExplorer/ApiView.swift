@@ -30,8 +30,8 @@ struct ApiView: View {
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
-    @Bindable var viewModel = viewModel
-    @Bindable var settings = viewModel.settings
+    @Bindable var vm = viewModel
+    @Bindable var settings = vm.settings
 
     NavigationStack {
       // primary view
@@ -44,7 +44,7 @@ struct ApiView: View {
           .frame(height: 2)
           .background(Color.gray)
         
-        ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
+        ObjectsMessagesSplitView(viewMode: vm.settings.viewMode)
       }
 #if os(macOS)
       .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
@@ -53,13 +53,14 @@ struct ApiView: View {
 
       // initialize
       .onAppear {
-        viewModel.onAppear()
+        vm.onAppear()
       }
       
       // Sheets
-      .sheet(item: $viewModel.activeSheet) { sheet in
+      .sheet(item: $vm.activeSheet) { sheet in
         apiSheetView(for: sheet)
-          .environment(viewModel)
+          .presentationDetents([.medium])
+          .environment(vm)
       }
       
       .navigationTitle("ApiExplorer  (v" + Version().string + ")")
@@ -68,26 +69,26 @@ struct ApiView: View {
 #endif
       
       // Toolbar
-      .apiToolbar(viewModel: viewModel)
+      .apiToolbar(viewModel: vm)
       
       // LogAlert Warning Notification
       .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertWarning)
         .receive(on: RunLoop.main)) { note in
-          if viewModel.settings.alertOnWarning {
-            viewModel.alertInfo = note.object! as? AlertInfo
-            viewModel.activeSheet = .alert
-          }
+          handleLogAlert(note, when: vm.settings.alertOnWarning)
         }
 
       // LogAlert Error Notification
       .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertError)
         .receive(on: RunLoop.main)) { note in
-          if viewModel.settings.alertOnError {
-            viewModel.alertInfo = note.object! as? AlertInfo
-            viewModel.activeSheet = .alert
-          }
+          handleLogAlert(note, when: vm.settings.alertOnError)
         }
     }
+  }
+  
+  private func handleLogAlert(_ note: Notification, when enabled: Bool) {
+    guard enabled, let info = note.object as? AlertInfo else { return }
+    viewModel.alertInfo = info
+    viewModel.activeSheet = .alert
   }
 }
 
@@ -95,47 +96,18 @@ struct ApiView: View {
 // MARK: - Sheets
 
 extension ApiView {
-  @ViewBuilder
-  func apiSheetView(for sheet: ActiveSheet?) -> some View {
+  private func apiSheetView(for sheet: ActiveSheet?) -> AnyView {
     switch sheet {
-    case .alert:
-      AlertView(simpleAlert: false)
-        .presentationDetents([.medium])
-
-    case .simpleAlert:
-      AlertView(simpleAlert: true)
-        .presentationDetents([.medium])
-
-    case .pings:
-      PingsView(start: Date())
-        .presentationDetents([.medium])
-
-    case .discovery:
-      DiscoveryView()
-        .presentationDetents([.medium])
-
-    case .guiClients:
-      GuiClientsView()
-        .presentationDetents([.medium])
-
-    case .multiflex:
-      MultiflexView()
-        .presentationDetents([.medium])
-
-    case .picker:
-      PickerView()
-        .presentationDetents([.medium])
-
-    case .smartlinkLogin:
-      SmartlinkLoginView()
-        .presentationDetents([.medium])
-
-    case .settings:
-      SettingsView()
-        .presentationDetents([.medium])
-
-    case .none:
-      EmptyView()
+    case .alert:          return AnyView( AlertView(simpleAlert: false) )
+    case .simpleAlert:    return AnyView( AlertView(simpleAlert: true) )
+    case .pings:          return AnyView( PingsView(start: Date()) )
+    case .discovery:      return AnyView( DiscoveryView() )
+    case .guiClients:     return AnyView( GuiClientsView() )
+    case .multiflex:      return AnyView( MultiflexView() )
+    case .picker:         return AnyView( PickerView() )
+    case .smartlinkLogin: return AnyView( SmartlinkLoginView() )
+    case .settings:       return AnyView( SettingsView() )
+    case .none:           return AnyView(EmptyView())
     }
   }
 }
@@ -155,7 +127,8 @@ extension View {
 
     return self.toolbar {
       ToolbarItemGroup(placement: .navigation) {
-        Label("", systemImage: viewModel.settings.viewMode.rawValue).font(.title2)
+        Label("Toggle View Mode", systemImage: viewModel.settings.viewMode.rawValue)
+          .font(.title2)
           .onTapGesture {
             viewModel.toggleViewMode()
           }
@@ -164,9 +137,12 @@ extension View {
       ToolbarItemGroup(placement: .destructiveAction) {
         if isMultiflex {
           Text("MultiFlex")
-            .foregroundColor(.blue)
+            .foregroundStyle(.blue)
             .padding(10)
-            .border(Color.blue, width: 2)
+            .overlay(
+              RoundedRectangle(cornerRadius: 4)
+                .stroke(.blue, lineWidth: 2)
+            )
         }
 
         Button("Pings") {
@@ -214,3 +190,4 @@ extension View {
     .padding(10)
 #endif
 }
+

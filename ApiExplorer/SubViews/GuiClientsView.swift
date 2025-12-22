@@ -60,7 +60,6 @@ private struct HeaderView: View {
       HStack(spacing: 15) {
         Text("Radio")
           .frame(width: 100, alignment: .leading)
-          .border(.red)
         Text("Station")
           .frame(width: 100, alignment: .leading)
         Text("Program")

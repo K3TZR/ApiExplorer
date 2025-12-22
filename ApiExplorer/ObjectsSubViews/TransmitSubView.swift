@@ -17,69 +17,94 @@ struct TransmitSubView: View {
   @Environment(ViewModel.self) var viewModel
   
   var body: some View {
-    
-    Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 0) {
-      TransmitView(transmit: viewModel.api.transmit)
-      CwView(transmit: viewModel.api.transmit)
+    Group {
+      let transmit = viewModel.api.transmit
+      Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 0) {
+        header
+        TransmitView(transmit: transmit)
+        CwView(transmit: transmit)
+      }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .textSelection(.enabled)
+  }
+  
+  @ViewBuilder
+  private var header: some View {
+    GridRow {
+      Text("Xmit")
+        .frame(width: 50, alignment: .leading)
+//      Text("Setting")
+//        .foregroundStyle(.secondary)
+      Color.clear
+      Color.clear
+      Color.clear
+      Color.clear
+      Color.clear
+      Color.clear
+      Color.clear
+      Color.clear
+    }
   }
 }
 
 private struct TransmitView: View {
   var transmit: Transmit
   
+  @ViewBuilder
+  private func onOffBadge(_ isOn: Bool) -> some View {
+    Text(isOn ? "ON" : "OFF")
+      .foregroundStyle(isOn ? .green : .red)
+      .accessibilityLabel(isOn ? "On" : "Off")
+  }
+  
   var body: some View {
     
     GridRow {
-      Text("PHONE")
+      Color.clear
         .frame(width: 50, alignment: .leading)
       
-      HStack( spacing: 5) {
+      Text("PHONE")
+        .frame(width: 50, alignment: .leading)
+
+      HStack(spacing: 6) {
         Text("Compander")
-        Text("\(transmit.companderEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.companderEnabled ? .green : .red)
+        onOffBadge(transmit.companderEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Processor")
-        Text("\(transmit.speechProcessorEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.speechProcessorEnabled ? .green : .red)
+        onOffBadge(transmit.speechProcessorEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Monitor")
-        Text("\(transmit.txMonitorEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.txMonitorEnabled ? .green : .red)
+        onOffBadge(transmit.txMonitorEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Mic Acc")
-        Text("\(transmit.micAccEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.micAccEnabled ? .green : .red)
+        onOffBadge(transmit.micAccEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Dax")
-        Text("\(transmit.daxEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.daxEnabled ? .green : .red)
+        onOffBadge(transmit.daxEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Vox")
-        Text("\(transmit.voxEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.voxEnabled ? .green : .red)
+        onOffBadge(transmit.voxEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Vox Delay")
         Text(transmit.voxDelay, format: .number)
           .foregroundStyle(.secondary)
           .monospacedDigit()
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Vox Level")
         Text(transmit.voxLevel, format: .number)
           .foregroundStyle(.secondary)
@@ -92,40 +117,49 @@ private struct TransmitView: View {
 private struct CwView: View {
   var transmit: Transmit
   
+  @ViewBuilder
+  private func onOffBadge(_ isOn: Bool) -> some View {
+    Text(isOn ? "ON" : "OFF")
+      .foregroundStyle(isOn ? .green : .red)
+      .accessibilityLabel(isOn ? "On" : "Off")
+  }
+  
   var body: some View {
     
     GridRow {
-      Text("CW")
+      Color.clear
         .frame(width: 50, alignment: .leading)
       
-      HStack( spacing: 5) {
+      Text("CW")
+        .frame(width: 50, alignment: .leading)
+
+      HStack(spacing: 6) {
         Text("Sidetone")
-        Text("\(transmit.cwSidetoneEnabled ? "ON" : "OFF")")
-          .foregroundStyle(transmit.cwSidetoneEnabled ? .green : .red)
+        onOffBadge(transmit.cwSidetoneEnabled)
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Level")
         Text(transmit.cwMonitorGain, format: .number)
           .foregroundStyle(.secondary)
           .monospacedDigit()
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Pan")
         Text(transmit.cwMonitorPan, format: .number)
           .foregroundStyle(.secondary)
           .monospacedDigit()
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Pitch")
         Text(transmit.cwPitch, format: .number)
           .foregroundStyle(.secondary)
           .monospacedDigit()
       }
-      
-      HStack( spacing: 5) {
+
+      HStack(spacing: 6) {
         Text("Speed")
         Text(transmit.cwSpeed, format: .number)
           .foregroundStyle(.secondary)
