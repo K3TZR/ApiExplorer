@@ -107,6 +107,7 @@ extension ApiView {
     case .picker:         return AnyView( PickerView() )
     case .smartlinkLogin: return AnyView( SmartlinkLoginView() )
     case .settings:       return AnyView( SettingsView() )
+//    case .about:          return AnyView(AboutView())
     case .none:           return AnyView(EmptyView())
     }
   }

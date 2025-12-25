@@ -26,6 +26,7 @@ struct PanadapterSubView: View {
       VStack(alignment: .leading) {
         HStack(spacing: 20) {
           Text("PANADAPTER").frame(width: 110, alignment: .leading)
+            .foregroundStyle(.yellow)
           Text("----- NONE PRESENT -----").foregroundStyle(.red)
         }
       }
@@ -83,7 +84,8 @@ private struct PanadapterDetailView: View {
       GridRow {
         Text("PANADAPTER")
           .frame(width: 110, alignment: .leading)
-        
+          .foregroundStyle(.yellow)
+
         Text("ID")
         Text(panadapter.id.hex)
           .foregroundStyle(.secondary)
@@ -115,7 +117,8 @@ private struct WaterfallDetailView: View {
       GridRow {
         Text("WATERFALL")
           .frame(width: 110, alignment: .trailing)
-        
+          .foregroundStyle(.yellow)
+
         Text("ID")
         Text(waterfall.id.hex)
           .foregroundStyle(.secondary)
@@ -158,7 +161,8 @@ private struct SliceDetailView: View {
       GridRow {
         Text("SLICE")
           .frame(width: 110, alignment: .trailing)
-        
+          .foregroundStyle(.yellow)
+
         Text("ID")
         Text(slice.id.hex)
           .foregroundStyle(.secondary)

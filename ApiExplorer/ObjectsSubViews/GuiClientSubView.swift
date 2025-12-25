@@ -26,11 +26,9 @@ struct GuiClientSubView: View {
           Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 0) {
             GridRow {
               Text(guiClient.station)
-                .foregroundColor(.yellow)
                 .bold()
-                .underline()
-//                .font(.title)
                 .frame(width: 200, alignment: .leading)
+                .foregroundStyle(.green)
                 .truncationMode(.tail)
                 .lineLimit(1)   // This is critical
                 .clipped()

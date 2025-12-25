@@ -29,7 +29,7 @@ struct RadioSubView: View {
             Text(radio.packet.nickname)
               .frame(width: labelWidth, alignment: .leading)
               .bold()
-              .underline()
+//              .underline()
 //              .font(.title)
               .foregroundStyle(radio.packet.source == .local ? .green : .red)
               .gridColumnAlignment(.leading)

@@ -13,13 +13,14 @@ import ApiPackage
 @main
 struct ApiExplorerApp: App {
 #if os(macOS)
-@NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #else
-@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #endif
-
+  
+  let testedVersion: String = "4.0.1"
   @State var viewModel = ViewModel(SettingsModel())
-
+  
   var body: some Scene {
     WindowGroup() {
       ApiView()
@@ -27,14 +28,28 @@ struct ApiExplorerApp: App {
     }
 #if os(macOS)
     .commands {
-        CommandGroup(replacing: .newItem) {
-            Button("Font") {
-              var currentSize = viewModel.settings.fontSize
-              currentSize += 1
-              viewModel.settings.fontSize = currentSize.bracket(8, 14)
-            }
-            .keyboardShortcut("+", modifiers: .command)
+      CommandGroup(replacing: .newItem) {
+        Button("Font") {
+          var currentSize = viewModel.settings.fontSize
+          currentSize += 1
+          viewModel.settings.fontSize = currentSize.bracket(8, 14)
         }
+        .keyboardShortcut("+", modifiers: .command)
+      }
+      CommandGroup(replacing: .appInfo) {
+        Button("About ApiExplorer") {
+#if os(macOS)
+  let credits = NSAttributedString(string:
+"""
+
+Tested with Version \(testedVersion) Radio firmware
+
+""",
+  attributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)])
+  NSApplication.shared.orderFrontStandardAboutPanel(options: [NSApplication.AboutPanelOptionKey.credits: credits])
+#endif
+        }
+      }
     }
 #endif
     
@@ -59,7 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
   }
   
   func applicationWillFinishLaunching(_ notification: Notification) {
-
+    
   }
   
   func applicationWillTerminate(_ notification: Notification) {
@@ -82,7 +97,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
   }
   
   func applicationWillTerminate(_ application: UIApplication) {
-    appLog(.info, "ApiExplorerApp (iOS): application terminated") 
+    appLog(.info, "ApiExplorerApp (iOS): application terminated")
   }
 }
 #endif
+
