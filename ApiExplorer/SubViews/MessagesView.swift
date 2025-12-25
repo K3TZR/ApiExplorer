@@ -163,7 +163,7 @@ public struct IssuesPopover: View {
   public var body: some View {
     VStack(alignment: .leading) {
       if issues.isEmpty {
-        Text("Loading...")
+        Text("None")
       } else {
         ForEach(issues.sorted(by: { $0.key < $1.key }), id: \.key) { pair in
           Text(pair.value)
