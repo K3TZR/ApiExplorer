@@ -57,13 +57,13 @@ public class ViewModel {
     settings.commandToSend = ""
   }
   
-  public func daxSelectionChanged(_ old: DaxChoice, _ new: DaxChoice) {
-    alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
-    activeSheet = .simpleAlert
-    settings.daxSelection = .none
+  public func daxSelectionChanged(_ oldValue: DaxChoice, _ newValue: DaxChoice) {
+//    alertInfo = AlertInfo("Dax Selection", "Not Implemented (yet)")
+//    activeSheet = .simpleAlert
+    settings.daxSelection = newValue
   }
   
-  public func directButtonChanged(_ enabled: Bool) {
+  public func directButtonChanged(_ newValue: Bool) {
     alertInfo = AlertInfo("Direct Connect", "Not Implemented (yet)")
     activeSheet = .simpleAlert
     settings.directEnabled = false
@@ -77,8 +77,15 @@ public class ViewModel {
     settings.isGui.toggle()
   }
   
-  public func localButtonChanged(_ enabled: Bool) async {
-    await startStoplocalListener(enabled)
+  public func localButtonChanged(_ newValue: Bool) {
+    Task {
+      if newValue {
+        settings.directEnabled = false
+        try! await api.listenerLocal!.start(port: settings.discoveryPort)
+      } else {
+        await api.listenerLocal!.stop()
+      }
+    }
   }
   
   public func multiflexCancelButtonTapped() {
@@ -93,19 +100,27 @@ public class ViewModel {
     Task { await connect(api.activeSelection!) }
   }
   
-  public func onAppear() {
+  public func onAppear() async {
     if initialized == false {
       appLog(.debug, "application started")
       
       // initialize the Messages model
       messages.reFilter()
       
+      // initialize the listeners
+      api.listenerLocal = ListenerLocal(api, port: settings.discoveryPort)
+      api.listenerSmartlink = ListenerSmartlink(api)
+
       // start Local and/or Smartlink if enabled
       if settings.localEnabled || settings.smartlinkEnabled {
-        Task {
-          sleep(2)
-          if settings.localEnabled { await startStoplocalListener(true) }
-          if settings.smartlinkEnabled { startStopSmartlinkListener(true) }
+        if settings.localEnabled {
+          settings.directEnabled = false
+          try! await api.listenerLocal!.start(port: settings.discoveryPort)
+
+        }
+        if settings.smartlinkEnabled {
+          settings.directEnabled = false
+          startSmartlinkListener()
         }
       }
       
@@ -182,22 +197,22 @@ public class ViewModel {
     settings.remoteRxAudioCompressed = false
   }
   
-  public func remoteRxAudioEnabledButtonChanged() {
-    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
-    activeSheet = .simpleAlert
-    settings.remoteRxAudioEnabled = false
+  public func remoteRxAudioEnabledButtonChanged(_ newValue: Bool) {
+//    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
+//    activeSheet = .simpleAlert
+    settings.remoteRxAudioEnabled = newValue
   }
   
-  public func remoteTxAudioEnabledButtonChanged() {
+  public func remoteTxAudioEnabledButtonChanged(_ newValue: Bool) {
     alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
     activeSheet = .simpleAlert
-    settings.remoteTxAudioEnabled = false
+    settings.remoteTxAudioEnabled = newValue
   }
   
-  public func remoteTxAudioCompressedButtonChanged() {
+  public func remoteTxAudioCompressedButtonChanged(_ newValue: Bool) {
     alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
     activeSheet = .simpleAlert
-    settings.remoteTxAudioCompressed = false
+    settings.remoteTxAudioCompressed = newValue
   }
   
   public func sendButtonTapped() {
@@ -212,7 +227,12 @@ public class ViewModel {
   }
   
   public func smartlinkButtonChanged(_ enabled: Bool)  {
-    startStopSmartlinkListener(enabled)
+    if enabled {
+      settings.directEnabled = false
+      startSmartlinkListener()
+    } else {
+      stopSmartlinkListener()
+    }
   }
   
   public func smartlinkCancelButtonTapped() {
@@ -256,67 +276,55 @@ public class ViewModel {
       activeSheet = .picker
     }
   }
-  
-  private func startStoplocalListener(_ enabled: Bool) async {
-    if enabled {
-      settings.directEnabled = false
-      api.listenerLocal = ListenerLocal(api)
-      let port = UInt16(settings.discoveryPort)
-      Task { try! await api.listenerLocal!.start(port: port) }
-    } else {
-      await api.listenerLocal?.stop()
-      api.listenerLocal = nil
-      api.removeRadios(.local)
+ 
+  public func startSmartlinkListener()  {
+    // disable direct, it is incompatable with other connection types
+    settings.directEnabled = false
+    
+    guard settings.smartlinkLoginRequired  == false else {
+      activeSheet = .smartlinkLogin
+      return
     }
-  }
-  
-  public func startStopSmartlinkListener(_ enabled: Bool)  {
-    if enabled {
-      // disable direct, it is incompatable with other connection types
-      settings.directEnabled = false
-      
-      guard settings.smartlinkLoginRequired  == false else {
-        activeSheet = .smartlinkLogin
-        return
-      }
-      
-      // start the listener
-      api.listenerSmartlink = ListenerSmartlink(api)
-      // is the previous IdToken still valid?
-      if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
-        // YES, connect using the IdToken
-        if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, settings.smartlinkRefreshToken)) {
-          // did not connect, force a Login
-          activeSheet = .smartlinkLogin
-        }
-        
-        // NO, try using the RefreshToken
-      } else if settings.smartlinkRefreshToken != nil {
-        Task {
-          // Can we get an IdToken using the RefreshToken?
-          if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: settings.smartlinkRefreshToken!) {
-            // YES, connect using the IdToken
-            if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, settings.smartlinkRefreshToken)) {
-              // did not connect, force a Login
-              activeSheet = .smartlinkLogin
-            }
-          } else {
-            // did not connect, force a Login
-            activeSheet = .smartlinkLogin
-          }
-        }
-      } else {
+    
+    // start the listener
+//    api.listenerSmartlink = ListenerSmartlink(api)
+
+    // is the previous IdToken still valid?
+    if api.listenerSmartlink!.isValid(_smartlinkIdToken) {
+      // YES, connect using the IdToken
+      if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken!, settings.smartlinkRefreshToken)) {
         // did not connect, force a Login
         activeSheet = .smartlinkLogin
       }
       
+      // NO, try using the RefreshToken
+    } else if settings.smartlinkRefreshToken != nil {
+      Task {
+        // Can we get an IdToken using the RefreshToken?
+        if let _smartlinkIdToken = await api.listenerSmartlink!.requestIdToken(refreshToken: settings.smartlinkRefreshToken!) {
+          // YES, connect using the IdToken
+          if !api.listenerSmartlink!.connect(Tokens(_smartlinkIdToken, settings.smartlinkRefreshToken)) {
+            // did not connect, force a Login
+            activeSheet = .smartlinkLogin
+          }
+        } else {
+          // did not connect, force a Login
+          activeSheet = .smartlinkLogin
+        }
+      }
     } else {
-      // stop smartlink listener
-      api.listenerSmartlink?.stop()
-      api.listenerSmartlink = nil
-      api.removeRadios(.smartlink)
+      // did not connect, force a Login
+      activeSheet = .smartlinkLogin
     }
   }
+  
+  public func stopSmartlinkListener() {
+    // stop smartlink listener
+    api.listenerSmartlink?.stop()
+//    api.listenerSmartlink = nil
+    api.removeRadios(.smartlink)
+  }
+  
   public func toggleDiscoveryPort() {
     if settings.discoveryPort == 4992 {
       settings.discoveryPort = 14992

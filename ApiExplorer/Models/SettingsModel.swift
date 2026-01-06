@@ -89,7 +89,7 @@ public class SettingsModel {
     defaultGui = _settings.getStruct(forKey: SettingsKey.defaultGui.rawValue, as: PickerSelection.self)
     defaultNonGui = _settings.getStruct(forKey: SettingsKey.defaultNonGui.rawValue, as: PickerSelection.self)
     directEnabled = _settings.bool(forKey: SettingsKey.directEnabled.rawValue)
-    discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: SettingsKey.discoveryDisplayType.rawValue) ?? "fields") ?? .vitaHeader
+    discoveryDisplayType = DiscoveryDisplayType(rawValue: _settings.string(forKey: SettingsKey.discoveryDisplayType.rawValue) ?? "fields") ?? .vitaHeaderView
     discoveryPort = _settings.integer(forKey: SettingsKey.discoveryPort.rawValue)
     fontSize = _settings.integer(forKey: SettingsKey.fontSize.rawValue)
     gotoBottom = _settings.bool(forKey: SettingsKey.gotoBottom.rawValue)

@@ -52,8 +52,8 @@ struct ApiView: View {
       .padding(10)
 
       // initialize
-      .onAppear {
-        vm.onAppear()
+      .task {
+        await vm.onAppear()
       }
       
       // Sheets
@@ -101,7 +101,7 @@ extension ApiView {
     case .alert:          return AnyView( AlertView(simpleAlert: false) )
     case .simpleAlert:    return AnyView( AlertView(simpleAlert: true) )
     case .pings:          return AnyView( PingsView(start: Date()) )
-    case .discovery:      return AnyView( DiscoveryView() )
+    case .discovery:      return AnyView( DiscoveryView(radioList: viewModel.api.radios) )
     case .guiClients:     return AnyView( GuiClientsView() )
     case .multiflex:      return AnyView( MultiflexView() )
     case .picker:         return AnyView( PickerView() )
