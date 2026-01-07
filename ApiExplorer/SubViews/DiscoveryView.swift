@@ -35,9 +35,8 @@ public struct DiscoveryView: View {
           }
         }
         .labelsHidden()
-        //        .frame(width: 250)
         
-        if discoveryDisplayType != .discoveryTimingView {
+        if discoveryDisplayType != .vitaTimingView {
           Picker("Choose a Radio", selection: $radioSelection) {
             Text("--- Select a Radio ---").tag(nil as String?)
             ForEach(radios, id: \.id) { radio in
@@ -47,51 +46,25 @@ public struct DiscoveryView: View {
             }
           }
           .labelsHidden()
-          //          .frame(width: 250)
         }
       }
-      if let index = radios.firstIndex(where: { $0.id == radioSelection }) {
-        VStack (alignment: .leading, spacing: 5) {
-          switch discoveryDisplayType  {
-          case .vitaHeaderView:
-            if let data = radios[index].discoveryData, let vita = Vita.decode(from: data) {
-              VitaHeaderView(vita: vita)
-            } else {
-              Text("No discovery data")
-            }
-          case .vitaPayloadView:    VitaPayloadView(data: radioList[index].discoveryData!)
-          case .vitaHexView:        VitaHexView(data: radioList[index].discoveryData!)
-          default:
-            EmptyView()
+      VStack (alignment: .leading, spacing: 5) {
+        if discoveryDisplayType == .vitaTimingView {
+          VitaTimingView()
+          
+        } else {
+          if let index = radios.firstIndex(where: { $0.id == radioSelection }), let data = radios[index].discoveryData {
+            if discoveryDisplayType == .vitaHeaderView, let vita = Vita.decode(from: data) {
+              VitaHeaderView(vita: vita) }
+            
+            if discoveryDisplayType == .vitaPayloadView {
+              VitaPayloadView(data: data) }
+            
+            if discoveryDisplayType == .vitaHexView {
+              VitaHexView(data: data) }
           }
         }
-      } else {
-        EmptyView()
       }
-      
-      //      switch settings.discoveryDisplayType  {
-      //      case .vitaHeader, .vitaPayload, .vitaByteMap:
-      //        if let data {
-      //          if settings.discoveryDisplayType == .vitaHeader { VitaHeaderView(data: data)}
-      //          if settings.discoveryDisplayType == .vitaPayload { VitaPayloadView(data: data)}
-      //          if settings.discoveryDisplayType == .vitaByteMap { VitaHexView(data: data)}
-      //        } else {
-      //          Spacer()
-      //          EmptyView()
-      //          Spacer()
-      //
-      //          Divider()
-      //            .frame(height: 2)
-      //            .background(Color.gray)
-      //
-      //          HStack {
-      //            Spacer()
-      //            Button("Close") { dismiss() }
-      //              .keyboardShortcut(.defaultAction)
-      //          }
-      //        }
-      //      case .timing: TimingView(start: Date())
-      //      }
       Spacer()
     }
     .monospaced()
@@ -221,17 +194,17 @@ private struct VitaHeaderView: View {
 
 private struct VitaPayloadView: View {
   let data: Data
-
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
+  
   @State var even = false
-
+  
   var body: some View {
     Divider()
       .frame(height: 2)
       .background(Color.gray)
-
+    
     ScrollView {
       VStack(spacing: 5) {
         ForEach(viewModel.payloadProperties(data) , id: \.key) { property in
@@ -247,11 +220,11 @@ private struct VitaPayloadView: View {
       }
       .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+    
     Divider()
       .frame(height: 2)
       .background(Color.gray)
-
+    
     HStack {
       Spacer()
       Button("Close") { dismiss() }
@@ -262,32 +235,32 @@ private struct VitaPayloadView: View {
 
 private struct VitaHexView: View {
   let data: Data
-
+  
   @Environment(ViewModel.self) private var viewModel
   @Environment(\.dismiss) var dismiss
-
+  
   @State var isSaving = false
   @State var document: SaveDocument?
   @State var utf8 = false
   let fontSize: CGFloat = 14
-
+  
   var body: some View {
     VStack(alignment: .leading, spacing: 5) {
       HStack {
         Text("Byte Count: \(data.count.toHex()) (\(data.count))")
         Spacer()
       }
-
+      
       // Header row for hex dump
       Text("      00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F")
         .font(.system(size: fontSize, weight: .medium, design: .monospaced))
-
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
       Text("--- Header ---")
-
+      
       ForEach(Array(viewModel.vitaHeader(data).enumerated()), id: \.offset) { index, string in
         HStack {
           Text(String(format: "%04X:", index * 16))
@@ -297,15 +270,15 @@ private struct VitaHexView: View {
         .background(index.isMultiple(of: 2) ? Color.gray.opacity(0.2) : Color.clear)
         .font(.system(size: fontSize, weight: .medium, design: .monospaced))
       }
-
+      
       HStack {
         Text("--- Payload ---")
         Spacer()
         Toggle("UTF8", isOn: $utf8)
       }
-
+      
       ScrollView {
-
+        
         VStack(spacing: 5) {
           ForEach(Array(viewModel.vitaPayload(data, utf8).enumerated()), id: \.offset) { index, string in
             HStack {
@@ -318,11 +291,11 @@ private struct VitaHexView: View {
           }
         }
       }
-
+      
       Divider()
         .frame(height: 2)
         .background(Color.gray)
-
+      
       HStack {
         Button("Save") {
           document = SaveDocument(text: viewModel.vitaString(data, utf8))
@@ -335,7 +308,7 @@ private struct VitaHexView: View {
     }
     .font(.system(.body, design: .monospaced))
     .padding()
-
+    
     .fileExporter(isPresented: $isSaving, document: document, contentType: .plainText, defaultFilename: "ApiExplorer.bcast") { result in
       switch result {
       case .success(let url):
@@ -347,110 +320,111 @@ private struct VitaHexView: View {
   }
 }
 
-//private struct TimingView: View {
-//  let start: Date
-//
-//  @Environment(ViewModel.self) private var viewModel
-//  @Environment(\.dismiss) var dismiss
-//
-//  let timeLimit: TimeInterval = 3
-//
-//  var body: some View {
-//    @Bindable var settings = viewModel.settings
-//
-//    TimelineView(.periodic(from: start, by: 1)) { _ in
-//
-//      VStack(spacing: 0) {
-//        // Fixed Header
-//        Grid(alignment: .leading) {
-//          GridRow {
-//            Text("Radio Name")
-//              .frame(width: 125, alignment: .leading)
-//            Text("IP Address")
-//              .frame(width: 200, alignment: .leading)
-//            Text("Peak Interval").frame(maxWidth: .infinity, alignment: .trailing)
-//          }
-//          Divider()
-//            .frame(height: 2)
-//            .background(Color.gray)
-//        }
-//        .padding(.horizontal)
-//
-//        // Scrollable rows
-//        ScrollView {
-//          Grid(alignment: .leading, verticalSpacing: 10) {
-//            ForEach(Array(viewModel.api.radios
-//              .sorted(by: { $0.packet.nickname < $1.packet.nickname })
-//              .enumerated()), id: \.element.id) { index, radio in
-//
-//                if radio.packet.source == .local {
-//                  GridRow {
-//                    let displayName = radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname
-//
-//                    Text(displayName)
-//                      .frame(width: 125, alignment: .leading)
-//                      .lineLimit(1)
-//                      .truncationMode(.tail)
-//                      .help(displayName)
-//
-//                    HStack(spacing: 5) {
-//                      Text(radio.packet.publicIp)
-//                      Button(action: {
-//                        viewModel.pingResult = ""
-//                        viewModel.ping(radio.packet.publicIp)
-//                      }) {
-//                        Image(systemName: "parkingsign.circle")
-//                          .font(.title3)
-//                          .help("Ping this Radio")
-//                      }
-//                      .buttonStyle(.plain)
-//                    }
-//                    .frame(width: 200, alignment: .leading)
-//
-//                    Text(String(format: "%0.3f", radio.intervalPeak))
-//                      .frame(maxWidth: .infinity, alignment: .trailing)
-//                      .foregroundColor(radio.intervalPeak > timeLimit ? .red : nil)
-//                      .monospacedDigit()
-//                  }
-//                }
-//              }
-//          }
-//          .padding(.horizontal)
-//          .padding(.bottom, 16)
-//        }
-//
-//        // Ping result + summary
-//        VStack(alignment: .leading, spacing: 8) {
-//          Text(viewModel.pingResult)
-//            .frame(alignment: .leading)
-//
-//          HStack {
-//            Spacer()
-//            Text("Peak > \(String(format: "%0.3f", timeLimit))").bold()
-//            Text("seconds shown in")
-//            Text("RED").foregroundColor(.red).bold()
-//          }
-//        }
-//        .padding()
-//
-//        Divider()
-//          .frame(height: 2)
-//          .background(Color.gray)
-//
-//        // Footer
-//        HStack(spacing: 5) {
-//          Text("UDP Port:")
-//          Text(viewModel.settings.discoveryPort, format: .number)
-//
-//          Spacer()
-//
-//          Button("Close") { dismiss() }
-//            .keyboardShortcut(.defaultAction)
-//        }
-//      }
-//    }
-//  }
-//}
+private struct VitaTimingView: View {
+  let start = Date()
+  
+  @Environment(ViewModel.self) private var viewModel
+  @Environment(\.dismiss) var dismiss
+  
+  let timeLimit: TimeInterval = 3
+  
+  var body: some View {
+    @Bindable var settings = viewModel.settings
+    
+    TimelineView(.periodic(from: start, by: 1)) { context in
+      
+      VStack(spacing: 0) {
+        // Fixed Header
+        Grid(alignment: .leading) {
+          GridRow {
+            Text("Radio Name")
+              .frame(width: 125, alignment: .leading)
+            Text("IP Address")
+              .frame(width: 200, alignment: .leading)
+            Text("Peak Interval").frame(maxWidth: .infinity, alignment: .trailing)
+          }
+          Divider()
+            .frame(height: 2)
+            .background(Color.gray)
+        }
+        .padding(.horizontal)
+        
+        // Scrollable rows
+        ScrollView {
+          Grid(alignment: .leading, verticalSpacing: 10) {
+            ForEach(Array(viewModel.api.radios
+              .sorted(by: { $0.packet.nickname < $1.packet.nickname })
+              .enumerated()), id: \.element.id) { index, radio in
+                
+                if radio.packet.source == .local {
+                  GridRow {
+                    let displayName = radio.packet.nickname.isEmpty ? radio.packet.model : radio.packet.nickname
+                    
+                    Text(displayName)
+                      .frame(width: 125, alignment: .leading)
+                      .lineLimit(1)
+                      .truncationMode(.tail)
+                      .help(displayName)
+                    
+                    HStack(spacing: 5) {
+                      Text(radio.packet.publicIp)
+                      Button(action: {
+                        viewModel.pingResult = ""
+                        viewModel.ping(radio.packet.publicIp)
+                      }) {
+                        Image(systemName: "parkingsign.circle")
+                          .font(.title3)
+                          .help("Ping this Radio")
+                      }
+                      .buttonStyle(.plain)
+                    }
+                    .frame(width: 200, alignment: .leading)
+                    
+                    Text(String(format: "%0.3f", radio.intervalPeak))
+                      .frame(maxWidth: .infinity, alignment: .trailing)
+                      .foregroundColor(radio.intervalPeak > timeLimit ? .red : nil)
+                      .monospacedDigit()
+                  }
+                }
+              }
+          }
+          .padding(.horizontal)
+          .padding(.bottom, 16)
+        }
+        
+        // Ping result + summary
+        VStack(alignment: .leading, spacing: 8) {
+          Text(viewModel.pingResult)
+            .frame(alignment: .leading)
+          
+          HStack {
+            Text(context.date, format: .dateTime.hour().minute().second())
+            Spacer()
+            Text("Peak > \(String(format: "%0.3f", timeLimit))").bold()
+            Text("seconds shown in")
+            Text("RED").foregroundColor(.red).bold()
+          }
+        }
+        .padding()
+        
+        Divider()
+          .frame(height: 2)
+          .background(Color.gray)
+        
+        // Footer
+        HStack(spacing: 5) {
+          Text("UDP Port:")
+          Text(viewModel.settings.discoveryPort, format: .number)
+          
+          Spacer()
+          
+          Button("Close") { dismiss() }
+            .keyboardShortcut(.defaultAction)
+        }
+      }
+    }
+  }
+}
 
 // ----------------------------------------------------------------------------
 // MARK: - Preview
@@ -458,3 +432,4 @@ private struct VitaHexView: View {
 #Preview("DiscoveryView") {
   DiscoveryView(radioList: [])
 }
+
