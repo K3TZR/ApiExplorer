@@ -94,10 +94,14 @@ public class ViewModel {
   
   public func multiflexConnectButtonTapped(_ disconnectHandle: String?) {
     activeSheet = nil
-    if let disconnectHandle {
-      api.activeSelection!.disconnectHandle = disconnectHandle
+    if let activeSelection = api.activeSelection {
+      if let disconnectHandle {
+        api.activeSelection!.disconnectHandle = disconnectHandle
+
+      } else {
+        Task { await connect(activeSelection) }
+      }
     }
-    Task { await connect(api.activeSelection!) }
   }
   
   public func onAppear() async {

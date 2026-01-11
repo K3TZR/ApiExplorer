@@ -119,8 +119,8 @@ extension ApiView {
 extension View {
   func apiToolbar(viewModel: ViewModel) -> some View {
     let isMultiflex: Bool = {
-      if let selection = viewModel.api.activeSelection,
-         let radio = viewModel.api.radios.first(where: { $0.id == selection.radioId }) {
+      if let activeSelection = viewModel.api.activeSelection,
+         let radio = viewModel.api.radios.first(where: { $0.id == activeSelection.radioId }) {
         return radio.guiClients.count > 1
       }
       return false
