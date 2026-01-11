@@ -104,7 +104,7 @@ public class ViewModel {
     }
   }
   
-  public func onAppear() async {
+  public func initialize() async {
     if initialized == false {
       appLog(.debug, "application started")
       
@@ -195,28 +195,21 @@ public class ViewModel {
     try? pinger?.startPinging()
   }
   
-  public func remoteRxAudioCompressedButtonChanged() {
-    alertInfo = AlertInfo("Remote Rx Audio Compressed", "Not Implemented (yet)")
-    activeSheet = .simpleAlert
-    settings.remoteRxAudioCompressed = false
-  }
-  
   public func remoteRxAudioEnabledButtonChanged(_ newValue: Bool) {
-//    alertInfo = AlertInfo("Remote Rx Audio Enabled", "Not Implemented (yet)")
-//    activeSheet = .simpleAlert
     settings.remoteRxAudioEnabled = newValue
+    if isConnected {
+      if newValue {
+        api.remoteRxAudioRequest(compressed: settings.remoteRxAudioCompressed)
+      } else {
+        api.remoteRxAudioRemove()
+      }
+    }
   }
   
   public func remoteTxAudioEnabledButtonChanged(_ newValue: Bool) {
     alertInfo = AlertInfo("Remote Tx Audio Enabled", "Not Implemented (yet)")
     activeSheet = .simpleAlert
     settings.remoteTxAudioEnabled = newValue
-  }
-  
-  public func remoteTxAudioCompressedButtonChanged(_ newValue: Bool) {
-    alertInfo = AlertInfo("Remote Tx Audio Compressed", "Not Implemented (yet)")
-    activeSheet = .simpleAlert
-    settings.remoteTxAudioCompressed = newValue
   }
   
   public func sendButtonTapped() {
@@ -449,6 +442,12 @@ public class ViewModel {
     isConnected = await connectTask.result.get()
     if isConnected {
       appLog(.info, "Connection SUCCEEDED, ID <\(selection.radioId)>")
+      
+      // start mac audio if enabled
+      if settings.remoteRxAudioEnabled {
+        api.sendTcp(RemoteRxAudio.create(compressed: settings.remoteRxAudioCompressed))
+      }
+      
     } else {
       appLog(.debug, "Connection FAILED, ID <\(selection.radioId)>")
     }

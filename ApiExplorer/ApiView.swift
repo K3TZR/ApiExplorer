@@ -30,8 +30,7 @@ struct ApiView: View {
   @Environment(ViewModel.self) private var viewModel
   
   var body: some View {
-    @Bindable var vm = viewModel
-    @Bindable var settings = vm.settings
+    @Bindable var viewModel = viewModel
 
     NavigationStack {
       // primary view
@@ -44,7 +43,7 @@ struct ApiView: View {
           .frame(height: 2)
           .background(Color.gray)
         
-        ObjectsMessagesSplitView(viewMode: vm.settings.viewMode)
+        ObjectsMessagesSplitView(viewMode: viewModel.settings.viewMode)
       }
 #if os(macOS)
       .frame(minWidth: 1200, maxWidth: .infinity, minHeight: 600, alignment: .leading)
@@ -53,14 +52,14 @@ struct ApiView: View {
 
       // initialize
       .task {
-        await vm.onAppear()
+        await viewModel.initialize()
       }
       
       // Sheets
-      .sheet(item: $vm.activeSheet) { sheet in
+      .sheet(item: $viewModel.activeSheet) { sheet in
         apiSheetView(for: sheet)
           .presentationDetents([.medium])
-          .environment(vm)
+          .environment(viewModel)
       }
       
       .navigationTitle("ApiExplorer  (v" + Version().string + ")")
@@ -69,18 +68,18 @@ struct ApiView: View {
 #endif
       
       // Toolbar
-      .apiToolbar(viewModel: vm)
+      .apiToolbar(viewModel: viewModel)
       
       // LogAlert Warning Notification
       .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertWarning)
         .receive(on: RunLoop.main)) { note in
-          handleLogAlert(note, when: vm.settings.alertOnWarning)
+          handleLogAlert(note, when: viewModel.settings.alertOnWarning)
         }
 
       // LogAlert Error Notification
       .onReceive(NotificationCenter.default.publisher(for: Notification.Name.logAlertError)
         .receive(on: RunLoop.main)) { note in
-          handleLogAlert(note, when: vm.settings.alertOnError)
+          handleLogAlert(note, when: viewModel.settings.alertOnError)
         }
     }
   }

@@ -80,9 +80,6 @@ public struct TopButtonsView: View {
         Toggle("Rx Audio", isOn: $settings.remoteRxAudioEnabled)
           .disabled(settings.isGui == false)
           .toggleStyle(CustomToggleStyle())
-//          .popover(isPresented: $settings.remoteRxAudioEnabled) {
-//            NotImplementedView()
-//          }
           .onChange(of: settings.remoteRxAudioEnabled) { oldValue, newValue in
             viewModel.remoteRxAudioEnabledButtonChanged(newValue)
           }
